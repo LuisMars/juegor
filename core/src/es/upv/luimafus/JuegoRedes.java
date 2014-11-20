@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class JuegoRedes extends ApplicationAdapter {
 
-    Map GameMap = new Map(25, 20, 0.75);
+    Map GameMap = new Map(35, 25, 0.75);
 
 	SpriteBatch batch;
 	Texture[] floor;
@@ -40,8 +40,8 @@ public class JuegoRedes extends ApplicationAdapter {
 
         Gdx.graphics.setDisplayMode(Map.getWidth()*32, Map.getHeight()*32,false);
 
-        floor = new Texture[8];
-        wall = new Texture[12];
+        floor = new Texture[10];
+        wall = new Texture[10];
 
         altar = new Texture[8];
 
@@ -56,9 +56,9 @@ public class JuegoRedes extends ApplicationAdapter {
         altars = new int[Map.getWidth()][Map.getHeight()];
 
 		for(int i = 0; i < floor.length; i++)
-            floor[i] = new Texture("dirt/grey_dirt"+(i)+".png");
+            floor[i] = new Texture("sandstone/sandstone_floor"+(i)+".png");
         for(int i = 0; i < wall.length; i++)
-            wall[i] = new Texture("stone_brick/stone_brick"+i+".png");
+            wall[i] = new Texture("sandstone_wall/sandstone_wall"+i+".png");
         for(int i = 0; i < altar.length; i++)
             altar[i] = new Texture("altar/dngn_altar_makhleb_flame"+i+".png");
         for(int i = 0; i < player.length; i++)
@@ -95,7 +95,7 @@ public class JuegoRedes extends ApplicationAdapter {
         camera = new OrthographicCamera(width,height);
 
         GameMap.addPlayer(new Player(false));
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 7; i++)
           GameMap.addPlayer(new Player(true));
 
 

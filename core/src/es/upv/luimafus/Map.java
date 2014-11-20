@@ -179,14 +179,14 @@ public class Map {
     }
 
     public Player closestTo(Player p) {
-        Player g = nextTo(p);
+        Player g = null;
         int min = 99999;
         if(players.size() == 1)
             return null;
         for(Player e: players) {
             if(e != p) {
                 int dist = Utils.trueDistance(e,p);
-                if(dist > min) {
+                if(dist < min) {
                     min = dist;
                     g = e;
                 }

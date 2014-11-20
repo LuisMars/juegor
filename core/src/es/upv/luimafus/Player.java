@@ -44,6 +44,7 @@ public class Player {
             x = (int) (Math.random() * Map.getWidth());
             y = (int) (Math.random() * Map.getHeight());
             if (Map.getCell(x, y) == 0) {
+
                 int dist = 99999;
                 for (Player p : Map.getPlayers())
                     dist = Math.min(dist,Utils.distance(this, p));
