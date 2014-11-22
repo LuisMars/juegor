@@ -8,9 +8,9 @@ public class AStar {
     public NodeList open;
     public NodeList closed;
     public NodeList successors;
-
-    public AStar() {
-
+    private Map GameMap;
+    public AStar(Map GameMap) {
+        this.GameMap = GameMap;
     }
 
     public Node calcPath(Player a, Player b) {
@@ -24,13 +24,13 @@ public class AStar {
             closed.add(q);
 
             successors.clear();
-            if(Map.isFloor(q.x-1,q.y))
+            if(GameMap.isFloor(q.x-1,q.y))
                 successors.add(new Node(q.x-1,q.y,q,b));
-            if(Map.isFloor(q.x+1,q.y))
+            if(GameMap.isFloor(q.x+1,q.y))
                 successors.add(new Node(q.x+1,q.y,q,b));
-            if(Map.isFloor(q.x,q.y+1))
+            if(GameMap.isFloor(q.x,q.y+1))
                 successors.add(new Node(q.x,q.y+1,q,b));
-            if(Map.isFloor(q.x,q.y-1))
+            if(GameMap.isFloor(q.x,q.y-1))
                 successors.add(new Node(q.x,q.y-1,q,b));
 
             for(Node s : successors) {
@@ -71,7 +71,7 @@ public class AStar {
                 //System.out.print(" (" +q.x + "," +q.y+")<-");
             }
             //System.out.println();
-            dir = Utils.posToDir(q.x,q.y,a.getX(),a.getY());
+            dir = Utils.posToDir(a.getX(),a.getY(),q.x,q.y);
 
 
         }

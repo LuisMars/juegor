@@ -1,0 +1,74 @@
+dungeon.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+UL
+    rotate: false
+    xy: 0, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+UC
+    rotate: false
+    xy: 16, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+UR
+    rotate: false
+    xy: 32, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+ML
+    rotate: false
+    xy: 0, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+MC
+    rotate: false
+    xy: 16, 16
+    size: 1, 1
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+MR
+    rotate: false
+    xy: 32, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+DL
+    rotate: false
+    xy: 0, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+DC
+    rotate: false
+    xy: 16, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+DR
+    rotate: false
+    xy: 32, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+floor
+    rotate: false
+    xy: 96, 32
+    size: 1, 1
+    orig: 16, 16
+    offset: 0, 0
+    index: -1

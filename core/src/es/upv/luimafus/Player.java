@@ -23,30 +23,34 @@ public class Player {
     private int HP = 10;
     private int cHP = HP;
 
-    private Area area = new Area();
+    private Area area;
 
-    private AStar aStar = new AStar();
+    private AStar aStar;
     private boolean bot;
 
     private int ID;
 
     private static int n_players = 0;
 
-    public Player(boolean b) {
-        bot = b;
+    private Map GameMap;
+    public Player(Map gameMap, boolean isBot) {
+        GameMap = gameMap;
+        bot = isBot;
         setStartPos();
         n_players++;
         ID = n_players - 1;
+        aStar = new AStar(GameMap);
+        area = new Area(GameMap);
     }
 
     private void setStartPos() {
         while (true) {
-            x = (int) (Math.random() * Map.getWidth());
-            y = (int) (Math.random() * Map.getHeight());
-            if (Map.getCell(x, y) == 0) {
+            x = (int) (Math.random() * GameMap.getWidth());
+            y = (int) (Math.random() * GameMap.getHeight());
+            if (GameMap.getCell(x, y) == 0) {
 
                 int dist = 99999;
-                for (Player p : Map.getPlayers())
+                for (Player p : GameMap.getPlayers())
                     dist = Math.min(dist,Utils.distance(this, p));
                 if(dist > 5)
                     break;
@@ -105,20 +109,22 @@ public class Player {
                 break;
             }
         }
-        Map.movePlayer(this, pX, pY);
+        GameMap.movePlayer(this, pX, pY);
     }
 
     public void attack(int direction) {
         if(lastAtt <= 0) {
             if (direction == -1) {
                 if (area.isOver()) {
-                    area = new Area(x, y, ID);
+                    area = new Area(GameMap, x, y, ID);
                     cHP--;
+                    lastAtt = 4;
                 }
             }
-            else
-                Map.addAttack(new Attack(x, y, direction, ID));
-            lastAtt = 4;
+            else {
+                GameMap.addAttack(new Attack(x, y, direction, ID));
+                lastAtt = 2;
+            }
         }
 
     }
@@ -127,8 +133,8 @@ public class Player {
         if(b != null) {
             lastAtt--;
             int dir = aStar.getNext(this, b);
-            if (Utils.dirToAttack(b, this) >= 0 && Utils.distance(this, b) <= 10)
-                attack(Utils.dirToAttack(b, this));
+            if (Utils.hasDirectPath(GameMap,this,b) && Utils.dirToAttack(this,b) >= 0 && Utils.distance(this, b) <= 10)
+                attack(Utils.dirToAttack(this,b));
             else if (cHP > 5 && Utils.trueDistance(this, b) <= 3)
                 attack(-1);
             else
@@ -159,7 +165,7 @@ public class Player {
         int min = 99999999;
         int dir = -1;
         for(int i = 0; i < best.length; i++)
-            if(best[i] < min && Map.canMove(getX() + Utils.dirToSumX(i), getY() + Utils.dirToSumY(i))) {
+            if(best[i] < min && GameMap.canMove(getX() + Utils.dirToSumX(i), getY() + Utils.dirToSumY(i))) {
                 min = best[i];
                 dir = i;
             }
@@ -171,7 +177,7 @@ public class Player {
     }
 
     public void moveTo(int x, int y) {
-        if(Map.canMove(x, y)) {
+        if(GameMap.canMove(x, y)) {
             this.x = x;
             this.y = y;
         }

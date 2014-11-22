@@ -17,7 +17,7 @@ public class Attack {
         direction = -1;
         maxTime = tr;
         time = maxTime;
-        damage = 2;
+        damage = 1;
         radius = r;
     }
 

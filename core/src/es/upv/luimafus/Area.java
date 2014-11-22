@@ -4,15 +4,19 @@ package es.upv.luimafus;
 public class Area {
     private int px;
     private int py;
-    private int time;
+    private int time = -1;
     private int radius = 3;
     private int father;
 
-    public Area () {
+    private Map GameMap;
+
+    public Area (Map GameMap) {
+        this.GameMap = GameMap;
         time = -1;
     }
 
-    public Area (int x, int y, int ID) {
+    public Area (Map GameMap, int x, int y, int ID) {
+        this.GameMap = GameMap;
         px = x;
         py = y;
         time = radius;
@@ -21,10 +25,10 @@ public class Area {
 
     public void updatePos() {
         if(--time >= 0) {
-            for (int i = 0; i < Map.getHeight(); i++) {
-                for (int j = 0; j < Map.getWidth(); j++) {
+            for (int i = 0; i < GameMap.getHeight(); i++) {
+                for (int j = 0; j < GameMap.getWidth(); j++) {
                     if (Utils.trueDistance(j, i, px, py) == radius - time)
-                        Map.addAttack(new Attack(j, i, father, radius-time, radius));
+                        GameMap.addAttack(new Attack(j, i, father, radius-time, radius));
                 }
             }
         }

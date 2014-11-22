@@ -1,16 +1,15 @@
 package es.upv.luimafus;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 
 public class Map {
-    private static int[][] map;
-    private static List<Player> players = new ArrayList<>();
-    private static Collection<Attack> attacks = new ArrayList<>();
-    public static Player cPlayer;
+    private int[][] map;
+    private List<Player> players = new ArrayList<>();
+    private Collection<Attack> attacks = new ArrayList<>();
+    public Player humanPlayer;
 
     public Map(int h, int w, double density) {
         map = new int[h][w];
@@ -70,10 +69,10 @@ public class Map {
 
     public void addPlayer(Player p) {
         players.add(p);
-        cPlayer = players.iterator().next();
+        humanPlayer = players.iterator().next();
     }
 
-    public static void addAttack(Attack a) {
+    public void addAttack(Attack a) {
         attacks.add(a);
     }
 
@@ -89,24 +88,6 @@ public class Map {
                 p.act();
         }
 
-
-
-        for (int i = 0; i < getHeight(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
-                cell = "";
-
-
-
-                for (Player p : players)
-                    if (p.getX() == j && p.getY() == i) {
-                        cell = p.getID() + " ";
-                    }
-                if(cell.isEmpty())
-                    cell = (map[j][i] == 1 ? "· " : "  ");
-                res += cell;
-            }
-            res += "\n";
-        }
         for(Player p : players)
             res += p.getHP() + "\n";
         players.removeIf(Player::isDead);
@@ -138,20 +119,20 @@ public class Map {
         attacks.removeIf(Attack::isOver);
     }
 
-    public static int getWidth() {
+    public int getWidth() {
         return map.length;
     }
 
-    public static int getHeight() {
+    public int getHeight() {
         return map[0].length;
     }
 
-    public static void movePlayer(Player p, int x, int y) {
+    public void movePlayer(Player p, int x, int y) {
         if(canMove(x, y))
             p.moveTo(x,y);
     }
 
-    public static boolean canMove(int x, int y) {
+    public boolean canMove(int x, int y) {
         for(Player p : players) {
             if(p.getX() == x && p.getY() == y)
                 return false;
@@ -167,14 +148,14 @@ public class Map {
         }
     }
 
-    public static Player nextPlayer() {
-        return nextTo(cPlayer);
+    public Player nextPlayer() {
+        return nextTo(humanPlayer);
     }
-    private static Player nextTo(Player p) {
+    private Player nextTo(Player p) {
         return players.get((players.indexOf(p)+1)%players.size());
     }
 
-    public static int getCell(int x, int y) {
+    public int getCell(int x, int y) {
         return map[x][y];
     }
 
@@ -196,7 +177,7 @@ public class Map {
     }
 
     public boolean haveAWinner() {
-        return players.size() == 1;
+        return players.size() <= 1;
     }
     public String winner() {
         if(haveAWinner()) {
@@ -209,7 +190,7 @@ public class Map {
             return "none";
     }
 
-    public static List<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
@@ -217,7 +198,7 @@ public class Map {
         return attacks;
     }
 
-    public static boolean isFloor(int x, int y) {
+    public boolean isFloor(int x, int y) {
         return map[x][y] == 0;
     }
 }

@@ -19,6 +19,10 @@ public class Utils {
     public static int trueDistance(Player a, Player b) {
         return distance(a.getX(),a.getY(),b.getX(),b.getY());
     }
+    public static float fDistance(int x, int y, int px, int py) {
+        return (float)Math.sqrt((x-px)*(x-px)+(y-py)*(y-py));
+    }
+
     public static boolean canReach(Player a, Player b) {
         return false;
     }
@@ -41,26 +45,26 @@ public class Utils {
 
     public static int posToDir(int x, int y, int px, int py) {
         if(x == px) {
-            if (y < py)
+            if (y > py)
                 return 0;
-            else if (y > py)
+            else if (y < py)
                 return 2;
         }
         else if(y == py) {
-            if(x > px)
+            if(x < px)
                 return 1;
-            else if (x < px)
+            else if (x > px)
                 return 3;
         }
         return -1;
     }
 
-    public static boolean hasNeighbours(int x, int y) {
+    public static boolean hasNeighbours(Map GameMap,int x, int y) {
         try {
-            return Map.getCell(x+1,y) == 1 ||
-                    Map.getCell(x-1,y) == 1 ||
-                    Map.getCell(x,y+1) == 1 ||
-                    Map.getCell(x,y-1) == 1;
+            return GameMap.getCell(x+1,y) == 1 ||
+                    GameMap.getCell(x-1,y) == 1 ||
+                    GameMap.getCell(x,y+1) == 1 ||
+                    GameMap.getCell(x,y-1) == 1;
         }
         catch (ArrayIndexOutOfBoundsException e) {
             return true;
@@ -71,5 +75,31 @@ public class Utils {
         if(a.getX() == b.getX() || a.getY() == b.getY())
             return posToDir(a.getX(),a.getY(),b.getX(),b.getY());
         return -1;
+    }
+
+    public static boolean hasDirectPath(Map GameMap, Player a, Player b) {
+        int dir = posToDir(a.getX(),a.getY(),b.getX(),b.getY());
+        switch (dir) {
+            case 0:
+                for(int y = a.getY(); y >= b.getY(); y--)
+                    if(!GameMap.isFloor(a.getX(),y))
+                        return false;
+            case 2:
+                for(int y = a.getY(); y <= b.getY(); y++)
+                    if(!GameMap.isFloor(a.getX(),y))
+                        return false;
+            case 3:
+                for(int x = a.getX(); x >= b.getX(); x--)
+                    if(!GameMap.isFloor(x,b.getY()))
+                        return false;
+            case 1:
+                for(int x = a.getX(); x <= b.getX(); x++)
+                    if(!GameMap.isFloor(x,b.getY()))
+                        return false;
+        }
+        return true;
+
+
+
     }
 }
