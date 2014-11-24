@@ -1,19 +1,21 @@
 package es.upv.luimafus;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 public class Map {
     private int[][] map;
+    public int[][] drawMap;
+
     private List<Player> players = new ArrayList<>();
     private Collection<Attack> attacks = new ArrayList<>();
     public Player humanPlayer;
-
-    public Map(int h, int w, double density) {
+    private GameScreen gs;
+    public Map(GameScreen s,int h, int w, double density) {
+        gs = s;
         map = new int[h][w];
         generateMap(density);
+        prepareMap();
 
     }
 
@@ -67,6 +69,17 @@ public class Map {
         }
     }
 
+
+    public void prepareMap() {
+        drawMap = new int[getWidth()][getHeight()];
+
+        for(int i = 0; i < getWidth(); i++)
+            for(int j = 0; j < getHeight(); j++)
+                drawMap[i][j] = gs.assets.floor.getIndex(Utils.getTile(map, i, j));
+
+
+    }
+
     public void addPlayer(Player p) {
         players.add(p);
         humanPlayer = players.iterator().next();
@@ -79,7 +92,7 @@ public class Map {
     public void updateState() {
         String res = "";
         String cell;
-
+        Collections.sort(players);
         for (Player p : players) {
             p.updateArea();
             if(p.isBot())
@@ -180,8 +193,8 @@ public class Map {
         return players.size() <= 1;
     }
     public String winner() {
-        if(haveAWinner()) {
-            String ID = "" + players.get(players.size() - 1).getID();
+        if(haveAWinner() && players.size() == 1) {
+            String ID = "" + players.get(0).getID();
             players.clear();
             Player.reset();
             return ID;

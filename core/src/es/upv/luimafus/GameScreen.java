@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Luis on 22/11/2014.
  */
 public class GameScreen implements Screen {
-    Map GameMap = new Map(20, 20, 0.75);
+    Map GameMap;
 
     SpriteBatch batch;
 
@@ -33,6 +33,16 @@ public class GameScreen implements Screen {
         j = J;
     }
 
+    public GameScreen(JuegoRedes j, int w, int h, double d, int bots) {
+
+        assets = new AssetManager();
+        this.j = j;
+        GameMap = new Map(this, w, h, d);
+        GameMap.addPlayer(new Player(GameMap,false));
+        for(int i = 0; i < bots; i++)
+            GameMap.addPlayer(new Player(GameMap,true));
+    }
+
     @Override
     public void render(float delta) {
         getInput();
@@ -43,10 +53,6 @@ public class GameScreen implements Screen {
             time -= 0.1;
             if(turn) {
                 GameMap.updateState();
-                for (int i = 0; i < GameMap.getWidth(); i++)
-                    for (int j = 0; j < GameMap.getHeight(); j++)
-                        if (assets.altars[i][j] != -1)
-                            assets.altars[i][j] = (assets.altars[i][j] + 1) % assets.altar.length;
             }
             GameMap.updateAttacks();
             turn = !turn;
@@ -68,9 +74,10 @@ public class GameScreen implements Screen {
                 if(d > 5) {
                     batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
                 }
-                batch.draw(assets.map[i][j], i * 16, (GameMap.getHeight() - 1 - j) * 16);
-                if(assets.altars[i][j] != -1)
-                    batch.draw(assets.altar[assets.altars[i][j]],i * 16, (GameMap.getHeight() - 1 - j) * 16);
+                if(assets.floor.getTile(GameMap.drawMap[i][j]) != null)
+                batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]), i * 16, (GameMap.getHeight() - 1 - j) * 16);
+                //if(assets.altars[i][j] != -1)
+                //    batch.draw(assets.altar,i * 16, (GameMap.getHeight() - 1 - j) * 16);
             }
 
         for(Player p : GameMap.getPlayers()) {
@@ -82,17 +89,14 @@ public class GameScreen implements Screen {
                 batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
 
             }
-            batch.draw(assets.player[p.getID()], p.getX() * 16, trueHeight() - (p.getY() * 16));
+            batch.draw(assets.player[turn?0:1], p.getX() * 16, trueHeight() - (p.getY() * 16));
             //if(!p.isBot())  batch.draw(cursor, p.getX() * 16, trueHeight() - (p.getY() * 16));
 
             if(d > 5)
                 continue;
-            shapeRenderer.setColor(Color.BLACK);
-            shapeRenderer.rect(p.getX() * 16, trueHeight() - ((p.getY() - 1) * 16), 16, 4);
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(p.getX() * 16 + 1, trueHeight() - 1 - ((p.getY() - 1) * 16), 15, 3);
-            shapeRenderer.setColor(Color.GREEN);
-            shapeRenderer.rect( p.getX() * 16 +1, trueHeight() - 1 - ((p.getY()-1) * 16),(int)(15*p.getHP()),3);
+
+            shapeRenderer.setColor(p.getHPColor());
+            shapeRenderer.rect( p.getX() * 16, trueHeight() + 5 - ((p.getY()-1) * 16),(int)(14*p.getHP()),2);
 
 
 
@@ -109,7 +113,7 @@ public class GameScreen implements Screen {
             if (a.getDirection() != -1)
                 batch.draw(assets.arrow[a.getDirection()], a.getX() * 16, trueHeight() - (a.getY() * 16));
             else
-                batch.draw(assets.area[a.getTime(assets.area.length)], a.getX() * 16, trueHeight() - (a.getY() * 16));
+                batch.draw(assets.area, a.getX() * 16, trueHeight() - (a.getY() * 16));
         }
         if(GameMap.haveAWinner()) {
             System.out.println(GameMap.winner());
@@ -135,13 +139,10 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-        assets = new AssetManager(GameMap);
 
         camera = new OrthographicCamera(width,height);
+        camera.zoom = 0.5f;
 
-        GameMap.addPlayer(new Player(GameMap,false));
-        for(int i = 0; i < 1; i++)
-            GameMap.addPlayer(new Player(GameMap,true));
 
         camera.position.set(GameMap.humanPlayer.getX()*16,trueHeight()-(GameMap.humanPlayer.getY()*16),0);
     }
@@ -169,8 +170,10 @@ public class GameScreen implements Screen {
     public void updateCameraPos() {
         float lerp = 1f;
         Vector3 position = camera.position;
-        position.x += (GameMap.humanPlayer.getX()*16 - position.x) * lerp * Gdx.graphics.getDeltaTime();
-        position.y += (trueHeight()-(GameMap.humanPlayer.getY()*16) - position.y) * lerp * Gdx.graphics.getDeltaTime();
+        if(!position.isZero(0.25f)) {
+            position.x += (GameMap.humanPlayer.getX() * 16 - position.x) * lerp * Gdx.graphics.getDeltaTime();
+            position.y += (trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y) * lerp * Gdx.graphics.getDeltaTime();
+        }
     }
 
     private int trueHeight() {
@@ -179,23 +182,17 @@ public class GameScreen implements Screen {
 
 
     private void getInput() {
+        if(Gdx.input.isKeyPressed(Input.Keys.PLUS))
+            camera.zoom += 0.06125;
+        if(Gdx.input.isKeyPressed(Input.Keys.MINUS))
+            camera.zoom -= 0.06125;
         if(Gdx.input.isTouched())
             camera.position.add(-Gdx.input.getDeltaX(),Gdx.input.getDeltaY(),0);
         else
             updateCameraPos();
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-            GameMap.act(Player.UP);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            GameMap.act(Player.DOWN);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            GameMap.act(Player.RIGHT);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            GameMap.act(Player.LEFT);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+
+
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
             GameMap.act(Player.AUP);
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
@@ -209,6 +206,18 @@ public class GameScreen implements Screen {
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             GameMap.act(Player.AREA);
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+            GameMap.act(Player.UP);
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+            GameMap.act(Player.DOWN);
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+            GameMap.act(Player.RIGHT);
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+            GameMap.act(Player.LEFT);
         }
     }
 }

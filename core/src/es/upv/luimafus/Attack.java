@@ -1,5 +1,8 @@
 package es.upv.luimafus;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+
 public class Attack {
     protected int x;
     protected int y;
@@ -19,9 +22,11 @@ public class Attack {
         time = maxTime;
         damage = 1;
         radius = r;
+        AssetManager.areaSound.play();
     }
 
     public Attack(int x, int y, int dir, int ID) {
+
         this.x = x;
         this.y = y;
         this.father = ID;
@@ -29,6 +34,8 @@ public class Attack {
         maxTime = 10;
         time = maxTime;
         damage = 1;
+
+        AssetManager.arrowSound.play();
     }
 
     public void updatePos() {

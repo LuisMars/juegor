@@ -1,74 +1,263 @@
 dungeon.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
-UL
+1001xx0x
     rotate: false
     xy: 0, 0
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
-UC
+1000xxxx
     rotate: false
     xy: 16, 0
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
-UR
+1100xxx0
     rotate: false
-    xy: 32, 0
+    xy: 64, 0
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
-ML
+0001xxxx
     rotate: false
     xy: 0, 16
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
-MC
-    rotate: false
-    xy: 16, 16
-    size: 1, 1
-    orig: 16, 16
-    offset: 0, 0
-    index: -1
-MR
-    rotate: false
-    xy: 32, 16
-    size: 16, 16
-    orig: 16, 16
-    offset: 0, 0
-    index: -1
-DL
-    rotate: false
-    xy: 0, 32
-    size: 16, 16
-    orig: 16, 16
-    offset: 0, 0
-    index: -1
-DC
-    rotate: false
-    xy: 16, 32
-    size: 16, 16
-    orig: 16, 16
-    offset: 0, 0
-    index: -1
-DR
+0000xxxx
     rotate: false
     xy: 32, 32
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
-floor
+0100xxxx
     rotate: false
-    xy: 96, 32
-    size: 1, 1
+    xy: 64, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0011x0xx
+    rotate: false
+    xy: 0, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0010xxxx
+    rotate: false
+    xy: 16, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+01100xxx
+    rotate: false
+    xy: 64, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1001xx1x
+    rotate: false
+    xy: 80, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1010xxxx
+    rotate: false
+    xy: 96, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1100xxx1
+    rotate: false
+    xy: 112, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0101xxxx
+    rotate: false
+    xy: 80, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+11111111
+    rotate: false
+    xy: 96, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0011x1xx
+    rotate: false
+    xy: 80, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+01101xxx
+    rotate: false
+    xy: 112, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1101xxxx
+    rotate: false
+    xy: 80, 48
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0111xxxx
+    rotate: false
+    xy: 80, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1011xxxx
+    rotate: false
+    xy: 96, 48
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1110xxxx
+    rotate: false
+    xy: 112, 48
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+1111xxxx
+    rotate: false
+    xy: 112, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000010
+    rotate: false
+    xy: 144, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000001
+    rotate: false
+    xy: 160, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000100
+    rotate: false
+    xy: 144, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00001000
+    rotate: false
+    xy: 160, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+01010000
+    rotate: false
+    xy: 122, 80
+    size: 16, 20
+    orig: 16, 20
+    offset: 0, 0
+    index: -1
+10100000
+    rotate: false
+    xy: 140, 82
+    size: 20, 16
+    orig: 20, 16
+    offset: 0, 0
+    index: -1
+altar
+    rotate: false
+    xy: 128, 96
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+player_red
+    rotate: false
+    xy: 42, 80
+    size: 17, 20
+    orig: 17, 20
+    offset: 0, 0
+    index: 0
+player_red
+    rotate: false
+    xy: 42, 104
+    size: 17, 20
+    orig: 17, 20
+    offset: 0, 0
+    index: 1
+player_red
+    rotate: false
+    xy: 42, 128
+    size: 17, 20
+    orig: 17, 20
+    offset: 0, 0
+    index: 2
+player_red
+    rotate: false
+    xy: 42, 152
+    size: 17, 20
+    orig: 17, 20
+    offset: 0, 0
+    index: 3
+arrow
+    rotate: false
+    xy: 304, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: 0
+arrow
+    rotate: false
+    xy: 320, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: 1
+arrow
+    rotate: false
+    xy: 304, 80
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: 3
+arrow
+    rotate: false
+    xy: 320, 80
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: 2
+area
+    rotate: false
+    xy: 288, 80
+    size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1

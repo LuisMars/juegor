@@ -1,6 +1,8 @@
 package es.upv.luimafus;
 
-public class Player {
+import com.badlogic.gdx.graphics.Color;
+
+public class Player implements Comparable<Player>{
     public static int UP = 0;
     public static int RIGHT = 1;
     public static int DOWN = 2;
@@ -217,5 +219,36 @@ public class Player {
 
     public static void reset() {
         n_players = 0;
+    }
+
+    public Color getHPColor() {
+        switch ((int)(getHP()*10)) {
+            case 10:
+                return Color.valueOf("345d1e");
+            case 9:
+                return Color.valueOf("647f2c");
+            case 8:
+                return Color.valueOf("979f3d");
+            case 7:
+                return Color.valueOf("d8c266");
+            case 6:
+                return Color.valueOf("bf7b3f");
+            case 5:
+                return Color.valueOf("9b6141");
+            case 4:
+                return Color.valueOf("904b36");
+            case 3:
+                return Color.valueOf("904b36");
+            case 2:
+            case 1:
+            default:
+                return Color.valueOf("7a3333");
+        }
+    }
+
+
+    @Override
+    public int compareTo(Player o) {
+        return getY()>o.getY()?1:getY()==o.getY()?0:-1;
     }
 }

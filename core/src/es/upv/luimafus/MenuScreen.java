@@ -9,10 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  * Created by Luis on 22/11/2014.
@@ -30,16 +31,17 @@ public class MenuScreen implements Screen {
 
         table = new Table();
         table.setFillParent(true);
-
-        skin = new Skin(Gdx.files.internal("ui/ui-gray.json"));
+        table.setFillParent(true);
+        table.setDebug(false);
+        stage.setViewport(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         TextButton SP = new TextButton("Single Player", skin);
         TextButton MP = new TextButton("Multiplayer", skin);
         TextButton Options = new TextButton("Options", skin);
-
         TextButton Exit = new TextButton("Exit", skin);
 
-        table.add(SP).pad(10).prefSize(200,40);
+        table.add(SP).pad(10).prefSize(200, 40);
         table.row();
         table.add(MP).pad(20).prefSize(200, 40);
         table.row();
@@ -50,7 +52,7 @@ public class MenuScreen implements Screen {
         SP.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                j.setScreen(new GameScreen(j));
+                j.setScreen(new SinglePlayerMenu(j));
             }
         });
 
@@ -60,8 +62,7 @@ public class MenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
-        table.setFillParent(true);
-        table.setDebug(false);
+
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
     }
@@ -77,7 +78,7 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-
+        table.setSize(width,height);
     }
 
     @Override

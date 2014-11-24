@@ -71,6 +71,24 @@ public class Utils {
         }
     }
 
+    public static String getTile(int[][] map, int x, int y) {
+        String res = "";
+        if(map[x][y] == 0) {
+
+            res+=""+map[x][y-1];
+            res+=""+map[x+1][y];
+            res+=""+map[x][y+1];
+            res+=""+map[x-1][y];
+            res+=""+map[x-1][y-1];
+            res+=""+map[x+1][y-1];
+            res+=""+map[x+1][y+1];
+            res+=""+map[x-1][y+1];
+            return res;
+        }
+
+        return "11111111";
+    }
+
     public static int dirToAttack(Player a, Player b) {
         if(a.getX() == b.getX() || a.getY() == b.getY())
             return posToDir(a.getX(),a.getY(),b.getX(),b.getY());
