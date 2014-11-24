@@ -1,12 +1,16 @@
 package es.upv.luimafus;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -19,8 +23,14 @@ public class SinglePlayerMenu implements Screen {
     Skin skin;
     JuegoRedes j;
 
+    Preferences preferences;
+
     public SinglePlayerMenu (JuegoRedes J) {
         j = J;
+
+        preferences = Gdx.app.getPreferences("sp");
+
+
 
         stage = new Stage();
         stage.setViewport(new ScreenViewport());
@@ -30,45 +40,55 @@ public class SinglePlayerMenu implements Screen {
         table.setDebug(false);
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        Label widthLabel = new Label("Width", skin);
-        Label heightLabel = new Label("Height", skin);
-        Label densityLabel = new Label("Density", skin);
-        Label botLabel = new Label("Bots", skin);
+        Label widthLabel = new Label("Width:", skin);
+        Label heightLabel = new Label("Height:", skin);
+        Label densityLabel = new Label("Density:", skin);
+        Label botLabel = new Label("Bots:", skin);
 
         Slider widthSlider = new Slider(5,100,1,false,skin);
         Slider heightSlider = new Slider(5,100,1,false,skin);
         Slider densitySlider = new Slider(50,90,1,false,skin);
         Slider botSlider = new Slider(0,10,1,false,skin);
 
-        TextArea width = new TextArea("", skin);
-        TextArea height = new TextArea("", skin);
-        TextArea density = new TextArea("", skin);
-        TextArea bots = new TextArea("", skin);
+        Label width = new Label("", skin);
+        Label height = new Label("", skin);
+        Label density = new Label("", skin);
+        Label bots = new Label("", skin);
 
         TextButton play = new TextButton("Play!", skin);
         TextButton back = new TextButton("Back", skin);
-        table.add(widthLabel).colspan(2);
+
+        width.setText(""+preferences.getInteger("width"));
+        widthSlider.setValue(preferences.getInteger("width"));
+        height.setText("" + preferences.getInteger("height"));
+        heightSlider.setValue(preferences.getInteger("height"));
+        density.setText("" + preferences.getFloat("density"));
+        densitySlider.setValue(preferences.getFloat("density") * 100);
+        bots.setText("" + preferences.getInteger("bots"));
+        botSlider.setValue(preferences.getInteger("bots"));
+
+        table.add(widthLabel);
+        table.add(width).pad(10);
         table.row();
-        table.add(width).pad(10).prefSize(30, 30);
-        table.add(widthSlider).pad(10).prefSize(200, 30);
+        table.add(widthSlider).colspan(2).pad(10).fillX();
         table.row();
-        table.add(heightLabel).colspan(2);
+        table.add(heightLabel);
+        table.add(height).pad(10);
         table.row();
-        table.add(height).pad(10).prefSize(30, 40);
-        table.add(heightSlider).pad(10).prefSize(200, 30);
+        table.add(heightSlider).colspan(2).pad(10).fillX();
         table.row();
-        table.add(densityLabel).colspan(2);
+        table.add(densityLabel);
+        table.add(density).pad(10);
         table.row();
-        table.add(density).pad(10).prefSize(30, 30);
-        table.add(densitySlider).pad(10).prefSize(200, 30);
+        table.add(densitySlider).colspan(2).pad(10).fillX();
         table.row();
-        table.add(botLabel).colspan(2);
+        table.add(botLabel);
+        table.add(bots).pad(10);
         table.row();
-        table.add(bots).pad(10).prefSize(30, 30);
-        table.add(botSlider).pad(10).prefSize(200, 30);
+        table.add(botSlider).colspan(2).pad(10).fillX();
         table.row();
-        table.add(back).pad(10).prefSize(100, 40);
-        table.add(play).pad(10).prefSize(100, 40);
+        table.add(back).pad(10).prefSize(200,40);
+        table.add(play).pad(10).prefSize(200,40);
         table.row();
 
 
@@ -84,11 +104,16 @@ public class SinglePlayerMenu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 try {
+                    preferences.putInteger("width",Integer.parseInt(width.getText().toString()));
+                    preferences.putInteger("height",Integer.parseInt(height.getText().toString()));
+                    preferences.putFloat("density",Float.parseFloat(density.getText().toString()));
+                    preferences.putInteger("bots",Integer.parseInt(bots.getText().toString()));
+                    preferences.flush();
                     j.setScreen(new GameScreen(j,
-                            Integer.parseInt(width.getText()),
-                            Integer.parseInt(height.getText()),
-                            Double.parseDouble(density.getText()),
-                            Integer.parseInt(bots.getText())));
+                            Integer.parseInt(width.getText().toString()),
+                            Integer.parseInt(height.getText().toString()),
+                            Double.parseDouble(density.getText().toString()),
+                            Integer.parseInt(bots.getText().toString())));
                 }
                 catch (NumberFormatException e) {
                     width.setText("ERROR");

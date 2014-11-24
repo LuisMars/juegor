@@ -37,24 +37,32 @@ public class Player implements Comparable<Player>{
     private Map GameMap;
     public Player(Map gameMap, boolean isBot) {
         GameMap = gameMap;
+        aStar = new AStar(GameMap);
         bot = isBot;
-        setStartPos();
         n_players++;
         ID = n_players - 1;
-        aStar = new AStar(GameMap);
         area = new Area(GameMap);
+        setStartPos();
     }
 
     private void setStartPos() {
+
         while (true) {
+            boolean hasPath = true;
             x = (int) (Math.random() * GameMap.getWidth());
             y = (int) (Math.random() * GameMap.getHeight());
             if (GameMap.getCell(x, y) == 0) {
 
                 int dist = 99999;
-                for (Player p : GameMap.getPlayers())
-                    dist = Math.min(dist,Utils.distance(this, p));
-                if(dist > 5)
+                for (Player p : GameMap.getPlayers()) {
+                    if (p != this) {
+                        hasPath = hasPath && aStar.hasPath(this, p);
+                        dist = Math.min(dist, Utils.distance(this, p));
+                    }
+                }
+                //if()
+                //    break;
+                if(hasPath && dist > 5)
                     break;
             }
         }
@@ -121,11 +129,13 @@ public class Player implements Comparable<Player>{
                     area = new Area(GameMap, x, y, ID);
                     cHP--;
                     lastAtt = 4;
+                    AssetManager.areaSound.play();
                 }
             }
             else {
                 GameMap.addAttack(new Attack(x, y, direction, ID));
-                lastAtt = 2;
+                lastAtt = 3;
+                AssetManager.arrowSound.play();
             }
         }
 

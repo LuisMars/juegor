@@ -16,6 +16,20 @@ repeat: none
     orig: 16, 16
     offset: 0, 0
     index: -1
+100001xx
+    rotate: false
+    xy: 32, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+100010xx
+    rotate: false
+    xy: 48, 0
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
 1100xxx0
     rotate: false
     xy: 64, 0
@@ -30,9 +44,93 @@ repeat: none
     orig: 16, 16
     offset: 0, 0
     index: -1
+00011xx0
+    rotate: false
+    xy: 0, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00010xx1
+    rotate: false
+    xy: 0, 48
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
 0000xxxx
     rotate: false
     xy: 32, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00001100
+    rotate: false
+    xy: 16, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000110
+    rotate: false
+    xy: 32, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000011
+    rotate: false
+    xy: 48, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00001001
+    rotate: false
+    xy: 16, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00001010
+    rotate: false
+    xy: 48, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000101
+    rotate: false
+    xy: 64, 16
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00000111
+    rotate: false
+    xy: 64, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+00001110
+    rotate: false
+    xy: 64, 48
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0100x10x
+    rotate: false
+    xy: 64, 32
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0100x01x
+    rotate: false
+    xy: 64, 48
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
@@ -54,6 +152,20 @@ repeat: none
 0010xxxx
     rotate: false
     xy: 16, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0010xx01
+    rotate: false
+    xy: 32, 64
+    size: 16, 16
+    orig: 16, 16
+    offset: 0, 0
+    index: -1
+0010xx10
+    rotate: false
+    xy: 48, 64
     size: 16, 16
     orig: 16, 16
     offset: 0, 0

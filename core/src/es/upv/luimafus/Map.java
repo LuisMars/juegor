@@ -7,8 +7,8 @@ public class Map {
     private int[][] map;
     public int[][] drawMap;
 
-    private List<Player> players = new ArrayList<>();
-    private Collection<Attack> attacks = new ArrayList<>();
+    private List<Player> players = new ArrayList<Player>();
+    private Collection<Attack> attacks = new ArrayList<Attack>();
     public Player humanPlayer;
     private GameScreen gs;
     public Map(GameScreen s,int h, int w, double density) {
@@ -212,6 +212,11 @@ public class Map {
     }
 
     public boolean isFloor(int x, int y) {
-        return map[x][y] == 0;
+        try {
+            return map[x][y] == 0;
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            return false;
+        }
     }
 }

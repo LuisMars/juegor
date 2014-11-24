@@ -22,7 +22,6 @@ public class Attack {
         time = maxTime;
         damage = 1;
         radius = r;
-        AssetManager.areaSound.play();
     }
 
     public Attack(int x, int y, int dir, int ID) {
@@ -35,7 +34,6 @@ public class Attack {
         time = maxTime;
         damage = 1;
 
-        AssetManager.arrowSound.play();
     }
 
     public void updatePos() {

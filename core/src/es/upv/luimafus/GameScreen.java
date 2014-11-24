@@ -3,12 +3,13 @@ package es.upv.luimafus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created by Luis on 22/11/2014.
@@ -20,8 +21,9 @@ public class GameScreen implements Screen {
 
     AssetManager assets;
 
-    float time = 0;
+    long time = 0;
     boolean turn = true;
+    boolean lastTurn = true;
     int width, height;
     OrthographicCamera camera;
 
@@ -47,15 +49,13 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         getInput();
         camera.update();
-        time += Gdx.graphics.getDeltaTime();
-        if (time >= 0.1) {
-            //fpsLogger.log();
-            time -= 0.1;
+        if(TimeUtils.timeSinceMillis(time) > 85) {
             if(turn) {
                 GameMap.updateState();
             }
             GameMap.updateAttacks();
             turn = !turn;
+            time = TimeUtils.millis();
         }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -190,7 +190,6 @@ public class GameScreen implements Screen {
             camera.position.add(-Gdx.input.getDeltaX(),Gdx.input.getDeltaY(),0);
         else
             updateCameraPos();
-
 
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
             GameMap.act(Player.AUP);

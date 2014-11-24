@@ -8,14 +8,31 @@ public class AStar {
     public NodeList open;
     public NodeList closed;
     public NodeList successors;
+    public int startX, startY, goalX, goalY;
+
     private Map GameMap;
+
+    public void run() {
+
+    }
+
     public AStar(Map GameMap) {
         this.GameMap = GameMap;
+        open = new NodeList();
+        closed = new NodeList();
+        successors = new NodeList();
     }
 
     public Node calcPath(Player a, Player b) {
+        return calcPath(a.getX(),a.getY(),b);
+    }
+
+    public Node calcPath(int x, int y, Player b) {
+        open.clear();
+        closed.clear();
+        successors.clear();
         Node q = null;
-        open.add(new Node(a.getX(),a.getY(),0));
+        open.add(new Node(x,y,0));
         while(!open.isEmpty()) {
             q = open.getFirst();
             if(q.x == b.getX() && q.y == b.getY())
@@ -53,11 +70,19 @@ public class AStar {
         return null;
     }
 
+    public boolean hasPath(Player a, Player b) {
+        //open = new NodeList();
+        //closed = new NodeList();
+        //successors = new NodeList();
+        return calcPath(a,b) != null;
+
+    }
+
     public int getNext(Player a, Player b) {
 
-        open = new NodeList();
-        closed = new NodeList();
-        successors = new NodeList();
+        //open = new NodeList();
+        //closed = new NodeList();
+        //successors = new NodeList();
 
         int dir = -1;
         Node q = calcPath(a,b);
