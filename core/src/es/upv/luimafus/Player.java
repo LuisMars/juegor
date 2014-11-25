@@ -33,7 +33,8 @@ public class Player implements Comparable<Player>{
 
     private int ID;
 
-    private static int n_players = 0;
+    public static int n_players = 0;
+    public static float difficulty;
 
     private Map GameMap;
     public Player(Map gameMap, boolean isBot) {
@@ -147,52 +148,20 @@ public class Player implements Comparable<Player>{
             lastAtt--;
             int dir = aStar.getNext(this, b);
             if (Utils.hasDirectPath(GameMap,this,b) && Utils.dirToAttack(this,b) >= 0 && Utils.distance(this, b) <= 10) {
-                if(MathUtils.randomBoolean(0.5f))
+                if(MathUtils.randomBoolean(difficulty))
                     attack(Utils.dirToAttack(this, b));
                 else
                     move(dir);
             }
             else if (cHP > 5 && Utils.trueDistance(this, b) <= 3) {
-                if(MathUtils.randomBoolean(0.5f))
+                if(MathUtils.randomBoolean(difficulty/2))
                     attack(-1);
+                else
+                    move(dir);
             }
             else
                 move(dir);
         }
-    }
-
-    public void botMoveOld(Player p) {
-        lastAtt--;
-
-        int dir = botMove(getX(), getY(), p);
-        if (p.getX() != getX() && p.getY() != getY()) {
-            if (cHP > 5 && lastAtt <= 0 && Utils.trueDistance(p,this) <= 3)
-                    attack(-1);
-            else
-                moveTo(getX() + Utils.dirToSumX(dir), getY() + Utils.dirToSumY(dir));
-        }
-        else if(Utils.trueDistance(p,this) <= 10)
-            attack(dir);
-        else
-            moveTo(getX() + Utils.dirToSumX(dir), getY() + Utils.dirToSumY(dir));
-
-    }
-    private int botMove(int pX, int pY, Player p) {
-        int[] best = new int[4];
-        for(int i = 0; i < best.length; i++)
-            best[i] = Utils.distance(getX() + Utils.dirToSumX(i), getY() + Utils.dirToSumY(i), p.getX(), p.getY());
-        int min = 99999999;
-        int dir = -1;
-        for(int i = 0; i < best.length; i++)
-            if(best[i] < min && GameMap.canMove(getX() + Utils.dirToSumX(i), getY() + Utils.dirToSumY(i))) {
-                min = best[i];
-                dir = i;
-            }
-
-        if(min <= 2)
-            return -1;
-        else
-            return dir;
     }
 
     public void moveTo(int x, int y) {

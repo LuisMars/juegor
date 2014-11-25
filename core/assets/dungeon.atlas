@@ -102,21 +102,21 @@ repeat: true
     index: -1
 00000101
     rotate: false
-    xy: 64, 16
+    xy: 16, 48
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
 00000111
     rotate: false
-    xy: 64, 32
+    xy: 32, 48
     size: 16, 16
     orig: 16, 16
     offset: 0, 0
     index: -1
 00001110
     rotate: false
-    xy: 64, 48
+    xy: 48, 48
     size: 16, 16
     orig: 16, 16
     offset: 0, 0

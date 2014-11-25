@@ -20,7 +20,7 @@ public class Attack {
         direction = -1;
         maxTime = tr;
         time = maxTime;
-        damage = 1;
+        damage = 2;
         radius = r;
     }
 

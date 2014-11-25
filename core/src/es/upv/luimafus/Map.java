@@ -12,6 +12,7 @@ public class Map {
     public Player humanPlayer;
     private GameScreen gs;
     public Map(GameScreen s,int h, int w, double density) {
+        Player.n_players = 0;
         gs = s;
         map = new int[h][w];
         generateMap(density);
@@ -187,14 +188,16 @@ public class Map {
         return players.size() <= 1;
     }
     public String winner() {
-        if(haveAWinner() && players.size() == 1) {
-            String ID = "" + players.get(0).getID();
-            players.clear();
-            Player.reset();
-            return ID;
+        String text;
+        if(players.size() == 1) {
+            if(players.get(0).getID() == 0)
+                text = "You win!";
+            else
+                text = "Bot #" + players.get(0).getID() + " wins";
         }
         else
-            return "none";
+            text = "Everybody died";
+        return text;
     }
 
     public List<Player> getPlayers() {

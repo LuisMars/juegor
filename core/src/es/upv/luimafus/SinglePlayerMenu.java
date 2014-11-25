@@ -42,30 +42,35 @@ public class SinglePlayerMenu implements Screen {
 
         Label widthLabel = new Label("Width:", skin);
         Label heightLabel = new Label("Height:", skin);
-        Label densityLabel = new Label("Density:", skin);
+        Label densityLabel = new Label("Walkable area:", skin);
         Label botLabel = new Label("Bots:", skin);
+        Label difficultyLabel = new Label("Difficulty:", skin);
 
         Slider widthSlider = new Slider(5,100,1,false,skin);
         Slider heightSlider = new Slider(5,100,1,false,skin);
-        Slider densitySlider = new Slider(50,90,1,false,skin);
+        Slider densitySlider = new Slider(0.5f,0.9f,0.01f,false,skin);
         Slider botSlider = new Slider(1,10,1,false,skin);
+        Slider difficultySlider = new Slider(0,1,0.01f,false,skin);
 
         Label width = new Label("", skin);
         Label height = new Label("", skin);
         Label density = new Label("", skin);
         Label bots = new Label("", skin);
+        Label difficulty = new Label ("", skin);
 
         TextButton play = new TextButton("Play!", skin);
         TextButton back = new TextButton("Back", skin);
 
-        width.setText(""+preferences.getInteger("width"));
-        widthSlider.setValue(preferences.getInteger("width"));
-        height.setText("" + preferences.getInteger("height"));
-        heightSlider.setValue(preferences.getInteger("height"));
-        density.setText("" + preferences.getFloat("density"));
-        densitySlider.setValue(preferences.getFloat("density") * 100);
-        bots.setText("" + preferences.getInteger("bots"));
-        botSlider.setValue(preferences.getInteger("bots"));
+        width.setText(""+preferences.getInteger("width",50));
+        widthSlider.setValue(preferences.getInteger("width",50));
+        height.setText("" + preferences.getInteger("height",50));
+        heightSlider.setValue(preferences.getInteger("height",50));
+        density.setText(preferences.getFloat("density",0.75f)*100 + "%");
+        densitySlider.setValue(preferences.getFloat("density",0.75f));
+        bots.setText("" + preferences.getInteger("bots",5));
+        botSlider.setValue(preferences.getInteger("bots",5));
+        difficulty.setText(preferences.getFloat("difficulty", 0.5f) + "%");
+        difficultySlider.setValue(preferences.getFloat("difficulty", 0.5f));
 
         table.add(widthLabel);
         table.add(width).pad(10);
@@ -87,6 +92,11 @@ public class SinglePlayerMenu implements Screen {
         table.row();
         table.add(botSlider).colspan(2).pad(10).fillX();
         table.row();
+        table.add(difficultyLabel);
+        table.add(difficulty).pad(10);
+        table.row();
+        table.add(difficultySlider).colspan(2).pad(10).fillX();
+        table.row();
         table.add(back).pad(10).prefSize(200,40);
         table.add(play).pad(10).prefSize(200,40);
         table.row();
@@ -104,16 +114,18 @@ public class SinglePlayerMenu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 try {
-                    preferences.putInteger("width",Integer.parseInt(width.getText().toString()));
-                    preferences.putInteger("height",Integer.parseInt(height.getText().toString()));
-                    preferences.putFloat("density",Float.parseFloat(density.getText().toString()));
-                    preferences.putInteger("bots",Integer.parseInt(bots.getText().toString()));
+                    preferences.putInteger("width",(int)widthSlider.getValue());
+                    preferences.putInteger("height",(int)heightSlider.getValue());
+                    preferences.putFloat("density",densitySlider.getValue());
+                    preferences.putInteger("bots",(int)botSlider.getValue());
+                    preferences.putFloat("difficulty",difficultySlider.getValue());
                     preferences.flush();
                     j.setScreen(new GameScreen(j,
-                            Integer.parseInt(width.getText().toString()),
-                            Integer.parseInt(height.getText().toString()),
-                            Double.parseDouble(density.getText().toString()),
-                            Integer.parseInt(bots.getText().toString()),
+                            preferences.getInteger("width"),
+                            preferences.getInteger("height"),
+                            preferences.getFloat("density"),
+                            preferences.getInteger("bots"),
+                            preferences.getFloat("difficulty"),
                             preferences.getInteger("speed")));
                 }
                 catch (NumberFormatException e) {
@@ -137,13 +149,19 @@ public class SinglePlayerMenu implements Screen {
         densitySlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                density.setText(""+densitySlider.getValue()/100);
+                density.setText((int)(densitySlider.getValue() * 100)+"%");
             }
         });
         botSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 bots.setText(""+(int)botSlider.getValue());
+            }
+        });
+        difficultySlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                difficulty.setText((int)(difficultySlider.getValue()*100)+"%");
             }
         });
         stage.addActor(table);
@@ -185,6 +203,6 @@ public class SinglePlayerMenu implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
