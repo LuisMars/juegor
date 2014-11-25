@@ -48,7 +48,7 @@ public class SinglePlayerMenu implements Screen {
         Slider widthSlider = new Slider(5,100,1,false,skin);
         Slider heightSlider = new Slider(5,100,1,false,skin);
         Slider densitySlider = new Slider(50,90,1,false,skin);
-        Slider botSlider = new Slider(0,10,1,false,skin);
+        Slider botSlider = new Slider(1,10,1,false,skin);
 
         Label width = new Label("", skin);
         Label height = new Label("", skin);
@@ -113,7 +113,8 @@ public class SinglePlayerMenu implements Screen {
                             Integer.parseInt(width.getText().toString()),
                             Integer.parseInt(height.getText().toString()),
                             Double.parseDouble(density.getText().toString()),
-                            Integer.parseInt(bots.getText().toString())));
+                            Integer.parseInt(bots.getText().toString()),
+                            preferences.getInteger("speed")));
                 }
                 catch (NumberFormatException e) {
                     width.setText("ERROR");

@@ -55,7 +55,12 @@ public class MenuScreen implements Screen {
                 j.setScreen(new SinglePlayerMenu(j));
             }
         });
-
+        Options.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                j.setScreen(new OptionsMenu(j));
+            }
+        });
         Exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
