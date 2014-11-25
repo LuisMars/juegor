@@ -3,11 +3,12 @@ package es.upv.luimafus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -32,9 +33,6 @@ public class GameScreen implements Screen {
 
     JuegoRedes j;
 
-    public GameScreen(JuegoRedes J) {
-        j = J;
-    }
 
     public GameScreen(JuegoRedes j, int w, int h, double d, int bots, float diff, int speed) {
 
@@ -50,6 +48,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         //teclas de entrada
         getInput();
         if(TimeUtils.timeSinceMillis(time) > speed) {
@@ -197,8 +196,10 @@ public class GameScreen implements Screen {
         float lerp = 1.5f;
         Vector3 position = camera.position;
         //para hacer que la cámara siga al jugador de forma suave
-        position.x += (GameMap.humanPlayer.getX() * 16 - position.x) * lerp * Gdx.graphics.getDeltaTime();
-        position.y += (trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y) * lerp * Gdx.graphics.getDeltaTime();
+        //position.x = Math.round(MathUtils.lerp(position.x,GameMap.humanPlayer.getX() * 16,Gdx.graphics.getDeltaTime()));
+        //position.y = Math.round(MathUtils.lerp(position.y,(trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y),Gdx.graphics.getDeltaTime()));
+        position.x =  Math.round(position.x+(GameMap.humanPlayer.getX() * 16 - position.x) * lerp * Gdx.graphics.getDeltaTime());
+        position.y =  Math.round(position.y+(trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y) * lerp * Gdx.graphics.getDeltaTime());
     }
 
     private int trueHeight() {
