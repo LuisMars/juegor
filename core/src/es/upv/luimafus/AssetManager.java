@@ -6,6 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.ArrayList;
@@ -17,8 +24,8 @@ public class AssetManager {
 
 
     public static Sound arrowSound = Gdx.audio.newSound(Gdx.files.internal("swish_2.wav"));
-
     public static Sound areaSound = Gdx.audio.newSound(Gdx.files.internal("area.wav"));
+
     CellList floor = new CellList();
     ArrayList<String> s = new ArrayList<String>();
     AtlasRegion[] player;
@@ -31,8 +38,6 @@ public class AssetManager {
     public AssetManager() {
 
         atlas = new TextureAtlas("dungeon.atlas");
-
-
         loadFloorNames();
 
         for (String value : s)

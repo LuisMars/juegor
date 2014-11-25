@@ -1,6 +1,7 @@
 package es.upv.luimafus;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Player implements Comparable<Player>{
     public static int UP = 0;
@@ -145,10 +146,16 @@ public class Player implements Comparable<Player>{
         if(b != null) {
             lastAtt--;
             int dir = aStar.getNext(this, b);
-            if (Utils.hasDirectPath(GameMap,this,b) && Utils.dirToAttack(this,b) >= 0 && Utils.distance(this, b) <= 10)
-                attack(Utils.dirToAttack(this,b));
-            else if (cHP > 5 && Utils.trueDistance(this, b) <= 3)
-                attack(-1);
+            if (Utils.hasDirectPath(GameMap,this,b) && Utils.dirToAttack(this,b) >= 0 && Utils.distance(this, b) <= 10) {
+                if(MathUtils.randomBoolean(0.5f))
+                    attack(Utils.dirToAttack(this, b));
+                else
+                    move(dir);
+            }
+            else if (cHP > 5 && Utils.trueDistance(this, b) <= 3) {
+                if(MathUtils.randomBoolean(0.5f))
+                    attack(-1);
+            }
             else
                 move(dir);
         }

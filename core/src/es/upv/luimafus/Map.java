@@ -90,8 +90,6 @@ public class Map {
     }
 
     public void updateState() {
-        String res = "";
-        String cell;
         Collections.sort(players);
         for (Player p : players) {
             p.updateArea();
@@ -100,12 +98,8 @@ public class Map {
             else
                 p.act();
         }
-
-        for(Player p : players)
-            res += p.getHP() + "\n";
         players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
-        //return res;
     }
     public void updateAttacks() {
         for (Attack a: attacks) {

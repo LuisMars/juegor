@@ -47,27 +47,31 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        //teclas de entrada
         getInput();
-        camera.update();
         if(TimeUtils.timeSinceMillis(time) > 85) {
             if(turn) {
+                //actualizar los jugadores cada 170ms
                 GameMap.updateState();
             }
+            // los ataques cada 85
             GameMap.updateAttacks();
             turn = !turn;
             time = TimeUtils.millis();
         }
-
+        //cosas de la librería para repintar y actualizar la cámara
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
         batch.setProjectionMatrix(camera.combined);
+        camera.update();
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         batch.begin();
+
         for(int i = 0; i < GameMap.getWidth(); i++)
             for (int j = 0; j < GameMap.getHeight(); j++) {
                 batch.setColor(1,1,1,1);
+                //para oscurecer lo lejano
                 float d =Utils.fDistance(i, j, GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY());
                 if(d > 15)
                     continue;
@@ -75,13 +79,16 @@ public class GameScreen implements Screen {
                     batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
                 }
                 if(assets.floor.getTile(GameMap.drawMap[i][j]) != null)
-                batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]), i * 16, (GameMap.getHeight() - 1 - j) * 16);
+                batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]),
+                        (i * 16)-0.03125f, (((GameMap.getHeight() - 1 - j) * 16))-0.03125f,
+                        16.03125f,16.03125f);
                 //if(assets.altars[i][j] != -1)
                 //    batch.draw(assets.altar,i * 16, (GameMap.getHeight() - 1 - j) * 16);
             }
 
         for(Player p : GameMap.getPlayers()) {
             batch.setColor(1,1,1,1);
+            //oscurecer los jugadores lejanos
             float d = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), p.getX(), p.getY());
             if(d > 15)
                 continue;
@@ -89,12 +96,13 @@ public class GameScreen implements Screen {
                 batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
 
             }
+            //dibujar y animar cutremente
             batch.draw(assets.player[turn?0:1], p.getX() * 16, trueHeight() - (p.getY() * 16));
             //if(!p.isBot())  batch.draw(cursor, p.getX() * 16, trueHeight() - (p.getY() * 16));
 
             if(d > 5)
                 continue;
-
+            //la barrita de vida con el color correspondiente
             shapeRenderer.setColor(p.getHPColor());
             shapeRenderer.rect( p.getX() * 16, trueHeight() + 5 - ((p.getY()-1) * 16),(int)(14*p.getHP()),2);
 
@@ -104,19 +112,22 @@ public class GameScreen implements Screen {
 
         for(Attack a : GameMap.getAttacks()) {
             batch.setColor(1,1,1,1);
+            //oscurecer los ataques lejanos
             float d = Utils.fDistance(a.getX(),a.getY(),GameMap.humanPlayer.getX(),GameMap.humanPlayer.getY());
             if(d > 15)
                 continue;
             if(d > 5) {
                 batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
             }
+            //dibujar lo que corresponda en su posición
             if (a.getDirection() != -1)
                 batch.draw(assets.arrow[a.getDirection()], a.getX() * 16, trueHeight() - (a.getY() * 16));
             else
                 batch.draw(assets.area, a.getX() * 16, trueHeight() - (a.getY() * 16));
         }
+        //si hay un ganador, vuelve a la pantalla principal
+        //TODO: mostrar ganador!!!
         if(GameMap.haveAWinner()) {
-            System.out.println(GameMap.winner());
             j.setScreen(new MenuScreen(j));
         }
         batch.end();
@@ -125,7 +136,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
         camera.setToOrtho(false,width,height);
         camera.position.set(GameMap.humanPlayer.getX()*16,trueHeight()-(GameMap.humanPlayer.getY()*16),0);
     }
@@ -168,12 +178,11 @@ public class GameScreen implements Screen {
     }
 
     public void updateCameraPos() {
-        float lerp = 1f;
+        float lerp = 1.5f;
         Vector3 position = camera.position;
-        if(!position.isZero(0.25f)) {
-            position.x += (GameMap.humanPlayer.getX() * 16 - position.x) * lerp * Gdx.graphics.getDeltaTime();
-            position.y += (trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y) * lerp * Gdx.graphics.getDeltaTime();
-        }
+        //para hacer que la cámara siga al jugador de forma suave
+        position.x += 0.5*(int)((GameMap.humanPlayer.getX() * 16 - position.x) * lerp * Gdx.graphics.getDeltaTime());
+        position.y += 0.5*(int)((trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y) * lerp * Gdx.graphics.getDeltaTime());
     }
 
     private int trueHeight() {
@@ -183,11 +192,12 @@ public class GameScreen implements Screen {
 
     private void getInput() {
         if(Gdx.input.isKeyPressed(Input.Keys.PLUS))
-            camera.zoom += 0.06125;
+            camera.zoom += 0.05;
         if(Gdx.input.isKeyPressed(Input.Keys.MINUS))
-            camera.zoom -= 0.06125;
-        if(Gdx.input.isTouched())
-            camera.position.add(-Gdx.input.getDeltaX(),Gdx.input.getDeltaY(),0);
+            camera.zoom -= 0.05;
+        if(Gdx.input.isTouched()) {
+            camera.position.add(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY(), 0);
+        }
         else
             updateCameraPos();
 
