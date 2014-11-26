@@ -61,6 +61,12 @@ public class MenuScreen implements Screen {
                 j.setScreen(new OptionsMenu(j));
             }
         });
+        MP.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                j.setScreen(new MultiplayerMenu(j));
+            }
+        });
         Exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
