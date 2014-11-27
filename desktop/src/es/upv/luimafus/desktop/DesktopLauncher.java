@@ -2,7 +2,7 @@ package es.upv.luimafus.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.upv.luimafus.JuegoRedes;
+import es.upv.luimafus.Main;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -10,6 +10,6 @@ public class DesktopLauncher {
         config.useGL30 = false;
         config.width = 640;
         config.height = 640;
-		new LwjglApplication(new JuegoRedes(), config);
+		new LwjglApplication(new Main(), config);
 	}
 }

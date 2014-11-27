@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
-public class JuegoRedes extends Game {
+import es.upv.luimafus.server.*;
+public class Main extends Game {
 
 
     @Override

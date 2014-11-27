@@ -3,15 +3,12 @@ package es.upv.luimafus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
-
 /**
  * Created by Luis on 22/11/2014.
  */
@@ -31,10 +28,10 @@ public class GameScreen implements Screen {
 
     ShapeRenderer shapeRenderer;
 
-    JuegoRedes j;
+    Main j;
 
 
-    public GameScreen(JuegoRedes j, int w, int h, double d, int bots, float diff, int speed) {
+    public GameScreen(Main j, int w, int h, double d, int bots, float diff, int speed) {
 
         assets = new AssetManager();
         this.j = j;

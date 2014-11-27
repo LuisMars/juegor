@@ -9,18 +9,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import es.upv.luimafus.server.ServerScreen;
 
 /**
  * Created by Luis on 26/11/2014.
  */
 public class MultiplayerMenu implements Screen {
-    JuegoRedes j;
+    Main j;
     Stage stage;
     Table table;
     Skin skin;
 
     Preferences preferences;
-    public MultiplayerMenu(JuegoRedes j) {
+    public MultiplayerMenu(Main j) {
         this.j = j;
 
         preferences = Gdx.app.getPreferences("mp");
@@ -45,6 +46,8 @@ public class MultiplayerMenu implements Screen {
         TextButton back = new TextButton("Back", skin);
         TextButton connect = new TextButton("Connect", skin);
 
+        TextButton createServer = new TextButton("Create server", skin);
+
 
 
 
@@ -56,6 +59,8 @@ public class MultiplayerMenu implements Screen {
         table.row();
         table.add(back).pad(10).prefSize(200, 40);
         table.add(connect).pad(10).prefSize(200, 40);
+        table.row();
+        table.add(createServer).pad(10).prefSize(200, 40);
         stage.addActor(table);
 
         address.addListener(new ChangeListener() {
@@ -83,6 +88,12 @@ public class MultiplayerMenu implements Screen {
                 catch (NumberFormatException e) {
                     name.setText("ERROR");
                 }
+            }
+        });
+        createServer.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                j.setScreen(new ServerScreen(j));
             }
         });
 

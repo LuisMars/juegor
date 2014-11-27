@@ -17,13 +17,13 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  * Created by Luis on 25/11/2014.
  */
 public class GameFinishedScreen implements Screen {
-    JuegoRedes j;
+    Main j;
     Stage stage;
     Table table;
     Skin skin;
 
     Preferences preferences;
-    public GameFinishedScreen (JuegoRedes j, String winner) {
+    public GameFinishedScreen (Main j, String winner) {
         this.j = j;
 
         preferences = Gdx.app.getPreferences("sp");

@@ -1,7 +1,6 @@
 package es.upv.luimafus;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  * Created by Luis on 26/11/2014.
  */
 public class WaitingScreen implements Screen {
-    JuegoRedes j;
+    Main j;
     Stage stage;
     Table table;
     Skin skin;
@@ -24,12 +23,14 @@ public class WaitingScreen implements Screen {
     String name;
     TextArea chat;
     TextField input;
-
-    public WaitingScreen (JuegoRedes j) {
+    User user;
+public WaitingScreen (Main j) {
         this.j = j;
+
 
         preferences = Gdx.app.getPreferences("mp");
 
+        user = new User(this,preferences.getString("address"));
         name = preferences.getString("name");
 
         stage = new Stage();
@@ -79,6 +80,7 @@ public class WaitingScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 j.setScreen(new MultiplayerMenu(j));
+                user.disconnect();
             }
         });
 
@@ -88,9 +90,17 @@ public class WaitingScreen implements Screen {
 
 
     }
+
+    public void print(String msg) {
+        chat.setText(chat.getText() + "\n" + msg);
+    }
+
     private void sendMessage() {
-        if(!input.getText().trim().isEmpty())
-            chat.setText(chat.getText() + "\n" + name + ":    " + input.getText().trim());
+        if(!input.getText().trim().isEmpty()) {
+            String msg = name + ":    " + input.getText().trim();
+            print(msg);
+            user.send(msg);
+        }
         input.setText("");
     }
     @Override
