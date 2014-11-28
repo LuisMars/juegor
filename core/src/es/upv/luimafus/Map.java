@@ -1,6 +1,12 @@
 package es.upv.luimafus;
 
+
+import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Rectangle;
+
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 
 public class Map {
@@ -11,16 +17,103 @@ public class Map {
     private Collection<Attack> attacks = new ArrayList<Attack>();
     public Player humanPlayer;
     private GameScreen gs;
+    public long seed;
     public Map(GameScreen s,int h, int w, double density) {
         Player.n_players = 0;
         gs = s;
         map = new int[h][w];
         generateMap(density);
         prepareMap();
+        //seed = (long)(Math.random()*Long.MAX_VALUE);
 
     }
 
     public void generateMap(double density) {
+        List<Rectangle> rooms = new ArrayList<>();
+        for (int i = 0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
+                map[j][i] = 0;
+            }
+        }
+        double area = getHeight() * getWidth() * density;
+        area = Math.min(area, (getHeight() * getWidth()) - (getHeight() + getWidth()) * 2 + 4);
+        double covered = 0;
+        Random random = new Random(/*seed*/);
+        while (area > covered) {
+
+            int iy = (int)(random.nextDouble() * getWidth());
+            int fy = (int)(random.nextDouble() * getWidth());
+            if (fy < iy) {
+                int foo = fy;
+                fy = iy;
+                iy = foo;
+            }
+
+            int ix = (int)(random.nextDouble() * getHeight());
+            int fx = (int)(random.nextDouble() * getHeight());
+            if (fx < ix) {
+                int foo = fx;
+                fx = ix;
+                ix = foo;
+            }
+            //TODO: i < f
+            Rectangle test = new Rectangle(ix,iy,fx-ix,fy-iy);
+
+            if(test.area() > area/8)
+                continue;
+
+
+            boolean overlaps = false;
+            for(Rectangle r : rooms)
+                if(r.overlaps(test)) {
+                    overlaps = true;
+                    break;
+                }
+            if(overlaps)
+                continue;
+            else
+                rooms.add(new Rectangle(test));
+
+            for (int i = ix; i < fx; i++) {
+                for (int j = iy; j < fy; j++) {
+                    map[j][i] = 1;
+                }
+            }
+            covered = 0;
+            for (int i = 0; i < getHeight(); i++) {
+                for (int j = 0; j < getWidth(); j++) {
+                    if(map[j][i] == 1)
+                        covered++;
+                }
+            }
+        }
+        //add corridors
+        for(Rectangle r : rooms) {
+            AStar aStar = new AStar(this);
+            Rectangle next;
+            do {
+                next = rooms.get(MathUtils.random(0, rooms.size() - 1));
+            } while (next.equals(r));
+            Node q = aStar.getPath((int) r.getX(), (int) r.getY(), (int) next.getX(), (int) next.getY());
+
+            if(q != null) {
+                do {
+                    map[q.x][q.y] = 1;
+                    q = q.parent;
+                } while (q != null);
+
+            }
+        }
+
+        //invert cells
+        for (int i = 0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
+                map[j][i] = map[j][i] == 1 ? 0 : 1;
+            }
+        }
+    }
+
+    public void generateMap2(double density) {
         for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
                 map[j][i] = 1;
@@ -29,19 +122,22 @@ public class Map {
         double area = getHeight() * getWidth() * density;
         area = Math.min(area, (getHeight() * getWidth()) - (getHeight() + getWidth()) * 2 + 4);
         double covered = 0;
-
+        Random random = new Random(seed);
         while (area > covered) {
 
-            int iy = (int)(Math.random() * getWidth());
+            int iy = (int)(random.nextDouble() * getWidth());
             int fy = 0;
             while (fy < iy)
-                fy = (int)(Math.random() * getWidth());
+                fy = (int)(random.nextDouble() * getWidth());
 
-            int ix = (int)(Math.random() * getHeight());
+            int ix = (int)(random.nextDouble() * getHeight());
             int fx = 0;
             while (fx < ix)
-                fx = (int)(Math.random() * getHeight());
+                fx = (int)(random.nextDouble() * getHeight());
             //TODO: i < f
+            int rectArea = (fy - iy)*(fx - ix);
+            if(rectArea > area/4)
+                continue;
 
             boolean overlaps = false;
 
@@ -54,12 +150,15 @@ public class Map {
 
             if(overlaps)
                 continue;
+
         //TODO: see join loops?
             for (int i = ix; i < fx; i++) {
                 for (int j = iy; j < fy; j++) {
                     map[j][i] = 0;
                 }
             }
+
+
             covered = 0;
             for (int i = 0; i < getHeight(); i++) {
                 for (int j = 0; j < getWidth(); j++) {

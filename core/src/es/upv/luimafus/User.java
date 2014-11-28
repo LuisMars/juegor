@@ -26,17 +26,7 @@ public class User extends Thread {
             in = new Scanner(s.getInputStream());
             pw = new PrintWriter(s.getOutputStream(),true);
 
-            //System.out.println("Escribe algo: ");
-
             start();
-            /*
-            msg = tec.nextLine();
-            do {
-              pw.println(msg);
-              msg = tec.nextLine();
-            }while(!msg.startsWith("0"));*/
-            //System.out.println("Desconectando del servidor...");
-            //s.close();
         } catch(IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,8 @@
 package es.upv.luimafus;
 
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Created by Luis on 20/11/2014.
  */
@@ -12,10 +14,6 @@ public class AStar {
 
     private Map GameMap;
 
-    public void run() {
-
-    }
-
     public AStar(Map GameMap) {
         this.GameMap = GameMap;
         open = new NodeList();
@@ -24,10 +22,12 @@ public class AStar {
     }
 
     public Node calcPath(Player a, Player b) {
-        return calcPath(a.getX(),a.getY(),b);
+        return calcPath(a.getX(),a.getY(),b.getX(),b.getY());
     }
 
-    public Node calcPath(int x, int y, Player b) {
+
+
+    public Node calcPath(int x, int y, int gX, int gY) {
         open.clear();
         closed.clear();
         successors.clear();
@@ -35,20 +35,20 @@ public class AStar {
         open.add(new Node(x,y,0));
         while(!open.isEmpty()) {
             q = open.getFirst();
-            if(q.x == b.getX() && q.y == b.getY())
+            if(q.x == gX && q.y == gY)
                 return q;
             open.remove(q);
             closed.add(q);
 
             successors.clear();
             if(GameMap.isFloor(q.x-1,q.y))
-                successors.add(new Node(q.x-1,q.y,q,b));
+                successors.add(new Node(q.x-1,q.y,q,gX,gY));
             if(GameMap.isFloor(q.x+1,q.y))
-                successors.add(new Node(q.x+1,q.y,q,b));
+                successors.add(new Node(q.x+1,q.y,q,gX,gY));
             if(GameMap.isFloor(q.x,q.y+1))
-                successors.add(new Node(q.x,q.y+1,q,b));
+                successors.add(new Node(q.x,q.y+1,q,gX,gY));
             if(GameMap.isFloor(q.x,q.y-1))
-                successors.add(new Node(q.x,q.y-1,q,b));
+                successors.add(new Node(q.x,q.y-1,q,gX,gY));
 
             for(Node s : successors) {
                 boolean isBetter;
@@ -78,11 +78,11 @@ public class AStar {
 
     }
 
-    public int getNext(Player a, Player b) {
+    public Node getPath(int x, int y, int gX, int gY) {
+        return calcPath(x,y,gX,gY);
+    }
 
-        //open = new NodeList();
-        //closed = new NodeList();
-        //successors = new NodeList();
+    public int getNext(Player a, Player b) {
 
         int dir = -1;
         Node q = calcPath(a,b);
@@ -92,10 +92,7 @@ public class AStar {
 
                 q = p;
                 p = p.parent;
-
-                //System.out.print(" (" +q.x + "," +q.y+")<-");
             }
-            //System.out.println();
             dir = Utils.posToDir(a.getX(),a.getY(),q.x,q.y);
 
 

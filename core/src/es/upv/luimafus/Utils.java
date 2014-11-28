@@ -75,18 +75,26 @@ public class Utils {
         String res = "";
         if(map[x][y] == 0) {
 
-            res+=""+map[x][y-1];
-            res+=""+map[x+1][y];
-            res+=""+map[x][y+1];
-            res+=""+map[x-1][y];
-            res+=""+map[x-1][y-1];
-            res+=""+map[x+1][y-1];
-            res+=""+map[x+1][y+1];
-            res+=""+map[x-1][y+1];
+            res+= checkTile(map, x, y-1);
+            res+= checkTile(map, x+1, y);
+            res+= checkTile(map, x, y+1);
+            res+= checkTile(map, x-1, y);
+            res+= checkTile(map, x-1, y-1);
+            res+= checkTile(map, x+1, y-1);
+            res+= checkTile(map, x+1, y+1);
+            res+= checkTile(map, x-1, y+1);
             return res;
         }
 
         return "11111111";
+    }
+
+    private static String checkTile(int[][] map, int x, int y) {
+        try {
+            return "" + map[x][y];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "1";
+        }
     }
 
     public static int dirToAttack(Player a, Player b) {

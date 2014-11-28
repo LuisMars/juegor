@@ -18,12 +18,12 @@ public class Node {
         this.cost = cost;
     }
 
-    public Node(int x, int y, Node parent, Player p) {
+    public Node(int x, int y, Node parent, int gX, int gY) {
         this(x,y);
         this.parent = parent;
 
         prevCost = parent.prevCost+1;
-        guessCost = Utils.distance(x,y,p);
+        guessCost = Utils.distance(x,y,gX,gY);
         cost = prevCost + guessCost;
     }
 

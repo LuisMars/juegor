@@ -53,8 +53,8 @@ public class Player implements Comparable<Player>{
             boolean hasPath = true;
             x = (int) (Math.random() * GameMap.getWidth());
             y = (int) (Math.random() * GameMap.getHeight());
-            if (GameMap.getCell(x, y) == 0) {
 
+            if (GameMap.getCell(x, y) == 0) {
                 int dist = 99999;
                 for (Player p : GameMap.getPlayers()) {
                     if (p != this) {
@@ -62,8 +62,6 @@ public class Player implements Comparable<Player>{
                         dist = Math.min(dist, Utils.distance(this, p));
                     }
                 }
-                //if()
-                //    break;
                 if(hasPath && dist > 5)
                     break;
             }
@@ -125,19 +123,23 @@ public class Player implements Comparable<Player>{
     }
 
     public void attack(int direction) {
+        float dist = Utils.fDistance(GameMap.humanPlayer.getX(),GameMap.humanPlayer.getY(), this.getX(),this.getY());
+        float pan = (GameMap.humanPlayer.getX() - this.getX());//(GameMap.humanPlayer.getX() + this.getX());
         if(lastAtt <= 0) {
             if (direction == -1) {
                 if (area.isOver()) {
                     area = new Area(GameMap, x, y, ID);
                     cHP--;
                     lastAtt = 4;
-                    AssetManager.areaSound.play();
+                    if(dist < 15)
+                        AssetManager.areaSound.play(15/(dist+15),MathUtils.random(0.85f,1.15f),1);
                 }
             }
             else {
                 GameMap.addAttack(new Attack(x, y, direction, ID));
                 lastAtt = 3;
-                AssetManager.arrowSound.play();
+                if(dist < 15)
+                    AssetManager.arrowSound.play(15/(dist+15),MathUtils.random(0.85f,1.15f),-1);
             }
         }
 

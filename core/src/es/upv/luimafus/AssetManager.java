@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class AssetManager {
 
 
-    public static Sound arrowSound = Gdx.audio.newSound(Gdx.files.internal("swish_2.wav"));
+    public static Sound arrowSound = Gdx.audio.newSound(Gdx.files.internal("arrow.wav"));
     public static Sound areaSound = Gdx.audio.newSound(Gdx.files.internal("area.wav"));
 
     CellList floor = new CellList();
