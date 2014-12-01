@@ -85,15 +85,22 @@ public class Utils {
             res+= checkTile(map, x-1, y+1);
             return res;
         }
+        else {
+            if(checkTile(map, x, y+1) == '0')
+                if(checkTile(map, x+1, y+1) == '0' && checkTile(map, x-1, y+1) == '0')
+                    return "topB";
+                else
+                    return "topA";
 
-        return "11111111";
+            return "11111111";
+        }
     }
 
-    private static String checkTile(int[][] map, int x, int y) {
+    private static char checkTile(int[][] map, int x, int y) {
         try {
-            return "" + map[x][y];
+            return map[x][y] == 0 ? '0': '1';
         } catch (ArrayIndexOutOfBoundsException e) {
-            return "1";
+            return '1';
         }
     }
 

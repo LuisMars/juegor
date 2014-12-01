@@ -7,8 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
+
+import java.awt.*;
+
 /**
  * Created by Luis on 22/11/2014.
  */
@@ -18,7 +22,7 @@ public class GameScreen implements Screen {
     SpriteBatch batch;
 
     AssetManager assets;
-
+    int c = 32;
     long time = 0;
     boolean turn = true;
     boolean lastTurn = true;
@@ -41,6 +45,9 @@ public class GameScreen implements Screen {
         for(int i = 0; i < bots; i++)
             GameMap.addPlayer(new Player(GameMap,true));
         this.speed = speed;
+        AssetManager.ambient.play();
+        AssetManager.ambient.setLooping(true);
+
     }
 
     @Override
@@ -48,6 +55,7 @@ public class GameScreen implements Screen {
 
         //teclas de entrada
         getInput();
+
         if(TimeUtils.timeSinceMillis(time) > speed) {
             // los ataques cada x
             GameMap.updateAttacks();
@@ -59,7 +67,7 @@ public class GameScreen implements Screen {
             time = TimeUtils.millis();
         }
         //cosas de la librería para repintar y actualizar la cámara
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.0549019607843137f,0.0509803921568627f,0.06274509803921568627450980392157f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
         camera.update();
@@ -78,6 +86,7 @@ public class GameScreen implements Screen {
         //TODO: mostrar ganador!!!
         if(GameMap.haveAWinner()) {
             //j.setScreen(new MenuScreen(j));
+            AssetManager.ambient.stop();
             j.setScreen(new GameFinishedScreen(j,GameMap.winner()));
         }
         batch.end();
@@ -96,9 +105,14 @@ public class GameScreen implements Screen {
                     batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
                 }
                 if(assets.floor.getTile(GameMap.drawMap[i][j]) != null)
+
                 batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]),
-                        (i * 16)-0.015625f, (((GameMap.getHeight() - 1 - j) * 16))-0.015625f,
-                        16.03125f,16.03125f);
+                        (i * c)-0.25f/c, ((GameMap.getHeight() - 1 - j) * c)-0.25f/c,
+                        c+(0.5f/c),c+(0.5f/c));
+                /*
+                batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]),
+                        (i * c), (((GameMap.getHeight() - 1 - j) * c)),
+                        c,c);*/
                 //if(assets.altars[i][j] != -1)
                 //    batch.draw(assets.altar,i * 16, (GameMap.getHeight() - 1 - j) * 16);
             }
@@ -106,6 +120,7 @@ public class GameScreen implements Screen {
 
     private void drawPlayers() {
         for(Player p : GameMap.getPlayers()) {
+
             batch.setColor(1,1,1,1);
             //oscurecer los jugadores lejanos
             float d = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), p.getX(), p.getY());
@@ -116,14 +131,14 @@ public class GameScreen implements Screen {
 
             }
             //dibujar y animar cutremente
-            batch.draw(assets.player[turn?0:1], p.getX() * 16, trueHeight() - (p.getY() * 16));
+            batch.draw(assets.player[p.lastDir], p.getX()*c, trueHeight() - p.getY()*c + c/4);
             //if(!p.isBot())  batch.draw(cursor, p.getX() * 16, trueHeight() - (p.getY() * 16));
 
             if(d > 5)
                 continue;
             //la barrita de vida con el color correspondiente
             shapeRenderer.setColor(p.getHPColor());
-            shapeRenderer.rect( p.getX() * 16, trueHeight() + 5 - ((p.getY()-1) * 16),(int)(14*p.getHP()),2);
+            shapeRenderer.rect( p.getX()*c, trueHeight() + c/2 - ((p.getY()-1)*c),(int)((c-2)*p.getHP()),c/8);
 
         }
     }
@@ -140,16 +155,16 @@ public class GameScreen implements Screen {
             }
             //dibujar lo que corresponda en su posición
             if (a.getDirection() != -1)
-                batch.draw(assets.arrow[a.getDirection()], a.getX() * 16, trueHeight() - (a.getY() * 16));
+                batch.draw(assets.arrow[a.getDirection()], a.getX() * c, trueHeight() - (a.getY() * c) + c/4);
             else
-                batch.draw(assets.area, a.getX() * 16, trueHeight() - (a.getY() * 16));
+                batch.draw(assets.area, a.getX() * c, trueHeight() - (a.getY() * c));
         }
     }
 
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false,width,height);
-        camera.position.set(GameMap.humanPlayer.getX()*16,trueHeight()-(GameMap.humanPlayer.getY()*16),0);
+        camera.position.set(GameMap.humanPlayer.getX()*c,trueHeight()-(GameMap.humanPlayer.getY()*c),0);
     }
 
     @Override
@@ -190,25 +205,23 @@ public class GameScreen implements Screen {
     }
 
     public void updateCameraPos() {
-        float lerp = 1.5f;
+        float lerp = 2.5f;
         Vector3 position = camera.position;
         //para hacer que la cámara siga al jugador de forma suave
-        //position.x = Math.round(MathUtils.lerp(position.x,GameMap.humanPlayer.getX() * 16,Gdx.graphics.getDeltaTime()));
-        //position.y = Math.round(MathUtils.lerp(position.y,(trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y),Gdx.graphics.getDeltaTime()));
-        position.x =  Math.round(position.x+(GameMap.humanPlayer.getX() * 16 - position.x) * lerp * Gdx.graphics.getDeltaTime());
-        position.y =  Math.round(position.y+(trueHeight() - (GameMap.humanPlayer.getY() * 16) - position.y) * lerp * Gdx.graphics.getDeltaTime());
+        position.x =  Math.round(position.x+(GameMap.humanPlayer.getX() * c - position.x) * lerp * Gdx.graphics.getDeltaTime());
+        position.y =  Math.round(position.y+(trueHeight() - (GameMap.humanPlayer.getY() * c) - position.y) * lerp * Gdx.graphics.getDeltaTime());
     }
 
     private int trueHeight() {
-        return ((GameMap.getHeight()-1)*16);
+        return ((GameMap.getHeight()-1)*c);
     }
 
 
     private void getInput() {
-        if(Gdx.input.isKeyPressed(Input.Keys.PLUS))
-            camera.zoom += 0.05;
-        if(Gdx.input.isKeyPressed(Input.Keys.MINUS))
-            camera.zoom -= 0.05;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.PERIOD))
+            camera.zoom += 0.25;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS))
+            camera.zoom -= 0.25;
         if(Gdx.input.isTouched())
             camera.position.add(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY(), 0);
         //else

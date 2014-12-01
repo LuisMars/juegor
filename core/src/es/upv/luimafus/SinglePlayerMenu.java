@@ -46,7 +46,7 @@ public class SinglePlayerMenu implements Screen {
         Slider widthSlider = new Slider(5,100,1,false,skin);
         Slider heightSlider = new Slider(5,100,1,false,skin);
         Slider densitySlider = new Slider(0.5f,0.9f,0.01f,false,skin);
-        Slider botSlider = new Slider(1,10,1,false,skin);
+        Slider botSlider = new Slider(1,20,1,false,skin);
         Slider difficultySlider = new Slider(0,1,0.01f,false,skin);
 
         Label width = new Label("", skin);

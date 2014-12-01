@@ -2,6 +2,7 @@ package es.upv.luimafus;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class Player implements Comparable<Player>{
     public static int UP = 0;
@@ -19,8 +20,11 @@ public class Player implements Comparable<Player>{
     private int x;
     private int y;
 
-    private int lastAtt = 0; //turns
+    public int lastDir = 2;
 
+    public int movingTo = -1;
+    private int lastAtt = 0; //turns
+    boolean playStep = false;
     private int action;
 
     private int HP = 10;
@@ -74,10 +78,13 @@ public class Player implements Comparable<Player>{
 
     public void act() {
         switch (action) {
+            case -1:
+                break;
             case 0:
             case 1:
             case 2:
             case 3: {
+                lastDir = action;
                 move(action);
                 break;
             }
@@ -85,6 +92,7 @@ public class Player implements Comparable<Player>{
             case 5:
             case 6:
             case 7: {
+                lastDir = action -4;
                 attack(action-4);
                 break;
             }
@@ -119,28 +127,54 @@ public class Player implements Comparable<Player>{
                 break;
             }
         }
-        GameMap.movePlayer(this, pX, pY);
+
+        action = -1;
+        if(GameMap.movePlayer(this, pX, pY)) {
+
+            float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
+            dist *= dist;
+            try {
+                float pan = (this.getX() - GameMap.humanPlayer.getX()) * 4 / (this.getX() + GameMap.humanPlayer.getX());
+                if(playStep) {
+                    AssetManager.stepSound[MathUtils.random(0, 3)].play(8 / (dist + 15), 1, pan);
+                }
+                playStep = !playStep;
+            } catch (ArithmeticException e) {
+                playStep = !playStep;
+            }
+
+
+        }
+        else
+            movingTo = -1;
+
+
     }
 
     public void attack(int direction) {
+        //positional sound!!
         float dist = Utils.fDistance(GameMap.humanPlayer.getX(),GameMap.humanPlayer.getY(), this.getX(),this.getY());
-        float pan = (GameMap.humanPlayer.getX() - this.getX());//(GameMap.humanPlayer.getX() + this.getX());
-        if(lastAtt <= 0) {
-            if (direction == -1) {
-                if (area.isOver()) {
-                    area = new Area(GameMap, x, y, ID);
-                    cHP--;
-                    lastAtt = 4;
-                    if(dist < 15)
-                        AssetManager.areaSound.play(15/(dist+15),MathUtils.random(0.85f,1.15f),1);
+        dist *= dist;
+        try {
+            float pan = (this.getX() - GameMap.humanPlayer.getX()) * 4 / (this.getX() + GameMap.humanPlayer.getX());
+            if (lastAtt <= 0) {
+                if (direction == -1) {
+                    if (area.isOver()) {
+                        area = new Area(GameMap, x, y, ID);
+                        cHP--;
+                        lastAtt = 4;
+                        //if(dist < 15)
+                        AssetManager.areaSound.play(30 / (dist + 15), 1, pan);
+                    }
+                } else {
+                    GameMap.addAttack(new Attack(x, y, direction, ID));
+                    lastAtt = 3;
+                    //if(dist < 15)
+                    AssetManager.arrowSound.play(15 / (dist + 15), 1, pan);
                 }
             }
-            else {
-                GameMap.addAttack(new Attack(x, y, direction, ID));
-                lastAtt = 3;
-                if(dist < 15)
-                    AssetManager.arrowSound.play(15/(dist+15),MathUtils.random(0.85f,1.15f),-1);
-            }
+        } catch (ArithmeticException e) {
+
         }
 
     }
@@ -148,10 +182,12 @@ public class Player implements Comparable<Player>{
     public void botMove(Player b) {
         if(b != null) {
             lastAtt--;
-            int dir = aStar.getNext(this, b);
+            int dir = lastDir = aStar.getNext(this, b);
             if (Utils.hasDirectPath(GameMap,this,b) && Utils.dirToAttack(this,b) >= 0 && Utils.distance(this, b) <= 10) {
-                if(MathUtils.randomBoolean(difficulty))
-                    attack(Utils.dirToAttack(this, b));
+                if(MathUtils.randomBoolean(difficulty)) {
+                    lastDir = Utils.dirToAttack(this, b);
+                    attack(lastDir);
+                }
                 else
                     move(dir);
             }
@@ -212,28 +248,23 @@ public class Player implements Comparable<Player>{
     public Color getHPColor() {
         switch ((int)(getHP()*10)) {
             case 10:
-                return Color.valueOf("345d1e");
             case 9:
-                return Color.valueOf("647f2c");
+                return Color.valueOf("55793a");
             case 8:
-                return Color.valueOf("979f3d");
             case 7:
-                return Color.valueOf("d8c266");
+                return Color.valueOf("77853e");
             case 6:
-                return Color.valueOf("bf7b3f");
             case 5:
-                return Color.valueOf("9b6141");
+                return Color.valueOf("e5cb50");
             case 4:
-                return Color.valueOf("904b36");
             case 3:
-                return Color.valueOf("904b36");
+                return Color.valueOf("c06b3c");
             case 2:
             case 1:
             default:
-                return Color.valueOf("7a3333");
+                return Color.valueOf("b15032");
         }
     }
-
 
     @Override
     public int compareTo(Player o) {

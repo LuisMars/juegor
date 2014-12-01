@@ -1,0 +1,11 @@
+area.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: true
+0
+    rotate: false
+    xy: 0, 0
+    size: 32, 64
+    orig: 32, 64
+    offset: 0, 0
+    index: -1

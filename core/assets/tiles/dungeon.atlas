@@ -1,0 +1,396 @@
+dungeon_h.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: true
+1001xx0x
+    rotate: false
+    xy: 0, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1000xx00
+    rotate: false
+    xy: 32, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1100xxx0
+    rotate: false
+    xy: 64, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0001x00x
+    rotate: false
+    xy: 0, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000000
+    rotate: false
+    xy: 32, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+01000xx0
+    rotate: false
+    xy: 64, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0011x0xx
+    rotate: false
+    xy: 0, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+001000xx
+    rotate: false
+    xy: 32, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+01100xxx
+    rotate: false
+    xy: 64, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1001xx1x
+    rotate: false
+    xy: 96, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1010xxxx
+    rotate: false
+    xy: 128, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1100xxx1
+    rotate: false
+    xy: 160, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0101xxxx
+    rotate: false
+    xy: 96, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+11111111
+    rotate: false
+    xy: 128, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0011x1xx
+    rotate: false
+    xy: 96, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+01101xxx
+    rotate: false
+    xy: 160, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000010
+    rotate: false
+    xy: 192, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000011
+    rotate: false
+    xy: 224, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000001
+    rotate: false
+    xy: 256, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000110
+    rotate: false
+    xy: 192, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001111
+    rotate: false
+    xy: 224, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001001
+    rotate: false
+    xy: 256, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000100
+    rotate: false
+    xy: 192, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001100
+    rotate: false
+    xy: 224, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001000
+    rotate: false
+    xy: 256, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1000xx10
+    rotate: false
+    xy: 288, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1000xx11
+    rotate: false
+    xy: 320, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1000xx01
+    rotate: false
+    xy: 352, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0001x01x
+    rotate: false
+    xy: 288, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1101xxxx
+    rotate: false
+    xy: 320, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+01000xx1
+    rotate: false
+    xy: 352, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0001x11x
+    rotate: false
+    xy: 288, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0111xxxx
+    rotate: false
+    xy: 320, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+01001xx1
+    rotate: false
+    xy: 352, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+0001x10x
+    rotate: false
+    xy: 288, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1111xxxx
+    rotate: false
+    xy: 320, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+01001xx0
+    rotate: false
+    xy: 352, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+001001xx
+    rotate: false
+    xy: 288, 128
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+001011xx
+    rotate: false
+    xy: 320, 128
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+001010xx
+    rotate: false
+    xy: 352, 128
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000111
+    rotate: false
+    xy: 384, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001011
+    rotate: false
+    xy: 416, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+000011101
+    rotate: false
+    xy: 384, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001110
+    rotate: false
+    xy: 416, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00000101
+    rotate: false
+    xy: 448, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+00001010
+    rotate: false
+    xy: 448, 32
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1011xxxx
+    rotate: false
+    xy: 384, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+1110xxxx
+    rotate: false
+    xy: 416, 64
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+topA
+    rotate: false
+    xy: 384, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+topB
+    rotate: false
+    xy: 416, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+player0
+    rotate: false
+    xy: 0, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+arrow
+    rotate: false
+    xy: 224, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: 0
+arrow
+    rotate: false
+    xy: 256, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: 1
+arrow
+    rotate: false
+    xy: 256, 128
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: 2
+arrow
+    rotate: false
+    xy: 224, 128
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: 3
+area
+    rotate: false
+    xy: 192, 96
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1

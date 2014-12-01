@@ -41,16 +41,16 @@ public class Map {
         Random random = new Random(/*seed*/);
         while (area > covered) {
 
-            int iy = (int)(random.nextDouble() * getWidth());
-            int fy = (int)(random.nextDouble() * getWidth());
+            int iy = 1+(int)(random.nextDouble() * (getWidth()-1));
+            int fy = 1+(int)(random.nextDouble() * (getWidth()-1));
             if (fy < iy) {
                 int foo = fy;
                 fy = iy;
                 iy = foo;
             }
 
-            int ix = (int)(random.nextDouble() * getHeight());
-            int fx = (int)(random.nextDouble() * getHeight());
+            int ix = 1+(int)(random.nextDouble() * (getHeight()-1));
+            int fx = 1+(int)(random.nextDouble() * (getHeight()-1));
             if (fx < ix) {
                 int foo = fx;
                 fx = ix;
@@ -91,14 +91,16 @@ public class Map {
         for(Rectangle r : rooms) {
             AStar aStar = new AStar(this);
             Rectangle next;
-            do {
-                next = rooms.get(MathUtils.random(0, rooms.size() - 1));
-            } while (next.equals(r));
+            //do {
+                //next = rooms.get(MathUtils.random(0, rooms.size() - 1));
+                next = rooms.get((rooms.indexOf(r)+1)%rooms.size());
+            //} while (next.equals(r));
             Node q = aStar.getPath((int) r.getX(), (int) r.getY(), (int) next.getX(), (int) next.getY());
 
             if(q != null) {
                 do {
-                    map[q.x][q.y] = 1;
+                    if(q.x > 1 && q.y > 1 && q.x < getWidth() && q.y < getHeight())
+                        map[q.x][q.y] = 1;
                     q = q.parent;
                 } while (q != null);
 
@@ -112,8 +114,8 @@ public class Map {
             }
         }
     }
-
-    public void generateMap2(double density) {
+    //not used
+    public void generateMapOld(double density) {
         for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
                 map[j][i] = 1;
@@ -234,9 +236,11 @@ public class Map {
         return map[0].length;
     }
 
-    public void movePlayer(Player p, int x, int y) {
-        if(canMove(x, y))
+    public boolean movePlayer(Player p, int x, int y) {
+        boolean canM = canMove(x,y);
+        if(canM)
             p.moveTo(x,y);
+        return canM;
     }
 
     public boolean canMove(int x, int y) {
@@ -248,11 +252,7 @@ public class Map {
     }
 
     public void act(int a) {
-        for(Player p: players) {
-            if (!p.isBot()) {
-                p.setAction(a);
-            }
-        }
+        humanPlayer.setAction(a);
     }
 
     public Player nextPlayer() {
