@@ -1,8 +1,6 @@
 package es.upv.luimafus;
 
 
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Created by Luis on 20/11/2014.
  */
@@ -93,7 +91,7 @@ public class AStar {
                 q = p;
                 p = p.parent;
             }
-            dir = Utils.posToDir(a.getX(),a.getY(),q.x,q.y);
+            dir = Utils.posToDir(a.getX(), a.getY(), q.x, q.y);
 
 
         }

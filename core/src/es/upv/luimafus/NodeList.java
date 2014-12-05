@@ -1,7 +1,6 @@
 package es.upv.luimafus;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Luis on 20/11/2014.

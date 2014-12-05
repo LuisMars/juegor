@@ -86,12 +86,17 @@ public class Utils {
             return res;
         }
         else {
-            if(checkTile(map, x, y+1) == '0')
-                if(checkTile(map, x+1, y+1) == '0' && checkTile(map, x-1, y+1) == '0')
-                    return "topB";
+            if (checkTile(map, x, y) == '1') {
+                if (checkTile(map, x, y + 1) == '0') {
+                    if (checkTile(map, x + 1, y + 1) == '0' && checkTile(map, x - 1, y + 1) == '0')
+                        return "topB";
+                    else
+                        return "topA";
+                }
                 else
-                    return "topA";
+                    return "11111111";
 
+            }
             return "11111111";
         }
     }

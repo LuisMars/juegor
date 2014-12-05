@@ -8,4 +8,25 @@ repeat: true
     size: 32, 64
     orig: 32, 64
     offset: 0, 0
-    index: -1
+    index: 3
+0
+    rotate: false
+    xy: 32, 0
+    size: 32, 64
+    orig: 32, 64
+    offset: 0, 0
+    index: 2
+0
+    rotate: false
+    xy: 64, 0
+    size: 32, 64
+    orig: 32, 64
+    offset: 0, 0
+    index: 1
+0
+    rotate: false
+    xy: 96, 0
+    size: 32, 64
+    orig: 32, 64
+    offset: 0, 0
+    index: 0

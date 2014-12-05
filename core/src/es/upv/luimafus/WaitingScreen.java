@@ -23,20 +23,25 @@ public class WaitingScreen implements Screen {
     String name;
     TextArea chat;
     TextField input;
-    User user;
-public WaitingScreen (Main j) {
-        this.j = j;
+    ScrollPane scrollPane;
+    Client client;
 
+
+public WaitingScreen (Main j, String name) {
+        this.j = j;
+        this.name = name;
 
         preferences = Gdx.app.getPreferences("mp");
 
-        user = new User(this,preferences.getString("address"));
+        client = new Client(this,preferences.getString("address"));
         name = preferences.getString("name");
 
         stage = new Stage();
         stage.setViewport(new ScreenViewport());
+
+
+
         table = new Table();
-        table.setFillParent(true);
         table.setFillParent(true);
         table.setDebug(false);
         Gdx.input.setInputProcessor(stage);
@@ -45,14 +50,22 @@ public WaitingScreen (Main j) {
 
         chat = new TextArea("",skin);
 
-        input = new TextField("",skin);
+
+
+        scrollPane = new ScrollPane(chat, skin);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setFlickScroll(false);
+        scrollPane.setOverscroll(false, true);
+
+
+    input = new TextField("",skin);
         TextButton send = new TextButton("Send", skin);
         TextButton play = new TextButton("Play!", skin);
         TextButton disconnect = new TextButton("Disconnect", skin);
 
         chat.setDisabled(true);
 
-        table.add(chat).pad(10).colspan(6).fill().prefSize(400, 400).fill();
+        table.add(scrollPane).pad(10).colspan(6).prefSize(400, 400).fill();
         table.row();
         table.add(input).pad(10).colspan(5).fill().prefSize(350, 20).fillX();
         table.add(send).colspan(1).pad(10).prefSize(50, 20).fillX();
@@ -80,7 +93,8 @@ public WaitingScreen (Main j) {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 j.setScreen(new MultiplayerMenu(j));
-                user.disconnect();
+                //TODO: disconnect msg
+                //user.disconnect();
             }
         });
 
@@ -93,13 +107,16 @@ public WaitingScreen (Main j) {
 
     public void print(String msg) {
         chat.setText(chat.getText() + "\n" + msg);
+        chat.setPrefRows(chat.getText().split("\n").length);
+        scrollPane.layout();
+        scrollPane.setScrollPercentY(1);
     }
 
     private void sendMessage() {
         if(!input.getText().trim().isEmpty()) {
             String msg = name + ":    " + input.getText().trim();
             print(msg);
-            user.send(msg);
+            client.sendChatMsg(msg);
         }
         input.setText("");
     }

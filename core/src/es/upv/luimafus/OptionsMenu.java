@@ -34,17 +34,23 @@ public class OptionsMenu implements Screen {
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
+        Label nameLabel = new Label("Name: ", skin);
+        TextField name = new TextField(preferences.getString("name", "player"), skin);
+
         Label speedLabel = new Label("Game frequency:", skin);
-        Label speed = new Label("", skin);
+        Label speed = new Label(preferences.getInteger("speed",50)+"", skin);
 
         Slider speedSlider = new Slider(30,100,1,false,skin);
+
+
         TextButton back = new TextButton("Back", skin);
         TextButton save = new TextButton("Save", skin);
 
-        speed.setText("" + preferences.getInteger("speed"));
-        speedSlider.setValue(preferences.getInteger("speed"));
+        speedSlider.setValue(preferences.getInteger("speed",50));
 
-
+        table.add(nameLabel).pad(10);
+        table.add(name).pad(10);
+        table.row();
         table.add(speedLabel).pad(10);
         table.add(speed).pad(10);
         table.row();
@@ -64,6 +70,7 @@ public class OptionsMenu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 try {
+                    preferences.putString("name", name.getText());
                     preferences.putInteger("speed", Integer.parseInt(speed.getText().toString()));
                     preferences.flush();
                     j.setScreen(new MenuScreen(j));

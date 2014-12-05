@@ -1,8 +1,9 @@
 package es.upv.luimafus;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 
 public class Player implements Comparable<Player>{
     public static int UP = 0;
@@ -17,8 +18,8 @@ public class Player implements Comparable<Player>{
 
     public static int AREA = 8;
 
-    private int x;
-    private int y;
+    private int x, lastX;
+    private int y, lastY;
 
     public int lastDir = 2;
 
@@ -36,17 +37,26 @@ public class Player implements Comparable<Player>{
     private boolean bot;
 
     private int ID;
+    public String name;
+
+    private Preferences preferences;
 
     public static int n_players = 0;
     public static float difficulty;
 
     private Map GameMap;
     public Player(Map gameMap, boolean isBot) {
+        preferences = Gdx.app.getPreferences("sp");
         GameMap = gameMap;
         aStar = new AStar(GameMap);
         bot = isBot;
         n_players++;
         ID = n_players - 1;
+        if(bot)
+            name = "Bot #" + ID;
+        else
+            name = preferences.getString("Name", "Player");
+
         area = new Area(GameMap);
         setStartPos();
     }
@@ -106,8 +116,8 @@ public class Player implements Comparable<Player>{
     }
 
     public void move(int m) {
-        int pX = x;
-        int pY = y;
+        int pX = lastX = x;
+        int pY = lastY = y;
 
         switch (m) {
             case 0: {
@@ -264,6 +274,19 @@ public class Player implements Comparable<Player>{
             default:
                 return Color.valueOf("b15032");
         }
+    }
+
+    public float drawPosX(float offset) {
+        if(lastX == x)
+            return x;
+        else
+            return (x + ((x - lastX) * offset));
+    }
+    public float drawPosY(float offset) {
+        if(lastY == y)
+            return y;
+        else
+            return (y + ((y - lastY) * offset));
     }
 
     @Override

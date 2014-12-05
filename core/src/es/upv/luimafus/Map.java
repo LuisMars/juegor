@@ -1,10 +1,8 @@
 package es.upv.luimafus;
 
 
-import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 

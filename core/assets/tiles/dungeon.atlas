@@ -296,7 +296,7 @@ repeat: true
     orig: 32, 32
     offset: 0, 0
     index: -1
-000011101
+00001101
     rotate: false
     xy: 384, 32
     size: 32, 32

@@ -3,6 +3,7 @@ package es.upv.luimafus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
@@ -24,28 +25,33 @@ public class AssetManager {
 
     CellList floor = new CellList();
     ArrayList<String> s = new ArrayList<String>();
-    AtlasRegion[] player;
+    AtlasRegion[][] player;
     AtlasRegion[] arrow;
-    AtlasRegion area;
+    AtlasRegion[] area;
 
     TextureAtlas floorAtlas;
     TextureAtlas playerAtlas;
     TextureAtlas arrowAtlas;
     TextureAtlas areaAtlas;
+
+    BitmapFont font;
+
     public AssetManager() {
 
+        font = new BitmapFont(Gdx.files.internal("ui/goldbox.fnt"));
+        font.setScale(0.25f);
         floorAtlas = new TextureAtlas("tiles/dungeon.atlas");
         loadFloorNames();
         for (String value : s)
             floor.add(new Cell(floorAtlas.findRegion(value), value.substring(0, 4), value.substring(4)));
 
 
-        playerAtlas = new TextureAtlas("players/player.atlas");
-        player = new AtlasRegion[4];
-
-        for(int i = 0; i < player.length; i++)
-            player[i] = playerAtlas.findRegion(""+i);
-
+        player = new AtlasRegion[5][4];
+        for(int i = 0; i < 5; i++) {
+            playerAtlas = new TextureAtlas("players/"+i+".atlas");
+            for (int j = 0; j < player[0].length; j++)
+                player[i][j] = playerAtlas.findRegion("" + j);
+        }
 
         arrowAtlas = new TextureAtlas("attacks/arrow.atlas");
         arrow = new AtlasRegion[4];
@@ -55,7 +61,9 @@ public class AssetManager {
 
 
         areaAtlas = new TextureAtlas("attacks/area.atlas");
-        area = areaAtlas.findRegion("0");
+        area = new AtlasRegion[4];
+        for(int i = 0; i < area.length; i++)
+            area[i] = areaAtlas.findRegion("0",i);
 
     }
 

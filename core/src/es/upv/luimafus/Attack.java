@@ -1,8 +1,5 @@
 package es.upv.luimafus;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-
 public class Attack {
     protected int x;
     protected int y;

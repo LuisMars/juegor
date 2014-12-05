@@ -83,7 +83,7 @@ public class MultiplayerMenu implements Screen {
                     preferences.putString("address", address.getText());
                     preferences.putString("name", name.getText());
                     preferences.flush();
-                    j.setScreen(new WaitingScreen(j));
+                    j.setScreen(new WaitingScreen(j,name.getText()));
                 }
                 catch (NumberFormatException e) {
                     name.setText("ERROR");

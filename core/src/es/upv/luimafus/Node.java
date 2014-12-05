@@ -23,7 +23,7 @@ public class Node {
         this.parent = parent;
 
         prevCost = parent.prevCost+1;
-        guessCost = Utils.distance(x,y,gX,gY);
+        guessCost = Utils.distance(x, y, gX, gY);
         cost = prevCost + guessCost;
     }
 

@@ -66,10 +66,10 @@ public class ServerScreen implements Screen {
 
 
                 try {
-                    server.disconnect();
+                    //server.disconnect();
                     disconnectButton.setDisabled(true);
                     connectButton.setDisabled(false);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     print("Server closed");
                 }
             }
@@ -80,8 +80,8 @@ public class ServerScreen implements Screen {
     }
     public void startServer() {
         try {
-            server = new Server(this);
-            server.start(Integer.parseInt(port.getText()));
+            server = new Server(this,Integer.parseInt(port.getText()));
+            //server.start();
 
             connectButton.setDisabled(true);
             disconnectButton.setDisabled(false);

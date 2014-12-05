@@ -7,11 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
-
-import java.awt.*;
 
 /**
  * Created by Luis on 22/11/2014.
@@ -66,6 +63,9 @@ public class GameScreen implements Screen {
             turn = !turn;
             time = TimeUtils.millis();
         }
+
+        float offset = (TimeUtils.timeSinceMillis(time)/(2f*speed)) + (turn?0.5f:0);
+
         //cosas de la librería para repintar y actualizar la cámara
         Gdx.gl.glClearColor(0.0549019607843137f,0.0509803921568627f,0.06274509803921568627450980392157f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
 
         drawAttacks();
 
-        drawPlayers();
+        drawPlayers(offset);
 
 
         //si hay un ganador, vuelve a la pantalla principal
@@ -109,36 +109,36 @@ public class GameScreen implements Screen {
                 batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]),
                         (i * c)-0.25f/c, ((GameMap.getHeight() - 1 - j) * c)-0.25f/c,
                         c+(0.5f/c),c+(0.5f/c));
-                /*
-                batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]),
-                        (i * c), (((GameMap.getHeight() - 1 - j) * c)),
-                        c,c);*/
-                //if(assets.altars[i][j] != -1)
-                //    batch.draw(assets.altar,i * 16, (GameMap.getHeight() - 1 - j) * 16);
             }
     }
 
-    private void drawPlayers() {
+    private void drawPlayers(float offset) {
         for(Player p : GameMap.getPlayers()) {
-
+            float xOffset = p.drawPosX(offset);
+            float yOffset = p.drawPosY(offset);
             batch.setColor(1,1,1,1);
             //oscurecer los jugadores lejanos
             float d = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), p.getX(), p.getY());
             if(d > 15)
                 continue;
             if(d > 5) {
-                batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
+                batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1);
 
             }
             //dibujar y animar cutremente
-            batch.draw(assets.player[p.lastDir], p.getX()*c, trueHeight() - p.getY()*c + c/4);
+            batch.draw(assets.player[p.getID()%5][p.lastDir], xOffset*c, trueHeight() - yOffset*c + c/4);
             //if(!p.isBot())  batch.draw(cursor, p.getX() * 16, trueHeight() - (p.getY() * 16));
-
+            if(p == GameMap.humanPlayer)
+                System.out.println(p.drawPosX(offset) + "\t" + p.drawPosY(offset) + "\t" + offset);
             if(d > 5)
                 continue;
+
+            assets.font.draw(batch, p.name, xOffset*c, trueHeight() + c/2 - ((yOffset-1)*c));
             //la barrita de vida con el color correspondiente
             shapeRenderer.setColor(p.getHPColor());
-            shapeRenderer.rect( p.getX()*c, trueHeight() + c/2 - ((p.getY()-1)*c),(int)((c-2)*p.getHP()),c/8);
+            shapeRenderer.rect( xOffset*c, trueHeight() + c/2 - ((yOffset-1)*c),(int)((c-2)*p.getHP()),c/8);
+
+
 
         }
     }
@@ -157,7 +157,7 @@ public class GameScreen implements Screen {
             if (a.getDirection() != -1)
                 batch.draw(assets.arrow[a.getDirection()], a.getX() * c, trueHeight() - (a.getY() * c) + c/4);
             else
-                batch.draw(assets.area, a.getX() * c, trueHeight() - (a.getY() * c));
+                batch.draw(assets.area[a.time], a.getX() * c, trueHeight() - (a.getY() * c));
         }
     }
 
@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
     private void getInput() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.PERIOD))
             camera.zoom += 0.25;
-        if(Gdx.input.isKeyJustPressed(Input.Keys.MINUS))
+        if(camera.zoom > 0.25 && Gdx.input.isKeyJustPressed(Input.Keys.MINUS))
             camera.zoom -= 0.25;
         if(Gdx.input.isTouched())
             camera.position.add(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY(), 0);
