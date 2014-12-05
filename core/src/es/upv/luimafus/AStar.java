@@ -19,6 +19,7 @@ public class AStar {
         successors = new NodeList();
     }
 
+
     public Node calcPath(Player a, Player b) {
         return calcPath(a.getX(),a.getY(),b.getX(),b.getY());
     }

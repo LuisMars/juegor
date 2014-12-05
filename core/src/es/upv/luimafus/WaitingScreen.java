@@ -89,6 +89,14 @@ public WaitingScreen (Main j, String name) {
 
         });
 
+        play.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                sendReady();
+            }
+        });
+
+
         disconnect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -105,6 +113,7 @@ public WaitingScreen (Main j, String name) {
 
     }
 
+
     public void print(String msg) {
         chat.setText(chat.getText() + "\n" + msg);
         chat.setPrefRows(chat.getText().split("\n").length);
@@ -112,10 +121,13 @@ public WaitingScreen (Main j, String name) {
         scrollPane.setScrollPercentY(1);
     }
 
+    private void sendReady() {
+        client.
+    }
     private void sendMessage() {
         if(!input.getText().trim().isEmpty()) {
-            String msg = name + ":    " + input.getText().trim();
-            print(msg);
+            String msg = input.getText().trim();
+            //print(msg);
             client.sendChatMsg(msg);
         }
         input.setText("");

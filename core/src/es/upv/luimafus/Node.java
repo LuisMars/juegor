@@ -4,7 +4,7 @@ package es.upv.luimafus;
  http://web.mit.edu/eranki/www/tutorials/search/
  */
 public class Node {
-    Node parent;
+    public Node parent;
     public int x, y;
     public int cost, prevCost, guessCost;
 

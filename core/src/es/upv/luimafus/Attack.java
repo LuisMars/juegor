@@ -3,7 +3,7 @@ package es.upv.luimafus;
 public class Attack {
     protected int x;
     protected int y;
-    protected int time;
+    public int time;
     private int maxTime;
     protected int direction;
     protected int damage;

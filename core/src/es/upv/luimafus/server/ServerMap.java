@@ -1,31 +1,33 @@
-package es.upv.luimafus;
+package es.upv.luimafus.server;
 
 
 import com.badlogic.gdx.math.Rectangle;
+import es.upv.luimafus.*;
+import es.upv.luimafus.Map;
 
 import java.util.*;
-import java.util.List;
 
 
-public class Map {
+public class ServerMap extends Map {
     private int[][] map;
     public int[][] drawMap;
 
     private List<Player> players = new ArrayList<Player>();
     private Collection<Attack> attacks = new ArrayList<Attack>();
-    public Player humanPlayer;
-    private GameScreen gs;
+    private ServerScreen gs;
     public long seed;
 
-    public Map() {
+    public CellList floor = new CellList();
+    ArrayList<String> s = new ArrayList<String>();
 
-    }
 
-    public Map(GameScreen s,int h, int w, double density) {
+    public ServerMap(ServerScreen s, int h, int w, double density) {
+
         Player.n_players = 0;
         gs = s;
         map = new int[h][w];
         generateMap(density);
+        setDrawMap();
         prepareMap();
         //seed = (long)(Math.random()*Long.MAX_VALUE);
 
@@ -117,70 +119,13 @@ public class Map {
             }
         }
     }
-    //not used
-    public void generateMapOld(double density) {
-        for (int i = 0; i < getHeight(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
-                map[j][i] = 1;
-            }
-        }
-        double area = getHeight() * getWidth() * density;
-        area = Math.min(area, (getHeight() * getWidth()) - (getHeight() + getWidth()) * 2 + 4);
-        double covered = 0;
-        Random random = new Random(seed);
-        while (area > covered) {
-
-            int iy = (int)(random.nextDouble() * getWidth());
-            int fy = 0;
-            while (fy < iy)
-                fy = (int)(random.nextDouble() * getWidth());
-
-            int ix = (int)(random.nextDouble() * getHeight());
-            int fx = 0;
-            while (fx < ix)
-                fx = (int)(random.nextDouble() * getHeight());
-            //TODO: i < f
-            int rectArea = (fy - iy)*(fx - ix);
-            if(rectArea > area/4)
-                continue;
-
-            boolean overlaps = false;
-
-            for (int i = ix; i < fx; i++) {
-                for (int j = iy; j < fy; j++) {
-                    if(map[j][i] == 0)
-                        overlaps = true;
-                }
-            }
-
-            if(overlaps)
-                continue;
-
-        //TODO: see join loops?
-            for (int i = ix; i < fx; i++) {
-                for (int j = iy; j < fy; j++) {
-                    map[j][i] = 0;
-                }
-            }
-
-
-            covered = 0;
-            for (int i = 0; i < getHeight(); i++) {
-                for (int j = 0; j < getWidth(); j++) {
-                    if(map[j][i] == 0)
-                        covered++;
-                }
-            }
-        }
-    }
-
 
     public void prepareMap() {
         drawMap = new int[getWidth()][getHeight()];
 
         for(int i = 0; i < getWidth(); i++)
             for(int j = 0; j < getHeight(); j++)
-                drawMap[i][j] = gs.assets.floor.getIndex(Utils.getTile(map, i, j));
+                drawMap[i][j] = floor.getIndex(Utils.getTile(map, i, j));
 
 
     }
@@ -287,7 +232,7 @@ public class Map {
     }
 
     public boolean haveAWinner() {
-        return players.size() <= 1;
+        return players.size() == 1;
     }
     public String winner() {
         String text;
@@ -318,4 +263,71 @@ public class Map {
             return false;
         }
     }
+
+    private void setDrawMap() {
+        loadFloorNames();
+        for (String value : s)
+            floor.add(new Cell(null, value.substring(0, 4), value.substring(4)));
+    }
+
+    private void loadFloorNames() {
+
+        s.add("11111111");
+        s.add("00000000");
+        s.add("00000010");
+        s.add("00000011");
+        s.add("00000001");
+        s.add("00000110");
+        s.add("00001111");
+        s.add("00001001");
+        s.add("00000100");
+        s.add("00001100");
+        s.add("00001000");
+
+        s.add("00000111");
+        s.add("00001011");
+        s.add("00001101");
+        s.add("00001110");
+
+        s.add("00000101");
+        s.add("00001010");
+
+        s.add("1000xx00");
+        s.add("0001x00x");
+        s.add("01000xx0");
+        s.add("001000xx");
+        s.add("1000xx10");
+        s.add("1000xx11");
+        s.add("1000xx01");
+        s.add("0001x01x");
+        s.add("01000xx1");
+        s.add("0001x11x");
+        s.add("01001xx1");
+        s.add("0001x10x");
+        s.add("01001xx0");
+        s.add("001001xx");
+        s.add("001011xx");
+        s.add("001010xx");
+
+        s.add("1001xx0x");
+        s.add("1100xxx0");
+        s.add("0011x0xx");
+        s.add("01100xxx");
+        s.add("1001xx1x");
+        s.add("1100xxx1");
+        s.add("0011x1xx");
+        s.add("01101xxx");
+
+        s.add("1010xxxx");
+        s.add("0101xxxx");
+        s.add("1101xxxx");
+        s.add("0111xxxx");
+        s.add("1111xxxx");
+        s.add("1011xxxx");
+        s.add("1110xxxx");
+        s.add("topA");
+        s.add("topB");
+
+    }
+
 }

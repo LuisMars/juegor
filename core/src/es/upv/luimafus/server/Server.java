@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +15,15 @@ public class Server extends Thread {
     private DatagramSocket socket;
 
     ServerScreen serverScreen;
-
+    ServerMap map;
     public Server(ServerScreen serverScreen, int port) {
 
         serverScreen.print("Creating server...");
 
         this.serverScreen = serverScreen;
-        populateMap();
+
+        map = new ServerMap(null,50,50,0.5f);
+
         try {
             socket = new DatagramSocket(port);
         } catch (SocketException socketException) {
@@ -39,16 +40,11 @@ public class Server extends Thread {
                 DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 
                 socket.receive(receivePacket);
-                /*
-                ServerGUI.displayMessage("\nPacket received:" +
-                        "\nFrom host: " + receivePacket.getAddress() +
-                        "\nHost port: " + receivePacket.getPort() +
-                        "\nContaining:\n\t" + new String(receivePacket.getData(), 1, receivePacket.getLength()));
-                */
 
                 //LOGIN
                 if ((receivePacket.getData()[0]) == 1) {
                     users.add(new User(receivePacket.getSocketAddress(), new String(receivePacket.getData(), 1, receivePacket.getLength())));
+                    serverScreen.print("\tTotal players: " + users.size());
                     TellID(users.get(users.size() - 1));
                     SendPrevID(users.get(users.size() - 1));
                     SendIDAll(users.get(users.size() - 1));
@@ -56,7 +52,8 @@ public class Server extends Thread {
                 }
                 //CHAT MSG
                 if ((receivePacket.getData()[0]) == 2) {
-                    serverScreen.print(new String(receivePacket.getData(), 1, receivePacket.getLength()));
+                    String msg = new String(receivePacket.getData(), 1, receivePacket.getLength());
+                    serverScreen.print(findPlayer(receivePacket.getData()[1]).name + ": \t" + msg);
 
 
                     for (User u : users) {
@@ -66,11 +63,12 @@ public class Server extends Thread {
 
                     }
                 }
-                if ((receivePacket.getData()[0]) == 3) {
-                    for (User u : users) {
-                        SendMap(arr, u);
-                    }
 
+                //SEND MAP
+                if ((receivePacket.getData()[0]) == 3) {
+                    User u = findPlayer(receivePacket.getData()[1]);
+                    u.isReady = true;
+                    SendMap(map.drawMap, u);
                 }
 
                 //sendPacketToClient( receivePacket );
@@ -81,10 +79,26 @@ public class Server extends Thread {
         }
     }
 
+    private User findPlayer(byte b) {
+        for(User u : users) {
+            if(u.playerID == b)
+                return u;
+        }
+        return null;
+    }
+
     private void SendID(User rec, User us) {
-        String toSend = "1" + us.playerID + us.name;
-        DatagramPacket sendPacket = new DatagramPacket(toSend.getBytes(), toSend.length(), rec.socketAddress);
         try {
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+
+            msg.write(1);
+            msg.write(us.playerID);
+            msg.write(us.name.getBytes());
+
+
+
+            DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, rec.socketAddress);
+
             socket.send(sendPacket);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -105,8 +119,14 @@ public class Server extends Thread {
     }
 
     private void TellID(User us) {
-        String toSend = "0" + us.playerID;
-        DatagramPacket sendPacket = new DatagramPacket(toSend.getBytes(), toSend.length(), us.socketAddress);
+
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+
+        msg.write(0);
+        msg.write(us.playerID);
+
+
+        DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, us.socketAddress);
         try {
             socket.send(sendPacket);
         } catch (IOException e) {
@@ -132,16 +152,6 @@ public class Server extends Thread {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-    }
-
-
-    public void populateMap() {
-        int n = 3;
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[0].length; j++) {
-                arr[i][j] = n++ % 128;
-            }
         }
     }
 }

@@ -8,7 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import es.upv.luimafus.GameFinishedScreen;
 import es.upv.luimafus.Main;
 
 import java.io.IOException;
@@ -23,12 +25,25 @@ public class ServerScreen implements Screen {
     Main j;
     Preferences preferences;
     Server server;
+
+    ScrollPane scrollPane;
     TextField port;
     TextArea log;
     TextButton connectButton;
     TextButton disconnectButton;
+
+    ServerMap GameMap;
+
+    long time = 0;
+    boolean turn = true;
+    int speed;
+
     public  ServerScreen(Main main) {
         j = main;
+
+        GameMap = new ServerMap(this, 50, 50, 0.5f);
+        speed = 70;
+
         stage = new Stage();
 
         table = new Table();
@@ -47,11 +62,17 @@ public class ServerScreen implements Screen {
         log = new TextArea("",skin);
         disconnectButton.setDisabled(true);
 
+        scrollPane = new ScrollPane(log, skin);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setFlickScroll(false);
+        scrollPane.setOverscroll(false, true);
+
+
         table.add(port);
         table.add(connectButton);
         table.add(disconnectButton);
         table.row();
-        table.add(log).colspan(3).fill().prefSize(300,400);
+        table.add(scrollPane).colspan(3).fill().prefSize(300,400);
 
 
         connectButton.addCaptureListener(new ChangeListener() {
@@ -92,6 +113,9 @@ public class ServerScreen implements Screen {
     }
     public void print(String msg) {
         log.setText(log.getText() + "\n" + msg);
+        log.setPrefRows(log.getText().split("\n").length);
+        scrollPane.layout();
+        scrollPane.setScrollPercentY(1);
     }
 
     @Override
@@ -101,6 +125,24 @@ public class ServerScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.draw();
         stage.act(delta);
+
+
+        if(TimeUtils.timeSinceMillis(time) > speed) {
+            // los ataques cada x
+            GameMap.updateAttacks();
+            if(turn) {
+                //actualizar los jugadores cada 2x
+                GameMap.updateState();
+            }
+            turn = !turn;
+            time = TimeUtils.millis();
+        }
+
+        //si hay un ganador, vuelve a la pantalla principal
+        if(GameMap.haveAWinner()) {
+            print(GameMap.winner());
+        }
+
     }
 
     @Override

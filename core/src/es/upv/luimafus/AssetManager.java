@@ -23,18 +23,18 @@ public class AssetManager {
                                         Gdx.audio.newSound(Gdx.files.internal("sounds/steps04.wav"))};
     public static Music ambient = Gdx.audio.newMusic(Gdx.files.internal("sounds/ambient.wav"));
 
-    CellList floor = new CellList();
+    public CellList floor = new CellList();
     ArrayList<String> s = new ArrayList<String>();
-    AtlasRegion[][] player;
-    AtlasRegion[] arrow;
-    AtlasRegion[] area;
+    public AtlasRegion[][] player;
+    public AtlasRegion[] arrow;
+    public AtlasRegion[] area;
 
     TextureAtlas floorAtlas;
     TextureAtlas playerAtlas;
     TextureAtlas arrowAtlas;
     TextureAtlas areaAtlas;
 
-    BitmapFont font;
+    public BitmapFont font;
 
     public AssetManager() {
 

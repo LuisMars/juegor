@@ -10,14 +10,14 @@ public class User {
     SocketAddress socketAddress;
     String name;
     
-    private static int totalPlayers = 0;
-    public int playerID;
-
+    static int totalPlayers = 0;
+    int playerID;
+    boolean isReady = false;
 
     public User(SocketAddress sa, String n) {
         socketAddress = sa;
         name = n;
-        totalPlayers++;
         playerID = totalPlayers;
+        totalPlayers++;
     }
 }

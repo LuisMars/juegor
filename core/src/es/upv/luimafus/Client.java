@@ -38,23 +38,19 @@ public class Client extends Thread {
 
                 //recibir mi ID
                 if (receivePacket.getData()[0] == 0) {
-                    ownID = (receivePacket.getData()[1]) - 48;
-                    System.out.println("My name is " + ownID);
+                    ownID = receivePacket.getData()[1];
                 }
 
 
                 //recibir logins
                 if (receivePacket.getData()[0] == 1) {
-                    players[(receivePacket.getData()[1])] = new String(receivePacket.getData(), 2, receivePacket.getLength());
+                    players[receivePacket.getData()[1]] = new String(receivePacket.getData(), 2, receivePacket.getLength());
                 }
-
-                // displayMessage("\nContaining:\n\t" + new String( receivePacket.getData(),0, receivePacket.getLength() ) );
-
 
                 /// recibir mensaje chat
                 if (receivePacket.getData()[0] == 2) {
-                    displayMessage("\n" + players[(receivePacket.getData()[1]) - 48] + ": \n\t"
-                            + new String(receivePacket.getData(), 2, receivePacket.getLength()));
+                    displayMessage(players[receivePacket.getData()[1]] + ": \t"
+                            + new String(receivePacket.getData(), 1, receivePacket.getLength()));
                 }
 
 
@@ -109,12 +105,18 @@ public class Client extends Thread {
             os.write(msg.getBytes());
 
             DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
+            //if(code == 2)
+            //    waitingScreen.print(new String(os.toByteArray()));
             socket.send(sendPacket);
 
         } catch (IOException ioException) {
             displayMessage(ioException.toString() + "\n");
             ioException.printStackTrace();
         }
+    }
+
+    public void requestMap() {
+
     }
 
 }

@@ -18,7 +18,7 @@ public class GameScreen implements Screen {
 
     SpriteBatch batch;
 
-    AssetManager assets;
+    public AssetManager assets;
     int c = 32;
     long time = 0;
     boolean turn = true;
@@ -31,6 +31,9 @@ public class GameScreen implements Screen {
 
     Main j;
 
+    public GameScreen() {
+
+    }
 
     public GameScreen(Main j, int w, int h, double d, int bots, float diff, int speed) {
 
