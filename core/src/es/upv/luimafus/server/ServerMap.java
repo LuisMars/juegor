@@ -9,7 +9,7 @@ import java.util.*;
 
 
 public class ServerMap extends Map {
-    private int[][] map;
+    public int[][] map;
     public int[][] drawMap;
 
     private List<Player> players = new ArrayList<Player>();

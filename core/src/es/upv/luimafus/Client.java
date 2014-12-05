@@ -1,5 +1,7 @@
 package es.upv.luimafus;
 
+import com.badlogic.gdx.Gdx;
+
 import java.io.*;
 import java.net.*;
 
@@ -11,6 +13,7 @@ public class Client extends Thread {
     private static int ownID = -1;
     private InetSocketAddress address;
     private WaitingScreen waitingScreen;
+
 
     public Client(WaitingScreen ws, String add) {
         waitingScreen = ws;
@@ -31,7 +34,7 @@ public class Client extends Thread {
     public void run() {
         while (true) {
             try {
-                byte data[] = new byte[1024];
+                byte data[] = new byte[16384];
                 DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 
                 socket.receive(receivePacket);
@@ -56,9 +59,11 @@ public class Client extends Thread {
 
                 // recibir mapa
                 if (receivePacket.getData()[0] == 3) {
+                    displayMessage("Map received");
                     byte[] d = receivePacket.getData();
                     int[][] arr = new int[d[1]][d[2]];
-                    int n = 3;
+                    int speed = d[4];
+                    int n = 4;
                     String mapa = "";
                     for (int i = 0; i < arr.length; i++) {
                         for (int j = 0; j < arr[0].length; j++) {
@@ -67,8 +72,9 @@ public class Client extends Thread {
                         }
                         mapa += "\n";
                     }
-
                     displayMessage(mapa);
+                    Gdx.app.postRunnable(() -> waitingScreen.startGame(arr, speed));
+
                 }
 
 
@@ -105,8 +111,8 @@ public class Client extends Thread {
             os.write(msg.getBytes());
 
             DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
-            //if(code == 2)
-            //    waitingScreen.print(new String(os.toByteArray()));
+            if(code == 3)
+                waitingScreen.print(code + " " + ownID + " " + new String(os.toByteArray()));
             socket.send(sendPacket);
 
         } catch (IOException ioException) {
@@ -116,7 +122,7 @@ public class Client extends Thread {
     }
 
     public void requestMap() {
-
+        sendMsg(3,"");
     }
 
 }

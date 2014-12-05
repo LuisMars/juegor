@@ -11,18 +11,14 @@ import java.util.List;
 public class Server extends Thread {
 
     List<User> users = new ArrayList<User>();
-    int[][] arr = new int[10][10];
     private DatagramSocket socket;
 
     ServerScreen serverScreen;
-    ServerMap map;
     public Server(ServerScreen serverScreen, int port) {
 
         serverScreen.print("Creating server...");
 
         this.serverScreen = serverScreen;
-
-        map = new ServerMap(null,50,50,0.5f);
 
         try {
             socket = new DatagramSocket(port);
@@ -68,7 +64,8 @@ public class Server extends Thread {
                 if ((receivePacket.getData()[0]) == 3) {
                     User u = findPlayer(receivePacket.getData()[1]);
                     u.isReady = true;
-                    SendMap(map.drawMap, u);
+                    serverScreen.print(u.name + " is ready");
+                    SendMap(serverScreen.speed,serverScreen.GameMap.map, u);
                 }
 
                 //sendPacketToClient( receivePacket );
@@ -135,10 +132,11 @@ public class Server extends Thread {
         }
     }
 
-    private void SendMap(int[][] a, User u) {
+    private void SendMap(int speed, int[][] a, User u) {
 
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
-        msg.write((byte) '3');
+        msg.write(3);
+        msg.write(speed);
         msg.write((byte) a.length);
         msg.write((byte) a[0].length);
         for (int i = 0; i < a.length; i++) {

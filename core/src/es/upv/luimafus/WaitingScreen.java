@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */
 public class WaitingScreen implements Screen {
     Main j;
+    GameScreen gameScreen;
+
     Stage stage;
     Table table;
     Skin skin;
@@ -27,18 +29,17 @@ public class WaitingScreen implements Screen {
     Client client;
 
 
-public WaitingScreen (Main j, String name) {
+    public WaitingScreen(Main j, String name) {
         this.j = j;
         this.name = name;
 
         preferences = Gdx.app.getPreferences("mp");
 
-        client = new Client(this,preferences.getString("address"));
+        client = new Client(this, preferences.getString("address"));
         name = preferences.getString("name");
 
         stage = new Stage();
         stage.setViewport(new ScreenViewport());
-
 
 
         table = new Table();
@@ -48,8 +49,7 @@ public WaitingScreen (Main j, String name) {
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        chat = new TextArea("",skin);
-
+        chat = new TextArea("", skin);
 
 
         scrollPane = new ScrollPane(chat, skin);
@@ -58,7 +58,7 @@ public WaitingScreen (Main j, String name) {
         scrollPane.setOverscroll(false, true);
 
 
-    input = new TextField("",skin);
+        input = new TextField("", skin);
         TextButton send = new TextButton("Send", skin);
         TextButton play = new TextButton("Play!", skin);
         TextButton disconnect = new TextButton("Disconnect", skin);
@@ -77,7 +77,7 @@ public WaitingScreen (Main j, String name) {
 
         input.setTextFieldListener((textField, key) -> {
             if ((key == '\r' || key == '\n'))
-                    sendMessage();
+                sendMessage();
         });
 
         send.addListener(new ChangeListener() {
@@ -107,12 +107,16 @@ public WaitingScreen (Main j, String name) {
         });
 
 
-
         stage.setKeyboardFocus(input);
 
 
     }
+    public void startGame(int[][] map, int speed) {
 
+        gameScreen = new GameScreen(j, map, speed);
+        gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, false));
+        j.setScreen(gameScreen);
+    }
 
     public void print(String msg) {
         chat.setText(chat.getText() + "\n" + msg);
@@ -122,16 +126,18 @@ public WaitingScreen (Main j, String name) {
     }
 
     private void sendReady() {
-        client.
+        client.requestMap();
     }
+
     private void sendMessage() {
-        if(!input.getText().trim().isEmpty()) {
+        if (!input.getText().trim().isEmpty()) {
             String msg = input.getText().trim();
             //print(msg);
             client.sendChatMsg(msg);
         }
         input.setText("");
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -140,10 +146,11 @@ public WaitingScreen (Main j, String name) {
         stage.act(delta);
 
     }
+
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        table.setSize(width,height);
+        table.setSize(width, height);
     }
 
     @Override

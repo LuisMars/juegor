@@ -41,6 +41,8 @@ public class ServerScreen implements Screen {
     public  ServerScreen(Main main) {
         j = main;
 
+        preferences = Gdx.app.getPreferences("server");
+
         GameMap = new ServerMap(this, 50, 50, 0.5f);
         speed = 70;
 
@@ -56,7 +58,7 @@ public class ServerScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
 
-        port = new TextField("",skin);
+        port = new TextField(preferences.getInteger("port",7777)+"",skin);
         connectButton = new TextButton("Create",skin);
         disconnectButton = new TextButton("Disconnect",skin);
         log = new TextArea("",skin);
@@ -78,6 +80,7 @@ public class ServerScreen implements Screen {
         connectButton.addCaptureListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                preferences.putInteger("port", Integer.parseInt(port.getText()));
                 startServer();
             }
         });

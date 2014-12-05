@@ -21,6 +21,15 @@ public class Map {
 
     }
 
+    public Map(GameScreen s, int[][] map) {
+        Player.n_players = 0;
+        gs = s;
+        this.map = map;
+        prepareMap();
+
+
+    }
+
     public Map(GameScreen s,int h, int w, double density) {
         Player.n_players = 0;
         gs = s;
@@ -117,63 +126,6 @@ public class Map {
             }
         }
     }
-    //not used
-    public void generateMapOld(double density) {
-        for (int i = 0; i < getHeight(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
-                map[j][i] = 1;
-            }
-        }
-        double area = getHeight() * getWidth() * density;
-        area = Math.min(area, (getHeight() * getWidth()) - (getHeight() + getWidth()) * 2 + 4);
-        double covered = 0;
-        Random random = new Random(seed);
-        while (area > covered) {
-
-            int iy = (int)(random.nextDouble() * getWidth());
-            int fy = 0;
-            while (fy < iy)
-                fy = (int)(random.nextDouble() * getWidth());
-
-            int ix = (int)(random.nextDouble() * getHeight());
-            int fx = 0;
-            while (fx < ix)
-                fx = (int)(random.nextDouble() * getHeight());
-            //TODO: i < f
-            int rectArea = (fy - iy)*(fx - ix);
-            if(rectArea > area/4)
-                continue;
-
-            boolean overlaps = false;
-
-            for (int i = ix; i < fx; i++) {
-                for (int j = iy; j < fy; j++) {
-                    if(map[j][i] == 0)
-                        overlaps = true;
-                }
-            }
-
-            if(overlaps)
-                continue;
-
-        //TODO: see join loops?
-            for (int i = ix; i < fx; i++) {
-                for (int j = iy; j < fy; j++) {
-                    map[j][i] = 0;
-                }
-            }
-
-
-            covered = 0;
-            for (int i = 0; i < getHeight(); i++) {
-                for (int j = 0; j < getWidth(); j++) {
-                    if(map[j][i] == 0)
-                        covered++;
-                }
-            }
-        }
-    }
-
 
     public void prepareMap() {
         drawMap = new int[getWidth()][getHeight()];
@@ -239,13 +191,6 @@ public class Map {
         return map[0].length;
     }
 
-    public boolean movePlayer(Player p, int x, int y) {
-        boolean canM = canMove(x,y);
-        if(canM)
-            p.moveTo(x,y);
-        return canM;
-    }
-
     public boolean canMove(int x, int y) {
         for(Player p : players) {
             if(p.getX() == x && p.getY() == y)
@@ -287,7 +232,7 @@ public class Map {
     }
 
     public boolean haveAWinner() {
-        return players.size() <= 1;
+        return players.size() < 1;// == 1
     }
     public String winner() {
         String text;

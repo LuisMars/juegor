@@ -23,7 +23,6 @@ public class Player implements Comparable<Player>{
 
     public int lastDir = 2;
 
-    public int movingTo = -1;
     private int lastAtt = 0; //turns
     boolean playStep = false;
     private int action;
@@ -35,7 +34,7 @@ public class Player implements Comparable<Player>{
 
     private AStar aStar;
     private boolean bot;
-
+    private boolean netPlayer;
     private int ID;
     public String name;
 
@@ -116,49 +115,46 @@ public class Player implements Comparable<Player>{
     }
 
     public void move(int m) {
-        int pX = lastX = x;
-        int pY = lastY = y;
-
-        switch (m) {
-            case 0: {
-                pY--;
-                break;
-            }
-            case 2: {
-                pY++;
-                break;
-            }
-            case 1: {
-                pX++;
-                break;
-            }
-            case 3: {
-                pX--;
-                break;
-            }
-        }
-
-        action = -1;
-        if(GameMap.movePlayer(this, pX, pY)) {
-
-            float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
-            dist *= dist;
-            try {
-                float pan = (this.getX() - GameMap.humanPlayer.getX()) * 4 / (this.getX() + GameMap.humanPlayer.getX());
-                if(playStep) {
-                    AssetManager.stepSound[MathUtils.random(0, 3)].play(8 / (dist + 15), 1, pan);
+        int pX = x;
+        int pY = y;
+        if(action != -1) {
+            switch (m) {
+                case 0: {
+                    pY--;
+                    break;
                 }
-                playStep = !playStep;
-            } catch (ArithmeticException e) {
-                playStep = !playStep;
+                case 2: {
+                    pY++;
+                    break;
+                }
+                case 1: {
+                    pX++;
+                    break;
+                }
+                case 3: {
+                    pX--;
+                    break;
+                }
             }
 
+            if (moveTo(pX, pY)) {
+
+                float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
+                dist *= dist;
+                try {
+                    float pan = (this.getX() - GameMap.humanPlayer.getX()) * 4 / (this.getX() + GameMap.humanPlayer.getX());
+                    if (playStep) {
+                        AssetManager.stepSound[MathUtils.random(0, 3)].play(8 / (dist + 15), 1, pan);
+                    }
+                    playStep = !playStep;
+                } catch (ArithmeticException e) {
+                    playStep = !playStep;
+                }
+
+
+            }
 
         }
-        else
-            movingTo = -1;
-
-
     }
 
     public void attack(int direction) {
@@ -212,11 +208,17 @@ public class Player implements Comparable<Player>{
         }
     }
 
-    public void moveTo(int x, int y) {
+    public boolean moveTo(int x, int y) {
         if(GameMap.canMove(x, y)) {
+            System.out.println("position changed!!!!!");
+            lastX = this.x;
+            lastY = this.y;
             this.x = x;
             this.y = y;
+            return true;
         }
+        else
+            return false;
     }
 
     public boolean isBot() {
@@ -277,16 +279,12 @@ public class Player implements Comparable<Player>{
     }
 
     public float drawPosX(float offset) {
-        if(lastX == x)
-            return x;
-        else
-            return (x + ((x - lastX) * offset));
+        System.out.print("\t" + lastX);
+        return (x + ((x - lastX) * offset));
     }
     public float drawPosY(float offset) {
-        if(lastY == y)
-            return y;
-        else
-            return (y + ((y - lastY) * offset));
+        System.out.println("\t" + lastY);
+        return (y + ((y - lastY) * offset));
     }
 
     @Override

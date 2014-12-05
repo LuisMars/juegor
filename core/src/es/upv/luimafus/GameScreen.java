@@ -35,6 +35,18 @@ public class GameScreen implements Screen {
 
     }
 
+    public GameScreen(Main j, int[][] map, int speed) {
+
+        assets = new AssetManager();
+        this.j = j;
+        GameMap = new Map(this, map);
+        this.speed = speed;
+
+        AssetManager.ambient.play();
+        AssetManager.ambient.setLooping(true);
+
+    }
+
     public GameScreen(Main j, int w, int h, double d, int bots, float diff, int speed) {
 
         assets = new AssetManager();
@@ -87,11 +99,13 @@ public class GameScreen implements Screen {
 
         //si hay un ganador, vuelve a la pantalla principal
         //TODO: mostrar ganador!!!
+        /*
         if(GameMap.haveAWinner()) {
             //j.setScreen(new MenuScreen(j));
             AssetManager.ambient.stop();
             j.setScreen(new GameFinishedScreen(j,GameMap.winner()));
         }
+        */
         batch.end();
         shapeRenderer.end();
     }
