@@ -115,7 +115,7 @@ public class WaitingScreen implements Screen {
     public void startGame(int[][] map, int speed) {
 
         gameScreen = new GameScreen(j, map, speed);
-        gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, false));
+        gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, true, true, name));
         j.setScreen(gameScreen);
     }
 

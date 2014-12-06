@@ -37,7 +37,7 @@ public class Server extends Thread {
                 socket.receive(receivePacket);
 
                 //LOGIN
-                if ((receivePacket.getData()[0]) == 1) {
+                if (receivePacket.getData()[0] == 1) {
                     users.add(new User(receivePacket.getSocketAddress(), new String(receivePacket.getData(), 1, receivePacket.getLength())));
                     serverScreen.print("\tTotal players: " + users.size());
                     TellID(users.get(users.size() - 1));
@@ -46,7 +46,7 @@ public class Server extends Thread {
 
                 }
                 //CHAT MSG
-                if ((receivePacket.getData()[0]) == 2) {
+                if (receivePacket.getData()[0] == 2) {
                     String msg = new String(receivePacket.getData(), 1, receivePacket.getLength());
                     serverScreen.print(findPlayer(receivePacket.getData()[1]).name + ": \t" + msg);
 
@@ -60,11 +60,16 @@ public class Server extends Thread {
                 }
 
                 //SEND MAP
-                if ((receivePacket.getData()[0]) == 3) {
+                if (receivePacket.getData()[0] == 3) {
                     User u = findPlayer(receivePacket.getData()[1]);
                     u.isReady = true;
                     serverScreen.print(u.name + " is ready");
                     SendMap(serverScreen.speed,serverScreen.GameMap.map, u);
+                }
+
+                if (receivePacket.getData()[0] == 4) {
+                    User u = findPlayer(receivePacket.getData()[1]);
+                    serverScreen.print(u.name + " action: " + receivePacket.getData()[1]);
                 }
 
                 //sendPacketToClient( receivePacket );

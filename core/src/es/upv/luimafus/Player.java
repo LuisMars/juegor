@@ -33,23 +33,34 @@ public class Player implements Comparable<Player>{
     private AStar aStar;
     private boolean bot;
     private boolean netPlayer;
+    private boolean controllable;
     private int ID;
     private Preferences preferences;
     private Map GameMap;
-    public Player(Map gameMap, boolean isBot) {
-        preferences = Gdx.app.getPreferences("sp");
+
+    public Player(Map gameMap) {
         GameMap = gameMap;
         aStar = new AStar(GameMap);
-        bot = isBot;
         n_players++;
         ID = n_players - 1;
+        area = new Area(GameMap);
+        setStartPos();
+    }
+
+    public Player(Map gameMap, boolean isHuman, boolean isNet, String n) {
+        this(gameMap);
+        controllable = isHuman;
+        netPlayer = isNet;
+    }
+
+    public Player(Map gameMap, boolean isBot) {
+        this(gameMap);
+        preferences = Gdx.app.getPreferences("sp");
+        bot = isBot;
         if(bot)
             name = "Bot #" + ID;
         else
             name = preferences.getString("Name", "Player");
-
-        area = new Area(GameMap);
-        setStartPos();
     }
 
     public static void reset() {
@@ -79,6 +90,8 @@ public class Player implements Comparable<Player>{
 
     public void setAction(int a) {
         action = a;
+        if (controllable)
+            Client.sendAction(action);
     }
 
     public void act() {

@@ -15,8 +15,8 @@ public class Client extends Thread {
     private static DatagramSocket socket;
     private static String[] players = new String[100];
     private static int ownID = -1;
-    private InetSocketAddress address;
-    private WaitingScreen waitingScreen;
+    private static InetSocketAddress address;
+    private static WaitingScreen waitingScreen;
 
 
     public Client(WaitingScreen ws, String add) {
@@ -34,6 +34,34 @@ public class Client extends Thread {
         start();
     }
 
+    private static void displayMessage(String msg) {
+        waitingScreen.print(msg);
+    }
+
+    public static void sendAction(int action) {
+        byte[] msg = {(byte) action};
+        sendMsg(4, msg);
+    }
+
+    public static void sendMsg(int code, byte[] msg) {
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+            os.write(code);
+            if (ownID != -1)
+                os.write(ownID);
+            os.write(msg);
+
+            DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
+            if (code == 3)
+                waitingScreen.print(code + " " + ownID + " " + new String(os.toByteArray()));
+            socket.send(sendPacket);
+
+        } catch (IOException ioException) {
+            displayMessage(ioException.toString() + "\n");
+            ioException.printStackTrace();
+        }
+    }
 
     public void run() {
         while (true) {
@@ -95,48 +123,16 @@ public class Client extends Thread {
         }
     }
 
-
-    private void displayMessage(String msg) {
-        waitingScreen.print(msg);
-    }
-
-
     public void sendLogin() {
         sendMsg(1, waitingScreen.name);
     }
 
-
     public void sendChatMsg(String msg) {
-        sendMsg(2,msg);
+        sendMsg(2, msg);
     }
 
     public void requestMap() {
-        sendMsg(3,"");
-    }
-
-    public void sendAction(int action) {
-        byte[] msg = {(byte) action};
-        sendMsg(4, msg);
-    }
-
-    public void sendMsg(int code, byte[] msg) {
-        try {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-            os.write(code);
-            if (ownID != -1)
-                os.write(ownID);
-            os.write(msg);
-
-            DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
-            if (code == 3)
-                waitingScreen.print(code + " " + ownID + " " + new String(os.toByteArray()));
-            socket.send(sendPacket);
-
-        } catch (IOException ioException) {
-            displayMessage(ioException.toString() + "\n");
-            ioException.printStackTrace();
-        }
+        sendMsg(3, "");
     }
 
     public void sendMsg(int code, String msg) {
