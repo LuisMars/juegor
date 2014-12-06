@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Map {
     public int[][] drawMap;
-    public Player humanPlayer;
+    public Player humanPlayer = null;
     public long seed;
     private int[][] map;
     private List<Player> players = new ArrayList<Player>();
@@ -137,7 +137,11 @@ public class Map {
 
     public void addPlayer(Player p) {
         players.add(p);
-        humanPlayer = players.iterator().next();
+    }
+
+    public void addHumanPlayer(Player p) {
+        players.add(p);
+        humanPlayer = p;
     }
 
     public void addAttack(Attack a) {

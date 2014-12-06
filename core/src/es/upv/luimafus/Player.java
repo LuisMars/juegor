@@ -44,13 +44,25 @@ public class Player implements Comparable<Player>{
         n_players++;
         ID = n_players - 1;
         area = new Area(GameMap);
-        setStartPos();
     }
 
-    public Player(Map gameMap, boolean isHuman, boolean isNet, String n) {
+    public Player(Map gameMap, int id, String n, int x, int y, boolean controllable) {
         this(gameMap);
-        controllable = isHuman;
+        ID = id;
+        name = n;
+        this.x = x;
+        this.y = y;
+        this.controllable = controllable;
+        netPlayer = true;
+    }
+
+    public Player(Map gameMap, boolean isControllable, boolean isNet, String n) {
+        this(gameMap);
+        controllable = isControllable;
         netPlayer = isNet;
+        name = n;
+
+        setStartPos();
     }
 
     public Player(Map gameMap, boolean isBot) {
@@ -61,6 +73,8 @@ public class Player implements Comparable<Player>{
             name = "Bot #" + ID;
         else
             name = preferences.getString("Name", "Player");
+
+        setStartPos();
     }
 
     public static void reset() {
@@ -90,8 +104,10 @@ public class Player implements Comparable<Player>{
 
     public void setAction(int a) {
         action = a;
-        if (controllable)
+        if (controllable) {
             Client.sendAction(action);
+            System.out.println(action);
+        }
     }
 
     public void act() {

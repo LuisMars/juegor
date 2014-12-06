@@ -112,12 +112,25 @@ public class WaitingScreen implements Screen {
 
 
     }
-    public void startGame(int[][] map, int speed) {
 
+    public void initialiceMap(int[][] map, int speed) {
         gameScreen = new GameScreen(j, map, speed);
-        gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, true, true, name));
+
+
+    }
+
+    public void addPlayer(byte id, String player, byte x, byte y, boolean controllable) {
+        //if(controllable)
+        gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y, true));
+        //else
+        //gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y, false));
+    }
+
+    public void startGame() {
+
         j.setScreen(gameScreen);
     }
+
 
     public void print(String msg) {
         chat.setText(chat.getText() + "\n" + msg);

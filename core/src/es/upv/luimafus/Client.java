@@ -105,14 +105,19 @@ public class Client extends Thread {
                         //mapa += "\n";
                     }
                     //displayMessage(mapa);
-                    Gdx.app.postRunnable(() -> waitingScreen.startGame(arr, speed));
+                    Gdx.app.postRunnable(() -> waitingScreen.initialiceMap(arr, speed));
 
                 }
 
-                //recibir posiciones
+                //recibir posiciones iniciales
                 if (receivePacket.getData()[0] == 4) {
+                    byte[] d = receivePacket.getData();
+                    for (int i = 1; i + 3 < d.length; i += 3) {
+                        waitingScreen.addPlayer(d[i], players[d[i]], d[i + 1], d[i + 2], d[i] == ownID);
+                        waitingScreen.print(players[d[i]] + " joined the game");
+                    }
 
-
+                    waitingScreen.startGame();
                 }
 
 

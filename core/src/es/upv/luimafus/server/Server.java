@@ -1,5 +1,7 @@
 package es.upv.luimafus.server;
 
+import es.upv.luimafus.Player;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -54,8 +56,6 @@ public class Server extends Thread {
                     for (User u : users) {
                         DatagramPacket sendPacket = new DatagramPacket(receivePacket.getData(), receivePacket.getLength(), u.socketAddress);
                         socket.send(sendPacket);
-
-
                     }
                 }
 
@@ -64,12 +64,14 @@ public class Server extends Thread {
                     User u = findPlayer(receivePacket.getData()[1]);
                     u.isReady = true;
                     serverScreen.print(u.name + " is ready");
-                    SendMap(serverScreen.speed,serverScreen.GameMap.map, u);
+                    SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
+                    u.p = new Player(serverScreen.GameMap, true, false, u.name);
+                    sendInitPos(u);
                 }
 
                 if (receivePacket.getData()[0] == 4) {
                     User u = findPlayer(receivePacket.getData()[1]);
-                    serverScreen.print(u.name + " action: " + receivePacket.getData()[1]);
+                    //serverScreen.print(u.name + " action: " + receivePacket.getData()[2]);
                 }
 
                 //sendPacketToClient( receivePacket );
@@ -80,6 +82,7 @@ public class Server extends Thread {
         }
     }
 
+
     private User findPlayer(byte b) {
         for(User u : users) {
             if(u.playerID == b)
@@ -87,6 +90,23 @@ public class Server extends Thread {
         }
         return null;
     }
+
+    private void sendInitPos(User us) {
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+        msg.write(4);
+        for (User u : users) {
+            if (u.isReady)
+                msg.write(u.p.getX());
+            msg.write(u.p.getY());
+        }
+        DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, us.socketAddress);
+        try {
+            socket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void SendID(User rec, User us) {
         try {

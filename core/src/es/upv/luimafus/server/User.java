@@ -1,5 +1,7 @@
 package es.upv.luimafus.server;
 
+import es.upv.luimafus.Player;
+
 import java.net.SocketAddress;
 
 /**
@@ -12,6 +14,7 @@ public class User {
     String name;
     int playerID;
     boolean isReady = false;
+    Player p;
 
     public User(SocketAddress sa, String n) {
         socketAddress = sa;
