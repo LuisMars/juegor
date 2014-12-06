@@ -112,12 +112,15 @@ public class Client extends Thread {
                 //recibir posiciones iniciales
                 if (receivePacket.getData()[0] == 4) {
                     byte[] d = receivePacket.getData();
-                    for (int i = 1; i + 3 < d.length; i += 3) {
-                        waitingScreen.addPlayer(d[i], players[d[i]], d[i + 1], d[i + 2], d[i] == ownID);
-                        waitingScreen.print(players[d[i]] + " joined the game");
+                    for (String s : players)
+                        System.out.println(s);
+                    for (int i = 0; i < d[1]; i++) {
+                        final int finalI = i;
+                        Gdx.app.postRunnable(() -> waitingScreen.addPlayer(d[2 + (finalI * 3)], players[d[3 + (finalI * 3)]], d[2 + (finalI * 3)], d[4 + (finalI * 3)], d[finalI] == ownID));
+                        //waitingScreen.print(players[d[i]] + " joined the game");
                     }
 
-                    waitingScreen.startGame();
+                    Gdx.app.postRunnable(waitingScreen::startGame);
                 }
 
 

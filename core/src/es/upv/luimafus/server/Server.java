@@ -94,6 +94,11 @@ public class Server extends Thread {
     private void sendInitPos(User us) {
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
         msg.write(4);
+        int i = 0;
+        for (User u : users)
+            if (u.isReady)
+                i++;
+        msg.write(i);
         for (User u : users) {
             if (u.isReady)
                 msg.write(u.p.getX());

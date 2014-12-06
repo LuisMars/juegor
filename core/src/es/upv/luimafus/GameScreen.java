@@ -29,10 +29,6 @@ public class GameScreen implements Screen {
 
     Main j;
 
-    public GameScreen() {
-
-    }
-
     public GameScreen(Main j, int[][] map, int speed) {
 
         assets = new AssetManager();
