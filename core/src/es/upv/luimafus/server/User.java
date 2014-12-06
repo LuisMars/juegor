@@ -7,10 +7,9 @@ import java.net.SocketAddress;
  */
 public class User {
 
+    static int totalPlayers = 0;
     SocketAddress socketAddress;
     String name;
-    
-    static int totalPlayers = 0;
     int playerID;
     boolean isReady = false;
 

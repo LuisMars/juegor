@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Player implements Comparable<Player>{
+    public static int STILL = -1;
     public static int UP = 0;
     public static int RIGHT = 1;
     public static int DOWN = 2;
@@ -17,32 +18,23 @@ public class Player implements Comparable<Player>{
     public static int ALEFT = 7;
 
     public static int AREA = 8;
-
+    public static int n_players = 0;
+    public static float difficulty;
+    public int lastDir = 2;
+    public String name;
+    boolean playStep = false;
     private int x, lastX;
     private int y, lastY;
-
-    public int lastDir = 2;
-
     private int lastAtt = 0; //turns
-    boolean playStep = false;
     private int action;
-
     private int HP = 10;
     private int cHP = HP;
-
     private Area area;
-
     private AStar aStar;
     private boolean bot;
     private boolean netPlayer;
     private int ID;
-    public String name;
-
     private Preferences preferences;
-
-    public static int n_players = 0;
-    public static float difficulty;
-
     private Map GameMap;
     public Player(Map gameMap, boolean isBot) {
         preferences = Gdx.app.getPreferences("sp");
@@ -58,6 +50,10 @@ public class Player implements Comparable<Player>{
 
         area = new Area(GameMap);
         setStartPos();
+    }
+
+    public static void reset() {
+        n_players = 0;
     }
 
     private void setStartPos() {
@@ -88,27 +84,25 @@ public class Player implements Comparable<Player>{
     public void act() {
         switch (action) {
             case -1:
+                move(action);
                 break;
             case 0:
             case 1:
             case 2:
-            case 3: {
+            case 3:
                 lastDir = action;
                 move(action);
                 break;
-            }
             case 4:
             case 5:
             case 6:
-            case 7: {
+            case 7:
                 lastDir = action -4;
                 attack(action-4);
                 break;
-            }
-            case 8: {
+            case 8:
                 attack(-1);
                 break;
-            }
         }
         action = -1;
         lastAtt--;
@@ -117,27 +111,22 @@ public class Player implements Comparable<Player>{
     public void move(int m) {
         int pX = x;
         int pY = y;
-        if(action != -1) {
             switch (m) {
-                case 0: {
+                case 0:
                     pY--;
                     break;
-                }
-                case 2: {
+                case 2:
                     pY++;
                     break;
-                }
-                case 1: {
+                case 1:
                     pX++;
                     break;
-                }
-                case 3: {
+                case 3:
                     pX--;
                     break;
-                }
             }
 
-            if (moveTo(pX, pY)) {
+        if (action != -1 && moveTo(pX, pY)) {
 
                 float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
                 dist *= dist;
@@ -150,10 +139,6 @@ public class Player implements Comparable<Player>{
                 } catch (ArithmeticException e) {
                     playStep = !playStep;
                 }
-
-
-            }
-
         }
     }
 
@@ -209,10 +194,10 @@ public class Player implements Comparable<Player>{
     }
 
     public boolean moveTo(int x, int y) {
+        lastX = this.x;
+        lastY = this.y;
         if(GameMap.canMove(x, y)) {
-            System.out.println("position changed!!!!!");
-            lastX = this.x;
-            lastY = this.y;
+            //System.out.println("position changed!!!!!");
             this.x = x;
             this.y = y;
             return true;
@@ -253,10 +238,6 @@ public class Player implements Comparable<Player>{
         cHP = Math.max(0, cHP-damage);
     }
 
-    public static void reset() {
-        n_players = 0;
-    }
-
     public Color getHPColor() {
         switch ((int)(getHP()*10)) {
             case 10:
@@ -279,12 +260,16 @@ public class Player implements Comparable<Player>{
     }
 
     public float drawPosX(float offset) {
-        System.out.print("\t" + lastX);
-        return (x + ((x - lastX) * offset));
+        /*if(action != -1)
+            return (x + ((x - lastX) * offset));
+        else*/
+        return x;
     }
     public float drawPosY(float offset) {
-        System.out.println("\t" + lastY);
-        return (y + ((y - lastY) * offset));
+        /*if(action != -1)
+            return (y + ((y - lastY) * offset));
+        else*/
+        return y;
     }
 
     @Override

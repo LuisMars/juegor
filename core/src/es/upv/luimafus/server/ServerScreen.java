@@ -10,10 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import es.upv.luimafus.GameFinishedScreen;
 import es.upv.luimafus.Main;
-
-import java.io.IOException;
 
 /**
  * Created by Luis on 26/11/2014.

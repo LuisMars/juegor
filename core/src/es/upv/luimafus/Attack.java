@@ -1,14 +1,14 @@
 package es.upv.luimafus;
 
 public class Attack {
+    public int time;
     protected int x;
     protected int y;
-    public int time;
-    private int maxTime;
     protected int direction;
     protected int damage;
     protected int father;
     protected int radius;
+    private int maxTime;
 
     public Attack(int x, int y, int ID, int r, int tr) {
         this.x = x;

@@ -2,8 +2,12 @@ package es.upv.luimafus;
 
 import com.badlogic.gdx.Gdx;
 
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
 
 
 public class Client extends Thread {
@@ -62,18 +66,24 @@ public class Client extends Thread {
                     displayMessage("Map received");
                     byte[] d = receivePacket.getData();
                     int[][] arr = new int[d[1]][d[2]];
-                    int speed = d[4];
+                    int speed = d[3];
                     int n = 4;
-                    String mapa = "";
+                    //String mapa = "";
                     for (int i = 0; i < arr.length; i++) {
                         for (int j = 0; j < arr[0].length; j++) {
                             arr[i][j] = d[n++];
-                            mapa += arr[i][j] + "\t";
+                            //mapa += arr[i][j] + "\t";
                         }
-                        mapa += "\n";
+                        //mapa += "\n";
                     }
-                    displayMessage(mapa);
+                    //displayMessage(mapa);
                     Gdx.app.postRunnable(() -> waitingScreen.startGame(arr, speed));
+
+                }
+
+                //recibir posiciones
+                if (receivePacket.getData()[0] == 4) {
+
 
                 }
 
@@ -97,21 +107,29 @@ public class Client extends Thread {
 
 
     public void sendChatMsg(String msg) {
-
         sendMsg(2,msg);
     }
 
-    public void sendMsg(int code, String msg) {
+    public void requestMap() {
+        sendMsg(3,"");
+    }
+
+    public void sendAction(int action) {
+        byte[] msg = {(byte) action};
+        sendMsg(4, msg);
+    }
+
+    public void sendMsg(int code, byte[] msg) {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
 
             os.write(code);
-            if(ownID != -1)
+            if (ownID != -1)
                 os.write(ownID);
-            os.write(msg.getBytes());
+            os.write(msg);
 
             DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
-            if(code == 3)
+            if (code == 3)
                 waitingScreen.print(code + " " + ownID + " " + new String(os.toByteArray()));
             socket.send(sendPacket);
 
@@ -121,8 +139,7 @@ public class Client extends Thread {
         }
     }
 
-    public void requestMap() {
-        sendMsg(3,"");
+    public void sendMsg(int code, String msg) {
+        sendMsg(code, msg.getBytes());
     }
-
 }

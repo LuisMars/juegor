@@ -14,11 +14,9 @@ import com.badlogic.gdx.utils.TimeUtils;
  * Created by Luis on 22/11/2014.
  */
 public class GameScreen implements Screen {
-    Map GameMap;
-
-    SpriteBatch batch;
-
     public AssetManager assets;
+    Map GameMap;
+    SpriteBatch batch;
     int c = 32;
     long time = 0;
     boolean turn = true;
@@ -146,7 +144,7 @@ public class GameScreen implements Screen {
             batch.draw(assets.player[p.getID()%5][p.lastDir], xOffset*c, trueHeight() - yOffset*c + c/4);
             //if(!p.isBot())  batch.draw(cursor, p.getX() * 16, trueHeight() - (p.getY() * 16));
             if(p == GameMap.humanPlayer)
-                System.out.println(p.drawPosX(offset) + "\t" + p.drawPosY(offset) + "\t" + offset);
+                //System.out.println(p.drawPosX(offset) + "\t" + p.drawPosY(offset) + "\t" + offset);
             if(d > 5)
                 continue;
 
@@ -270,6 +268,9 @@ public class GameScreen implements Screen {
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.A)) {
             GameMap.act(Player.LEFT);
+        } else {
+            GameMap.act(Player.STILL);
+            //System.out.println("Not moving!");
         }
     }
 }

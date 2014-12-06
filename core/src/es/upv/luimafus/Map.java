@@ -4,18 +4,16 @@ package es.upv.luimafus;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.*;
-import java.util.List;
 
 
 public class Map {
-    private int[][] map;
     public int[][] drawMap;
-
+    public Player humanPlayer;
+    public long seed;
+    private int[][] map;
     private List<Player> players = new ArrayList<Player>();
     private Collection<Attack> attacks = new ArrayList<Attack>();
-    public Player humanPlayer;
     private GameScreen gs;
-    public long seed;
 
     public Map() {
 

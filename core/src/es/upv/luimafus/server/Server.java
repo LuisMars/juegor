@@ -11,9 +11,8 @@ import java.util.List;
 public class Server extends Thread {
 
     List<User> users = new ArrayList<User>();
-    private DatagramSocket socket;
-
     ServerScreen serverScreen;
+    private DatagramSocket socket;
     public Server(ServerScreen serverScreen, int port) {
 
         serverScreen.print("Creating server...");
