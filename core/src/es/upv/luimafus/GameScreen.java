@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
         this.j = j;
         GameMap = new Map(this, w, h, d);
         Player.difficulty = diff;
-        GameMap.addPlayer(new Player(GameMap,false));
+        GameMap.addHumanPlayer(new Player(GameMap, false));
         for(int i = 0; i < bots; i++)
             GameMap.addPlayer(new Player(GameMap,true));
         this.speed = speed;
