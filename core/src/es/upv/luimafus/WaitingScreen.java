@@ -130,6 +130,7 @@ public class WaitingScreen implements Screen {
     public void setPlayer(byte id, byte action, byte chp) {
         gameScreen.GameMap.getPlayers().stream().filter(
                 p -> p.getID() == id).forEach(p -> p.setAction(action).setcHP(chp));
+        //System.out.println(id + " " + action + " " + chp);
     }
 
     public void startGame() {
@@ -160,11 +161,12 @@ public class WaitingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.draw();
-        stage.act(delta);
-
+        if (j.getScreen() == this) {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            stage.draw();
+            stage.act(delta);
+        }
     }
 
     @Override

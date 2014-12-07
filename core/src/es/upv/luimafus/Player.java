@@ -26,7 +26,7 @@ public class Player implements Comparable<Player>{
     private int x, lastX;
     private int y, lastY;
     private int lastAtt = 0; //turns
-    private int action;
+    private int action = -1;
     private int HP = 10;
     private int cHP = HP;
     private Area area;
@@ -103,9 +103,10 @@ public class Player implements Comparable<Player>{
     }
 
     public void act() {
+
+        //System.out.println(x + " " + y);
         switch (action) {
             case -1:
-                move(action);
                 break;
             case 0:
             case 1:
@@ -225,8 +226,6 @@ public class Player implements Comparable<Player>{
     }
 
     public boolean moveTo(int x, int y) {
-        lastX = this.x;
-        lastY = this.y;
         if(GameMap.canMove(x, y)) {
             //System.out.println("position changed!!!!!");
             this.x = x;

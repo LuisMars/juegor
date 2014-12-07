@@ -136,11 +136,11 @@ public class Map {
 
     public void addPlayer(Player p) {
         players.add(p);
-        System.out.println("adding net player");
+        //System.out.println("adding net player");
     }
 
     public void addHumanPlayer(Player p) {
-        System.out.println("adding human player");
+        //System.out.println("adding human player");
         players.add(p);
         humanPlayer = p;
     }

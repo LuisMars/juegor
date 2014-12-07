@@ -132,7 +132,6 @@ public class Client extends Thread {
 
                     Gdx.app.postRunnable(waitingScreen::startGame);
                 }
-                //TODO: hacer que actualice
                 //recibir estado
                 if (receivePacket.getData()[0] == 5) {
                     byte[] d = receivePacket.getData();

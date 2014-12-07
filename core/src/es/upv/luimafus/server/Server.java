@@ -1,6 +1,5 @@
 package es.upv.luimafus.server;
 
-import es.upv.luimafus.Attack;
 import es.upv.luimafus.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -9,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class Server extends Thread {
@@ -32,7 +30,7 @@ public class Server extends Thread {
         start();
     }
 
-    public static void sendUpdate(Collection<Attack> attacks) {
+    public static void sendUpdate() {
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
         msg.write(5);
         int i = 0;
@@ -45,12 +43,13 @@ public class Server extends Thread {
             msg.write(u.p.getAction());
             msg.write(u.p.getcHP());
         });
+        /*
         msg.write(attacks.size());
         for (Attack a : attacks) {
             msg.write(a.getID());
             msg.write(a.getX());
             msg.write(a.getY());
-        }
+        }*/
         users.stream().filter(u -> u.isReady).forEach(u -> sendBytes(u, msg));
     }
 

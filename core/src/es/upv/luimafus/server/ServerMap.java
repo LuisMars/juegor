@@ -140,11 +140,11 @@ public class ServerMap extends Map {
     }
 
     public void updateState() {
-        System.out.print(".");
+        //System.out.print(".");
         for (Player p : players) {
             p.updateArea();
             p.act();
-            System.out.println(p.getcHP());
+            //System.out.println(p.getcHP());
         }
         //players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
@@ -182,26 +182,12 @@ public class ServerMap extends Map {
         return map[0].length;
     }
 
-    public boolean movePlayer(Player p, int x, int y) {
-        boolean canM = canMove(x,y);
-        if(canM)
-            p.moveTo(x,y);
-        return canM;
-    }
-
     public boolean canMove(int x, int y) {
         for(Player p : players) {
             if(p.getX() == x && p.getY() == y)
                 return false;
         }
         return !(x < 0 || y < 0 || x >= map.length || y >= map[0].length) && map[x][y] == 0;
-    }
-
-    public Player nextPlayer() {
-        return nextTo(humanPlayer);
-    }
-    private Player nextTo(Player p) {
-        return players.get((players.indexOf(p)+1)%players.size());
     }
 
     public int getCell(int x, int y) {
