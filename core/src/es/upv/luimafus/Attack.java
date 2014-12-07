@@ -56,13 +56,8 @@ public class Attack {
         }
     }
 
-    public char getID() {
-        if(direction == -1)
-            return ',';
-        else if(direction%2 == 0)
-            return '|';
-        else
-            return '-';
+    public int getID() {
+        return direction;
     }
 
     public int getX() {

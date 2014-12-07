@@ -102,14 +102,6 @@ public class Player implements Comparable<Player>{
         }
     }
 
-    public void setAction(int a) {
-        action = a;
-        if (controllable) {
-            Client.sendAction(action);
-            System.out.println(action);
-        }
-    }
-
     public void act() {
         switch (action) {
             case -1:
@@ -126,8 +118,8 @@ public class Player implements Comparable<Player>{
             case 5:
             case 6:
             case 7:
-                lastDir = action -4;
-                attack(action-4);
+                lastDir = action - 4;
+                attack(action - 4);
                 break;
             case 8:
                 attack(-1);
@@ -239,6 +231,10 @@ public class Player implements Comparable<Player>{
         return bot;
     }
 
+    public boolean isNetPlayer() {
+        return netPlayer;
+    }
+
     public int getX() {
         return x;
     }
@@ -257,6 +253,22 @@ public class Player implements Comparable<Player>{
 
     public double getHP() {
         return cHP*1.0/HP;
+    }
+
+    public int getcHP() {
+        return cHP;
+    }
+
+    public int getAction() {
+        return action;
+    }
+
+    public void setAction(int a) {
+        action = a;
+        if (controllable) {
+            Client.sendAction(action);
+            //System.out.println(action);
+        }
     }
 
     public boolean isDead() {

@@ -1,5 +1,6 @@
 package es.upv.luimafus.server;
 
+import es.upv.luimafus.Attack;
 import es.upv.luimafus.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -8,13 +9,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Server extends Thread {
 
-    List<User> users = new ArrayList<User>();
-    ServerScreen serverScreen;
-    private DatagramSocket socket;
+    static List<User> users = new ArrayList<User>();
+    static ServerScreen serverScreen;
+    private static DatagramSocket socket;
     public Server(ServerScreen serverScreen, int port) {
 
         serverScreen.print("Creating server...");
@@ -28,6 +30,33 @@ public class Server extends Thread {
             System.exit(1);
         }
         start();
+    }
+
+    public static void sendUpdate(Collection<Attack> attacks) {
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+        msg.write(5);
+        msg.write(users.size());
+        users.stream().filter(u -> u.isReady).forEach(u -> {
+            msg.write(u.playerID);
+            msg.write(u.p.getAction());
+            msg.write(u.p.getcHP());
+        });
+        msg.write(attacks.size());
+        for (Attack a : attacks) {
+            msg.write(a.getID());
+            msg.write(a.getX());
+            msg.write(a.getY());
+        }
+        users.stream().filter(u -> u.isReady).forEach(u -> sendBytes(u, msg));
+    }
+
+    private static void sendBytes(User us, ByteArrayOutputStream msg) {
+        DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, us.socketAddress);
+        try {
+            socket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
@@ -82,7 +111,6 @@ public class Server extends Thread {
         }
     }
 
-
     private User findPlayer(byte b) {
         for(User u : users) {
             if(u.playerID == b)
@@ -99,37 +127,27 @@ public class Server extends Thread {
             if (u.isReady)
                 i++;
         msg.write(i);
-        for (User u : users) {
-            if (u.isReady)
-                msg.write(u.p.getX());
+        users.stream().filter(u -> u.isReady).forEach(u -> {
+            msg.write(u.playerID);
+            msg.write(u.p.getX());
             msg.write(u.p.getY());
-        }
-        DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, us.socketAddress);
-        try {
-            socket.send(sendPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
+        sendBytes(us, msg);
     }
 
-
     private void SendID(User rec, User us) {
-        try {
+
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
 
             msg.write(1);
             msg.write(us.playerID);
+        try {
             msg.write(us.name.getBytes());
-
-
-
-            DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, rec.socketAddress);
-
-            socket.send(sendPacket);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        sendBytes(rec, msg);
     }
 
     private void SendIDAll(User us) {
@@ -152,13 +170,7 @@ public class Server extends Thread {
         msg.write(us.playerID);
 
 
-        DatagramPacket sendPacket = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, us.socketAddress);
-        try {
-            socket.send(sendPacket);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        sendBytes(us, msg);
     }
 
     private void SendMap(int speed, int[][] a, User u) {
@@ -173,13 +185,7 @@ public class Server extends Thread {
                 msg.write((byte) a[i][j]);
             }
         }
-        DatagramPacket sendMap = new DatagramPacket(msg.toByteArray(), msg.toByteArray().length, u.socketAddress);
-        try {
-            socket.send(sendMap);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        sendBytes(u, msg);
     }
 }
 

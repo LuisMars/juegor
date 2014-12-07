@@ -120,10 +120,10 @@ public class WaitingScreen implements Screen {
     }
 
     public void addPlayer(byte id, String player, byte x, byte y, boolean controllable) {
-        //if(controllable)
-        gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y, true));
-        //else
-        //gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y, false));
+        if (controllable)
+            gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y, true));
+        else
+            gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y, false));
     }
 
     public void startGame() {

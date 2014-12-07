@@ -38,11 +38,6 @@ public class Client extends Thread {
         waitingScreen.print(msg);
     }
 
-    public static void sendAction(int action) {
-        byte[] msg = {(byte) action};
-        sendMsg(4, msg);
-    }
-
     public static void sendMsg(int code, byte[] msg) {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -54,13 +49,18 @@ public class Client extends Thread {
 
             DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
             if (code == 3)
-                waitingScreen.print(code + " " + ownID + " " + new String(os.toByteArray()));
+                displayMessage(code + " " + ownID + " " + new String(os.toByteArray()));
             socket.send(sendPacket);
 
         } catch (IOException ioException) {
             displayMessage(ioException.toString() + "\n");
             ioException.printStackTrace();
         }
+    }
+
+    public static void sendAction(int action) {
+        byte[] msg = {(byte) action};
+        sendMsg(4, msg);
     }
 
     public void run() {
@@ -112,11 +112,38 @@ public class Client extends Thread {
                 //recibir posiciones iniciales
                 if (receivePacket.getData()[0] == 4) {
                     byte[] d = receivePacket.getData();
-                    for (String s : players)
-                        System.out.println(s);
                     for (int i = 0; i < d[1]; i++) {
                         final int finalI = i;
-                        Gdx.app.postRunnable(() -> waitingScreen.addPlayer(d[2 + (finalI * 3)], players[d[3 + (finalI * 3)]], d[2 + (finalI * 3)], d[4 + (finalI * 3)], d[finalI] == ownID));
+                        Gdx.app.postRunnable(() ->
+                                waitingScreen.addPlayer(
+                                        d[2 + (finalI * 3)],
+                                        players[d[2 + (finalI * 3)]],
+                                        d[3 + (finalI * 3)],
+                                        d[4 + (finalI * 3)],
+                                        d[finalI] == ownID));
+                        //waitingScreen.print(players[d[i]] + " joined the game");
+                    }
+
+                    Gdx.app.postRunnable(waitingScreen::startGame);
+                }
+                //TODO: hacer que actualice
+                //recibir estado
+                if (receivePacket.getData()[0] == 6) {
+                    byte[] d = receivePacket.getData();
+
+                    for (byte b : d) {
+                        System.out.print(b + " ");
+                    }
+                    System.out.println();
+                    for (int i = 0; i < d[1]; i++) {
+                        final int finalI = i;
+                        Gdx.app.postRunnable(() ->
+                                waitingScreen.addPlayer(
+                                        d[2 + (finalI * 3)],
+                                        players[d[2 + (finalI * 3)]],
+                                        d[3 + (finalI * 3)],
+                                        d[4 + (finalI * 3)],
+                                        d[finalI] == ownID));
                         //waitingScreen.print(players[d[i]] + " joined the game");
                     }
 
