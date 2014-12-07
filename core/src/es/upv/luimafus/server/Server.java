@@ -35,7 +35,11 @@ public class Server extends Thread {
     public static void sendUpdate(Collection<Attack> attacks) {
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
         msg.write(5);
-        msg.write(users.size());
+        int i = 0;
+        for (User u : users)
+            if (u.isReady)
+                i++;
+        msg.write(i);
         users.stream().filter(u -> u.isReady).forEach(u -> {
             msg.write(u.playerID);
             msg.write(u.p.getAction());
@@ -94,13 +98,18 @@ public class Server extends Thread {
                     u.isReady = true;
                     serverScreen.print(u.name + " is ready");
                     SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
-                    u.p = new Player(serverScreen.GameMap, true, false, u.name);
+                    u.p = new Player(serverScreen.GameMap, false, false, u.name);
                     sendInitPos(u);
                 }
-
+                //receive pos
                 if (receivePacket.getData()[0] == 4) {
                     User u = findPlayer(receivePacket.getData()[1]);
+                    u.p.setAction(receivePacket.getData()[2]);
                     //serverScreen.print(u.name + " action: " + receivePacket.getData()[2]);
+                    for (int i = 0; i < 4; i++) {
+                        System.out.print(receivePacket.getData()[i] + " ");
+                    }
+                    System.out.println();
                 }
 
                 //sendPacketToClient( receivePacket );
@@ -111,9 +120,9 @@ public class Server extends Thread {
         }
     }
 
-    private User findPlayer(byte b) {
+    public User findPlayer(byte id) {
         for(User u : users) {
-            if(u.playerID == b)
+            if (u.playerID == id)
                 return u;
         }
         return null;

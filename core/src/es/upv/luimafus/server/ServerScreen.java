@@ -126,6 +126,7 @@ public class ServerScreen implements Screen {
         stage.draw();
         stage.act(delta);
 
+        Server.sendUpdate(GameMap.getAttacks());
         if(TimeUtils.timeSinceMillis(time) > speed) {
             // los ataques cada x
             GameMap.updateAttacks();
@@ -137,7 +138,6 @@ public class ServerScreen implements Screen {
             time = TimeUtils.millis();
         }
 
-        Server.sendUpdate(GameMap.getAttacks());
         //si hay un ganador, vuelve a la pantalla principal
         if(GameMap.haveAWinner()) {
             print(GameMap.winner());

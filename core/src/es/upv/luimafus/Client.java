@@ -38,6 +38,16 @@ public class Client extends Thread {
         waitingScreen.print(msg);
     }
 
+    public static void sendAction(int action) {
+        byte[] msg = {(byte) action};
+
+        sendMsg(4, msg);
+        for (byte b : msg) {
+            System.out.print(b + " ");
+        }
+        System.out.println();
+    }
+
     public static void sendMsg(int code, byte[] msg) {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -56,11 +66,6 @@ public class Client extends Thread {
             displayMessage(ioException.toString() + "\n");
             ioException.printStackTrace();
         }
-    }
-
-    public static void sendAction(int action) {
-        byte[] msg = {(byte) action};
-        sendMsg(4, msg);
     }
 
     public void run() {
@@ -120,7 +125,7 @@ public class Client extends Thread {
                                         players[d[2 + (finalI * 3)]],
                                         d[3 + (finalI * 3)],
                                         d[4 + (finalI * 3)],
-                                        d[finalI] == ownID));
+                                        d[2 + (finalI * 3)] == ownID));
                         //waitingScreen.print(players[d[i]] + " joined the game");
                     }
 
@@ -128,23 +133,20 @@ public class Client extends Thread {
                 }
                 //TODO: hacer que actualice
                 //recibir estado
-                if (receivePacket.getData()[0] == 6) {
+                if (receivePacket.getData()[0] == 5) {
                     byte[] d = receivePacket.getData();
-
+                    /*
                     for (byte b : d) {
                         System.out.print(b + " ");
-                    }
+                    }*/
                     System.out.println();
                     for (int i = 0; i < d[1]; i++) {
                         final int finalI = i;
                         Gdx.app.postRunnable(() ->
-                                waitingScreen.addPlayer(
+                                waitingScreen.setPlayer(
                                         d[2 + (finalI * 3)],
-                                        players[d[2 + (finalI * 3)]],
                                         d[3 + (finalI * 3)],
-                                        d[4 + (finalI * 3)],
-                                        d[finalI] == ownID));
-                        //waitingScreen.print(players[d[i]] + " joined the game");
+                                        d[4 + (finalI * 3)]));
                     }
 
                     Gdx.app.postRunnable(waitingScreen::startGame);
@@ -173,4 +175,6 @@ public class Client extends Thread {
     public void sendMsg(int code, String msg) {
         sendMsg(code, msg.getBytes());
     }
+
+
 }

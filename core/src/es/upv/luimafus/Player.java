@@ -259,16 +259,22 @@ public class Player implements Comparable<Player>{
         return cHP;
     }
 
+    public void setcHP(int chp) {
+        cHP = chp;
+    }
+
     public int getAction() {
         return action;
     }
 
-    public void setAction(int a) {
-        action = a;
+    public Player setAction(int a) {
+        if (!netPlayer)
+            action = a;
         if (controllable) {
-            Client.sendAction(action);
+            Client.sendAction(a);
             //System.out.println(action);
         }
+        return this;
     }
 
     public boolean isDead() {
@@ -312,6 +318,7 @@ public class Player implements Comparable<Player>{
         else*/
         return y;
     }
+
 
     @Override
     public int compareTo(Player o) {

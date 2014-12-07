@@ -120,10 +120,17 @@ public class WaitingScreen implements Screen {
     }
 
     public void addPlayer(byte id, String player, byte x, byte y, boolean controllable) {
-        if (controllable)
+        if (controllable) {
             gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y, true));
-        else
+            print("Adding controllable player");
+        } else {
             gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y, false));
+            print("Adding non controllable player");
+        }
+    }
+
+    public void setPlayer(byte id, byte action, byte chp) {
+        gameScreen.GameMap.getPlayers().get(id).setAction(action).setcHP(chp);
     }
 
     public void startGame() {
@@ -191,4 +198,6 @@ public class WaitingScreen implements Screen {
     public void dispose() {
         stage.dispose();
     }
+
+
 }
