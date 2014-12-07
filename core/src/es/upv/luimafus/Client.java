@@ -143,12 +143,16 @@ public class Client extends Thread {
                         final int finalI = i;
                         Gdx.app.postRunnable(() ->
                                 waitingScreen.setPlayer(
-                                        d[2 + (finalI * 3)],
-                                        d[3 + (finalI * 3)],
-                                        d[4 + (finalI * 3)]));
+                                        d[2 + (finalI * 5)],
+                                        d[3 + (finalI * 5)],
+                                        d[4 + (finalI * 5)],
+                                        d[5 + (finalI * 5)],
+                                        d[6 + (finalI * 5)]));
                     }
 
-                    Gdx.app.postRunnable(waitingScreen::startGame);
+                    //for (int i = 0; i < d[1]; i++) {
+
+                    //Gdx.app.postRunnable(waitingScreen::startGame);
                 }
 
 

@@ -34,10 +34,7 @@ public class GameScreen implements Screen {
         GameMap = new Map(this, map);
         this.speed = speed;
 
-        AssetManager.ambient.play();
-        AssetManager.ambient.setLooping(true);
 
-        camera = new OrthographicCamera(width, height);
     }
 
     public GameScreen(Main j, int w, int h, double d, int bots, float diff, int speed) {
@@ -50,10 +47,6 @@ public class GameScreen implements Screen {
         for(int i = 0; i < bots; i++)
             GameMap.addPlayer(new Player(GameMap,true));
         this.speed = speed;
-        AssetManager.ambient.play();
-        AssetManager.ambient.setLooping(true);
-
-        camera = new OrthographicCamera(width, height);
     }
 
     @Override
@@ -205,9 +198,12 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
+        camera = new OrthographicCamera(width, height);
         camera.zoom = 0.5f;
 
 
+        AssetManager.ambient.play();
+        AssetManager.ambient.setLooping(true);
         //camera.position.set(GameMap.humanPlayer.getX() * c, trueHeight() - (GameMap.humanPlayer.getY() * c), 0);
     }
 

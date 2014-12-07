@@ -1,5 +1,6 @@
 package es.upv.luimafus.server;
 
+import es.upv.luimafus.Attack;
 import es.upv.luimafus.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,8 @@ public class Server extends Thread {
     static List<User> users = new ArrayList<User>();
     static ServerScreen serverScreen;
     private static DatagramSocket socket;
+
+    public int minReadyPlayers = 2;
     public Server(ServerScreen serverScreen, int port) {
 
         serverScreen.print("Creating server...");
@@ -40,16 +43,18 @@ public class Server extends Thread {
         msg.write(i);
         users.stream().filter(u -> u.isReady).forEach(u -> {
             msg.write(u.playerID);
-            msg.write(u.p.getAction());
+            msg.write(u.p.getX());
+            msg.write(u.p.getY());
+            msg.write(u.p.lastDir);
             msg.write(u.p.getcHP());
         });
-        /*
-        msg.write(attacks.size());
-        for (Attack a : attacks) {
+
+        msg.write(serverScreen.GameMap.getAttacks().size());
+        for (Attack a : serverScreen.GameMap.getAttacks()) {
             msg.write(a.getID());
             msg.write(a.getX());
             msg.write(a.getY());
-        }*/
+        }
         users.stream().filter(u -> u.isReady).forEach(u -> sendBytes(u, msg));
     }
 
@@ -95,17 +100,19 @@ public class Server extends Thread {
                 if (receivePacket.getData()[0] == 3) {
                     User u = findPlayer(receivePacket.getData()[1]);
                     u.isReady = true;
+                    User.readyPlayers++;
                     serverScreen.print(u.name + " is ready");
                     SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
                     u.p = new Player(serverScreen.GameMap, u.name);
                     serverScreen.GameMap.addPlayer(u.p);
-                    sendInitPos(u);
+                    if (User.readyPlayers >= minReadyPlayers)
+                        sendInitPos();
                 }
                 //receive pos
                 if (receivePacket.getData()[0] == 4) {
                     User u = findPlayer(receivePacket.getData()[1]);
                     u.p.setAction(receivePacket.getData()[2]);
-                    //serverScreen.print(u.name + " action: " + receivePacket.getData()[2]);
+                    System.out.println("server:\t" + u.name + ": " + u.p.getAction() + " " + u.p.getX() + " " + u.p.getY());
                     /*
                     for (int i = 0; i < 4; i++) {
                         System.out.print(receivePacket.getData()[i] + " ");
@@ -129,7 +136,7 @@ public class Server extends Thread {
         return null;
     }
 
-    private void sendInitPos(User us) {
+    private void sendInitPos() {
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
         msg.write(4);
         int i = 0;
@@ -142,7 +149,9 @@ public class Server extends Thread {
             msg.write(u.p.getX());
             msg.write(u.p.getY());
         });
-        sendBytes(us, msg);
+        users.stream().filter(u -> u.isReady).forEach(u ->
+                        sendBytes(u, msg)
+        );
     }
 
     private void SendID(User rec, User us) {

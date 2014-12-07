@@ -127,9 +127,9 @@ public class WaitingScreen implements Screen {
         }
     }
 
-    public void setPlayer(byte id, byte action, byte chp) {
+    public void setPlayer(byte id, byte x, byte y, byte lastdir, byte chp) {
         gameScreen.GameMap.getPlayers().stream().filter(
-                p -> p.getID() == id).forEach(p -> p.setAction(action).setcHP(chp));
+                p -> p.getID() == id).forEach(p -> p.updateState(x, y, lastdir, chp));
         //System.out.println(id + " " + action + " " + chp);
     }
 

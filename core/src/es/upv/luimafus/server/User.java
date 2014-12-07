@@ -10,6 +10,7 @@ import java.net.SocketAddress;
 public class User {
 
     static int totalPlayers = 0;
+    static int readyPlayers = 0;
     SocketAddress socketAddress;
     String name;
     int playerID;

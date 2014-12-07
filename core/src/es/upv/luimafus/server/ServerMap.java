@@ -144,7 +144,7 @@ public class ServerMap extends Map {
         for (Player p : players) {
             p.updateArea();
             p.act();
-            //System.out.println(p.getcHP());
+            System.out.println("Map :\t" + p.name + ": " + p.getAction() + " " + p.getX() + " " + p.getY());
         }
         //players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);

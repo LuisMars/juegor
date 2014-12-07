@@ -103,6 +103,7 @@ public class Player implements Comparable<Player>{
     }
 
     public void act() {
+        System.out.println("Player:\t" + name + ": " + getAction() + " " + getX() + " " + getY());
 
         //System.out.println(x + " " + y);
         switch (action) {
@@ -126,7 +127,7 @@ public class Player implements Comparable<Player>{
                 attack(-1);
                 break;
         }
-        action = -1;
+        //action = -1;
         lastAtt--;
     }
 
@@ -147,8 +148,9 @@ public class Player implements Comparable<Player>{
                     pX--;
                     break;
             }
+        boolean canMove = moveTo(pX, pY);
 
-        if (!serverPlayer && moveTo(pX, pY) && action != -1) {
+        if (!serverPlayer && canMove && action != -1) {
 
                 float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
                 dist *= dist;
@@ -223,6 +225,14 @@ public class Player implements Comparable<Player>{
             else
                 move(dir);
         }
+    }
+
+    public void updateState(int x, int y, int lastDir, int cHP) {
+        System.out.println(x + " " + y + " " + cHP);
+        this.x = x;
+        this.y = y;
+        this.lastDir = lastDir;
+        this.cHP = cHP;
     }
 
     public boolean moveTo(int x, int y) {
