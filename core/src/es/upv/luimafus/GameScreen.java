@@ -179,7 +179,7 @@ public class GameScreen implements Screen {
             if (a.getDirection() != -1)
                 batch.draw(assets.arrow[a.getDirection()], a.getX() * c, trueHeight() - (a.getY() * c) + c/4);
             else
-                batch.draw(assets.area[a.time], a.getX() * c, trueHeight() - (a.getY() * c));
+                batch.draw(assets.area[a.getTime()], a.getX() * c, trueHeight() - (a.getY() * c));
         }
     }
 

@@ -139,7 +139,8 @@ public class Client extends Thread {
                     for (byte b : d) {
                         System.out.print(b + " ");
                     }*/
-                    for (int i = 0; i < d[1]; i++) {
+                    int n = d[1]; //n players
+                    for (int i = 0; i < n; i++) {
                         final int finalI = i;
                         Gdx.app.postRunnable(() ->
                                 waitingScreen.setPlayer(
@@ -149,8 +150,16 @@ public class Client extends Thread {
                                         d[5 + (finalI * 5)],
                                         d[6 + (finalI * 5)]));
                     }
-
-                    //for (int i = 0; i < d[1]; i++) {
+                    int a = d[2 + 5 * n]; // n attacks
+                    for (int i = 0; i < a; i++) {
+                        final int finalI = i;
+                        Gdx.app.postRunnable(() ->
+                                waitingScreen.setAttack(
+                                        d[a + 1 + (finalI * 4)],
+                                        d[a + 2 + (finalI * 4)],
+                                        d[a + 3 + (finalI * 4)],
+                                        d[a + 4 + (finalI * 4)]));
+                    }
 
                     //Gdx.app.postRunnable(waitingScreen::startGame);
                 }

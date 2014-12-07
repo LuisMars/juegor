@@ -8,7 +8,19 @@ public class Attack {
     protected int damage;
     protected int father;
     protected int radius;
+    protected int frame;
     private int maxTime;
+    private boolean netAttack = false;
+
+    public Attack(int dir, int x, int y, byte frame) {
+        direction = dir;
+        this.x = x;
+        this.y = y;
+        time = 1;
+        this.frame = frame;
+        netAttack = true;
+
+    }
 
     public Attack(int x, int y, int ID, int r, int tr) {
         this.x = x;
@@ -87,7 +99,10 @@ public class Attack {
         return direction;
     }
 
-    public int getTime(int l) {
-        return Math.max(0,l-1-(int)((l)*(time*1.0/maxTime)));
+    public int getTime() {
+        if (netAttack)
+            return frame;
+        else
+            return time;
     }
 }

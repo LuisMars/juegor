@@ -48,12 +48,14 @@ public class Server extends Thread {
             msg.write(u.p.lastDir);
             msg.write(u.p.getcHP());
         });
-
-        msg.write(serverScreen.GameMap.getAttacks().size());
-        for (Attack a : serverScreen.GameMap.getAttacks()) {
-            msg.write(a.getID());
-            msg.write(a.getX());
-            msg.write(a.getY());
+        if (serverScreen != null) {
+            msg.write(serverScreen.GameMap.getAttacks().size());
+            for (Attack a : serverScreen.GameMap.getAttacks()) {
+                msg.write(a.getDirection());
+                msg.write(a.getX());
+                msg.write(a.getY());
+                msg.write(a.getTime());
+            }
         }
         users.stream().filter(u -> u.isReady).forEach(u -> sendBytes(u, msg));
     }

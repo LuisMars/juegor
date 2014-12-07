@@ -133,6 +133,9 @@ public class WaitingScreen implements Screen {
         //System.out.println(id + " " + action + " " + chp);
     }
 
+    public void setAttack(byte dir, byte x, byte y, byte frame) {
+        gameScreen.GameMap.addAttack(new Attack(dir, x, y, frame));
+    }
     public void startGame() {
 
         j.setScreen(gameScreen);
