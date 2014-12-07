@@ -148,7 +148,7 @@ public class Player implements Comparable<Player>{
                     break;
             }
 
-        if (!serverPlayer && action != -1 && moveTo(pX, pY)) {
+        if (!serverPlayer && moveTo(pX, pY) && action != -1) {
 
                 float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
                 dist *= dist;

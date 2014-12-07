@@ -58,7 +58,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
+        updateCameraPos();
+        camera.update();
         //teclas de entrada
         getInput();
 
@@ -78,8 +79,6 @@ public class GameScreen implements Screen {
 
         //cosas de la librería para repintar y actualizar la cámara
 
-        updateCameraPos();
-        camera.update();
 
         Gdx.gl.glClearColor(0.0549019607843137f, 0.0509803921568627f, 0.06274509803921568627450980392157f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
