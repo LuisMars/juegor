@@ -98,7 +98,8 @@ public class Server extends Thread {
                     u.isReady = true;
                     serverScreen.print(u.name + " is ready");
                     SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
-                    u.p = new Player(serverScreen.GameMap, false, false, u.name);
+                    u.p = new Player(serverScreen.GameMap, u.name);
+                    serverScreen.GameMap.addPlayer(u.p);
                     sendInitPos(u);
                 }
                 //receive pos

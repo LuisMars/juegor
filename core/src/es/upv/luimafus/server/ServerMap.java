@@ -3,9 +3,11 @@ package es.upv.luimafus.server;
 
 import com.badlogic.gdx.math.Rectangle;
 import es.upv.luimafus.*;
-import es.upv.luimafus.Map;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 
 public class ServerMap extends Map {
@@ -138,15 +140,13 @@ public class ServerMap extends Map {
     }
 
     public void updateState() {
-        Collections.sort(players);
+        System.out.print(".");
         for (Player p : players) {
             p.updateArea();
-            if(p.isBot())
-                p.botMove(closestTo(p));
-            else
-                p.act();
+            p.act();
+            System.out.println(p.getcHP());
         }
-        players.removeIf(Player::isDead);
+        //players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
     }
     public void updateAttacks() {
@@ -170,7 +170,7 @@ public class ServerMap extends Map {
                 }
             }
         }
-        players.removeIf(Player::isDead);
+        //players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
     }
 

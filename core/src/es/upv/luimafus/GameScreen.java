@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * Created by Luis on 22/11/2014.
  */
 public class GameScreen implements Screen {
+    static OrthographicCamera camera;
     public AssetManager assets;
     Map GameMap;
     SpriteBatch batch;
@@ -22,9 +23,6 @@ public class GameScreen implements Screen {
     boolean turn = true;
     boolean lastTurn = true;
     int width, height, speed;
-
-    OrthographicCamera camera;
-
     ShapeRenderer shapeRenderer;
 
     Main j;
@@ -79,6 +77,10 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0.0549019607843137f,0.0509803921568627f,0.06274509803921568627450980392157f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
+
+        updateCameraPos(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY());
+        System.out.println(GameMap.humanPlayer.getX() + " " + GameMap.humanPlayer.getY() + " " + GameMap.humanPlayer.getcHP());
+
         camera.update();
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -190,7 +192,6 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-        System.out.println(GameMap.humanPlayer.getX() + " " + GameMap.humanPlayer.getY());
         camera = new OrthographicCamera(width,height);
         camera.zoom = 0.5f;
 
@@ -218,12 +219,15 @@ public class GameScreen implements Screen {
 
     }
 
-    public void updateCameraPos() {
+    public void updateCameraPos(int x, int y) {
         float lerp = 2.5f;
         Vector3 position = camera.position;
         //para hacer que la cámara siga al jugador de forma suave
-        position.x =  Math.round(position.x+(GameMap.humanPlayer.getX() * c - position.x) * lerp * Gdx.graphics.getDeltaTime());
-        position.y =  Math.round(position.y+(trueHeight() - (GameMap.humanPlayer.getY() * c) - position.y) * lerp * Gdx.graphics.getDeltaTime());
+        position.x = x * c;
+        position.y = trueHeight() - (y * c);
+
+        //position.x =  Math.round(position.x+(x * c - position.x) * lerp * Gdx.graphics.getDeltaTime());
+        //position.y =  Math.round(position.y+(trueHeight() - (y * c) - position.y) * lerp * Gdx.graphics.getDeltaTime());
     }
 
     private int trueHeight() {
@@ -239,7 +243,6 @@ public class GameScreen implements Screen {
         if(Gdx.input.isTouched())
             camera.position.add(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY(), 0);
         //else
-            updateCameraPos();
 
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
             GameMap.act(Player.AUP);

@@ -9,7 +9,6 @@ import java.util.*;
 public class Map {
     public int[][] drawMap;
     public Player humanPlayer = null;
-    public long seed;
     private int[][] map;
     private List<Player> players = new ArrayList<Player>();
     private Collection<Attack> attacks = new ArrayList<Attack>();
@@ -137,6 +136,7 @@ public class Map {
 
     public void addPlayer(Player p) {
         players.add(p);
+        System.out.println("adding net player");
     }
 
     public void addHumanPlayer(Player p) {
@@ -208,13 +208,6 @@ public class Map {
             humanPlayer.setAction(a);
         else
             Client.sendAction(a);
-    }
-
-    public Player nextPlayer() {
-        return nextTo(humanPlayer);
-    }
-    private Player nextTo(Player p) {
-        return players.get((players.indexOf(p)+1)%players.size());
     }
 
     public int getCell(int x, int y) {

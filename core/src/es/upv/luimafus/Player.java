@@ -33,7 +33,7 @@ public class Player implements Comparable<Player>{
     private AStar aStar;
     private boolean bot;
     private boolean netPlayer;
-    private boolean controllable;
+    private boolean serverPlayer;
     private int ID;
     private Preferences preferences;
     private Map GameMap;
@@ -46,25 +46,25 @@ public class Player implements Comparable<Player>{
         area = new Area(GameMap);
     }
 
-    public Player(Map gameMap, int id, String n, int x, int y, boolean controllable) {
+    //multiplayer client
+    public Player(Map gameMap, int id, String n, int x, int y) {
         this(gameMap);
         ID = id;
         name = n;
         this.x = x;
         this.y = y;
-        this.controllable = controllable;
         netPlayer = true;
     }
 
-    public Player(Map gameMap, boolean isControllable, boolean isNet, String n) {
+    //server player
+    public Player(Map gameMap, String n) {
         this(gameMap);
-        controllable = isControllable;
-        netPlayer = isNet;
+        serverPlayer = true;
         name = n;
-
         setStartPos();
     }
 
+    //single player
     public Player(Map gameMap, boolean isBot) {
         this(gameMap);
         preferences = Gdx.app.getPreferences("sp");
@@ -147,7 +147,7 @@ public class Player implements Comparable<Player>{
                     break;
             }
 
-        if (action != -1 && moveTo(pX, pY)) {
+        if (!serverPlayer && action != -1 && moveTo(pX, pY)) {
 
                 float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
                 dist *= dist;
@@ -165,10 +165,16 @@ public class Player implements Comparable<Player>{
 
     public void attack(int direction) {
         //positional sound!!
-        float dist = Utils.fDistance(GameMap.humanPlayer.getX(),GameMap.humanPlayer.getY(), this.getX(),this.getY());
-        dist *= dist;
+        float dist = 0;
+        float pan = 0;
+        if (!serverPlayer) {
+            dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
+            dist *= dist;
+        }
         try {
-            float pan = (this.getX() - GameMap.humanPlayer.getX()) * 4 / (this.getX() + GameMap.humanPlayer.getX());
+            if (!serverPlayer) {
+                pan = (this.getX() - GameMap.humanPlayer.getX()) * 4 / (this.getX() + GameMap.humanPlayer.getX());
+            }
             if (lastAtt <= 0) {
                 if (direction == -1) {
                     if (area.isOver()) {
@@ -176,15 +182,19 @@ public class Player implements Comparable<Player>{
                         cHP--;
                         lastAtt = 4;
                         //if(dist < 15)
-                        AssetManager.areaSound.play(30 / (dist + 15), 1, pan);
+                        if (!serverPlayer) {
+                            AssetManager.areaSound.play(30 / (dist + 15), 1, pan);
+                        }
                     }
                 } else {
                     GameMap.addAttack(new Attack(x, y, direction, ID));
                     lastAtt = 3;
-                    //if(dist < 15)
-                    AssetManager.arrowSound.play(15 / (dist + 15), 1, pan);
+                        //if(dist < 15)
+                    if (!serverPlayer) {
+                        AssetManager.arrowSound.play(15 / (dist + 15), 1, pan);
+                    }
+                    }
                 }
-            }
         } catch (ArithmeticException e) {
 
         }
