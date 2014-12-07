@@ -100,7 +100,7 @@ public class Attack {
     }
 
     public int getTime() {
-        if (netAttack)
+        if (netAttack && direction == -1)
             return frame;
         else
             return time;
