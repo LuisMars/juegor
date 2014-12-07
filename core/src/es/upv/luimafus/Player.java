@@ -268,12 +268,8 @@ public class Player implements Comparable<Player>{
     }
 
     public Player setAction(int a) {
-        if (!netPlayer)
-            action = a;
-        if (controllable) {
-            Client.sendAction(a);
-            //System.out.println(action);
-        }
+        action = a;
+        //System.out.println(name + " " + ID + " " + action + " " + cHP);
         return this;
     }
 

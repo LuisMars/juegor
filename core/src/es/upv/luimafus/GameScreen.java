@@ -107,14 +107,16 @@ public class GameScreen implements Screen {
     private void drawMap() {
         for(int i = 0; i < GameMap.getWidth(); i++)
             for (int j = 0; j < GameMap.getHeight(); j++) {
+                /*
                 batch.setColor(1,1,1,1);
                 //para oscurecer lo lejano
+
                 float d = Utils.fDistance(i, j, GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY());
                 if(d > 15)
                     continue;
                 if(d > 5) {
                     batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
-                }
+                }*/
                 if(assets.floor.getTile(GameMap.drawMap[i][j]) != null)
 
                 batch.draw(assets.floor.getTile(GameMap.drawMap[i][j]),
@@ -127,6 +129,7 @@ public class GameScreen implements Screen {
         for(Player p : GameMap.getPlayers()) {
             float xOffset = p.drawPosX(offset);
             float yOffset = p.drawPosY(offset);
+            /*
             batch.setColor(1,1,1,1);
             //oscurecer los jugadores lejanos
             float d = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), p.getX(), p.getY());
@@ -134,15 +137,14 @@ public class GameScreen implements Screen {
                 continue;
             if(d > 5) {
                 batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1);
-
             }
+            */
             //dibujar y animar cutremente
             batch.draw(assets.player[p.getID()%5][p.lastDir], xOffset*c, trueHeight() - yOffset*c + c/4);
             //if(!p.isBot())  batch.draw(cursor, p.getX() * 16, trueHeight() - (p.getY() * 16));
-            if(p == GameMap.humanPlayer)
-                //System.out.println(p.drawPosX(offset) + "\t" + p.drawPosY(offset) + "\t" + offset);
+            /*
             if(d > 5)
-                continue;
+                continue;*/
 
             assets.font.draw(batch, p.name, xOffset*c, trueHeight() + c/2 - ((yOffset-1)*c));
             //la barrita de vida con el color correspondiente
@@ -156,6 +158,7 @@ public class GameScreen implements Screen {
 
     private void drawAttacks() {
         for(Attack a : GameMap.getAttacks()) {
+            /*
             batch.setColor(1,1,1,1);
             //oscurecer los ataques lejanos
             float d = Utils.fDistance(a.getX(), a.getY(), GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY());
@@ -163,7 +166,7 @@ public class GameScreen implements Screen {
                 continue;
             if(d > 5) {
                 batch.setColor(1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f, 1 - (d-5)/ 10f);
-            }
+            }*/
             //dibujar lo que corresponda en su posición
             if (a.getDirection() != -1)
                 batch.draw(assets.arrow[a.getDirection()], a.getX() * c, trueHeight() - (a.getY() * c) + c/4);
@@ -187,12 +190,12 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
 
-
+        System.out.println(GameMap.humanPlayer.getX() + " " + GameMap.humanPlayer.getY());
         camera = new OrthographicCamera(width,height);
         camera.zoom = 0.5f;
 
 
-        camera.position.set(GameMap.humanPlayer.getX()*16,trueHeight()-(GameMap.humanPlayer.getY()*16),0);
+        camera.position.set(GameMap.humanPlayer.getX() * c, trueHeight() - (GameMap.humanPlayer.getY() * c), 0);
     }
 
     @Override

@@ -113,7 +113,7 @@ public class WaitingScreen implements Screen {
 
     }
 
-    public void initialiceMap(int[][] map, int speed) {
+    public void initializeMap(int[][] map, int speed) {
         gameScreen = new GameScreen(j, map, speed);
 
 
@@ -122,7 +122,7 @@ public class WaitingScreen implements Screen {
     public void addPlayer(byte id, String player, byte x, byte y, boolean controllable) {
         if (controllable) {
             gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y, true));
-            print("Adding controllable player");
+            System.out.println("Adding controllable player");
         } else {
             gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y, false));
             print("Adding non controllable player");
@@ -130,7 +130,8 @@ public class WaitingScreen implements Screen {
     }
 
     public void setPlayer(byte id, byte action, byte chp) {
-        gameScreen.GameMap.getPlayers().get(id).setAction(action).setcHP(chp);
+        gameScreen.GameMap.getPlayers().stream().filter(
+                p -> p.getID() == id).forEach(p -> p.setAction(action).setcHP(chp));
     }
 
     public void startGame() {

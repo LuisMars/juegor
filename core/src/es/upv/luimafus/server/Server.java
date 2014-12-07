@@ -106,10 +106,11 @@ public class Server extends Thread {
                     User u = findPlayer(receivePacket.getData()[1]);
                     u.p.setAction(receivePacket.getData()[2]);
                     //serverScreen.print(u.name + " action: " + receivePacket.getData()[2]);
+                    /*
                     for (int i = 0; i < 4; i++) {
                         System.out.print(receivePacket.getData()[i] + " ");
                     }
-                    System.out.println();
+                    System.out.println();*/
                 }
 
                 //sendPacketToClient( receivePacket );

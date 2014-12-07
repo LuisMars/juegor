@@ -42,10 +42,11 @@ public class Client extends Thread {
         byte[] msg = {(byte) action};
 
         sendMsg(4, msg);
+        /*
         for (byte b : msg) {
             System.out.print(b + " ");
         }
-        System.out.println();
+        System.out.println();*/
     }
 
     public static void sendMsg(int code, byte[] msg) {
@@ -110,7 +111,7 @@ public class Client extends Thread {
                         //mapa += "\n";
                     }
                     //displayMessage(mapa);
-                    Gdx.app.postRunnable(() -> waitingScreen.initialiceMap(arr, speed));
+                    Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
 
                 }
 
@@ -139,7 +140,6 @@ public class Client extends Thread {
                     for (byte b : d) {
                         System.out.print(b + " ");
                     }*/
-                    System.out.println();
                     for (int i = 0; i < d[1]; i++) {
                         final int finalI = i;
                         Gdx.app.postRunnable(() ->

@@ -11,14 +11,12 @@ import java.util.*;
 public class ServerMap extends Map {
     public int[][] map;
     public int[][] drawMap;
-
+    public long seed;
+    public CellList floor = new CellList();
+    ArrayList<String> s = new ArrayList<String>();
     private List<Player> players = new ArrayList<Player>();
     private Collection<Attack> attacks = new ArrayList<Attack>();
     private ServerScreen gs;
-    public long seed;
-
-    public CellList floor = new CellList();
-    ArrayList<String> s = new ArrayList<String>();
 
 
     public ServerMap(ServerScreen s, int h, int w, double density) {
@@ -132,7 +130,7 @@ public class ServerMap extends Map {
 
     public void addPlayer(Player p) {
         players.add(p);
-        humanPlayer = players.iterator().next();
+        //humanPlayer = players.iterator().next();
     }
 
     public void addAttack(Attack a) {
@@ -197,10 +195,6 @@ public class ServerMap extends Map {
                 return false;
         }
         return !(x < 0 || y < 0 || x >= map.length || y >= map[0].length) && map[x][y] == 0;
-    }
-
-    public void act(int a) {
-        humanPlayer.setAction(a);
     }
 
     public Player nextPlayer() {

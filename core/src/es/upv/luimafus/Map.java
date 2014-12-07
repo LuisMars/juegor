@@ -140,6 +140,7 @@ public class Map {
     }
 
     public void addHumanPlayer(Player p) {
+        System.out.println("adding human player");
         players.add(p);
         humanPlayer = p;
     }
@@ -202,7 +203,11 @@ public class Map {
     }
 
     public void act(int a) {
-        humanPlayer.setAction(a);
+
+        if (!humanPlayer.isNetPlayer())
+            humanPlayer.setAction(a);
+        else
+            Client.sendAction(a);
     }
 
     public Player nextPlayer() {
