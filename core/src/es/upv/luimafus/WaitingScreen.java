@@ -135,11 +135,14 @@ public class WaitingScreen implements Screen {
     }
 
     public void startGame() {
-
         j.setScreen(gameScreen);
     }
 
 
+    public void endGame() {
+        print("You died.");
+        j.setScreen(this);
+    }
     public void print(String msg) {
         chat.setText(chat.getText() + "\n" + msg);
         chat.setPrefRows(chat.getText().split("\n").length);
@@ -200,6 +203,5 @@ public class WaitingScreen implements Screen {
     public void dispose() {
         stage.dispose();
     }
-
 
 }

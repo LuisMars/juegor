@@ -159,8 +159,7 @@ public class Map {
             else
                 p.act();
         }
-        players.removeIf(Player::isDead);
-        attacks.removeIf(Attack::isOver);
+        removeDead();
     }
     public void updateAttacks() {
         for (Attack a: attacks) {
@@ -183,6 +182,10 @@ public class Map {
                 }
             }
         }
+        removeDead();
+    }
+
+    private void removeDead() {
         players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
     }

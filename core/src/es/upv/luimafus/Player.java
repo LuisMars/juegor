@@ -185,7 +185,8 @@ public class Player implements Comparable<Player>{
                 if (direction == -1) {
                     if (area.isOver()) {
                         area = new Area(GameMap, x, y, ID, fake);
-                        cHP--;
+                        if (!fake)
+                            cHP--;
                         lastAtt = 4;
                         //if(dist < 15)
                         if (!serverPlayer) {

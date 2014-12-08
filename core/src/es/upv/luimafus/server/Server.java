@@ -61,6 +61,13 @@ public class Server extends Thread {
         }
     }
 
+    public static void deadMsg(User u) {
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+        msg.write(6);
+
+        sendBytes(u, msg);
+    }
+
     public void run() {
         while (true) {
             try {

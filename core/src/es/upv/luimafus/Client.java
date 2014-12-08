@@ -161,6 +161,10 @@ public class Client extends Thread {
                         }
                         break;
                     }
+                    case 6: {
+                        Gdx.app.postRunnable(() -> waitingScreen.endGame());
+                        break;
+                    }
                 }
             } catch (IOException exception) {
                 print(exception.toString() + "\n");

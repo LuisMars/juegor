@@ -146,9 +146,9 @@ public class ServerMap extends Map {
             p.act();
             System.out.println("Map :\t" + p.name + ": " + p.getAction() + " " + p.getX() + " " + p.getY());
         }
-        //players.removeIf(Player::isDead);
-        attacks.removeIf(Attack::isOver);
+        removeDead();
     }
+
     public void updateAttacks() {
         for (Attack a: attacks) {
             a.updatePos();
@@ -170,10 +170,20 @@ public class ServerMap extends Map {
                 }
             }
         }
-        //players.removeIf(Player::isDead);
-        attacks.removeIf(Attack::isOver);
+        removeDead();
     }
 
+    private void removeDead() {
+        for (User u : Server.users) {
+            if (u.isReady && u.hasMap && u.p.isDead()) {
+                u.isReady = false;
+                User.readyPlayers--;
+                Server.deadMsg(u);
+            }
+        }
+        players.removeIf(Player::isDead);
+        attacks.removeIf(Attack::isOver);
+    }
     public int getWidth() {
         return map.length;
     }
