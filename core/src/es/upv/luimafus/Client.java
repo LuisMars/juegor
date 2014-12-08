@@ -80,7 +80,7 @@ public class Client extends Thread {
     public void run() {
         while (true) {
             try {
-                byte data[] = new byte[16384];
+                byte data[] = new byte[60000];
                 DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 
                 socket.receive(receivePacket);
