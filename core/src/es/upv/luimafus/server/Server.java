@@ -38,10 +38,10 @@ public class Server extends Thread {
         msg.write(5);
         int i = 0;
         for (User u : users)
-            if (u.isReady)
+            if (u.isReady && u.hasMap)
                 i++;
         msg.write(i);
-        users.stream().filter(u -> u.isReady).forEach(u -> {
+        users.stream().filter(u -> u.isReady && u.hasMap).forEach(u -> {
             msg.write(u.playerID);
             msg.write(u.p.getX());
             msg.write(u.p.getY());
@@ -49,7 +49,7 @@ public class Server extends Thread {
             msg.write(u.p.getcHP());
             msg.write(u.p.getAttack());
         });
-        users.stream().filter(u -> u.hasMap).forEach(u -> sendBytes(u, msg));
+        users.stream().filter(u -> u.isReady && u.hasMap).forEach(u -> sendBytes(u, msg));
     }
 
     private static void sendBytes(User us, ByteArrayOutputStream msg) {

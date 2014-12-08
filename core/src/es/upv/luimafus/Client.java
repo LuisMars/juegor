@@ -46,11 +46,6 @@ public class Client extends Thread {
         byte[] msg = {(byte) action};
 
         sendMsg(4, msg);
-        /*
-        for (byte b : msg) {
-            System.out.print(b + " ");
-        }
-        System.out.println();*/
     }
 
     public static void sendMsg(int code, byte[] msg) {
@@ -139,7 +134,7 @@ public class Client extends Thread {
                                             d[4 + finalI],
                                             d[5 + finalI],
                                             d[2 + finalI] == ownID));
-                            print(players[d[i]] + " is ready.");
+                            print(players[d[2 + finalI]] + " is ready.");
                         }
 
                         Gdx.app.postRunnable(waitingScreen::startGame);
