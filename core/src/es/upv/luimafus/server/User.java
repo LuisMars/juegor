@@ -11,6 +11,7 @@ public class User extends Thread {
 
     static int totalPlayers = 0;
     static int readyPlayers = 0;
+    public boolean userKnowsIsDead = false;
     SocketAddress socketAddress;
     String name;
     int playerID;

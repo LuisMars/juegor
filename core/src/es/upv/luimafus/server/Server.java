@@ -64,7 +64,6 @@ public class Server extends Thread {
     public static void deadMsg(User u) {
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
         msg.write(6);
-
         sendBytes(u, msg);
     }
 
@@ -132,13 +131,15 @@ public class Server extends Thread {
 
                         User u = findPlayer(receivePacket.getData()[1]);
                         if (u.isReady) {
+                            User.readyPlayers++;
                             u.p.restart();
+                            u.userKnowsIsDead = false;
+                            sendReplay(u);
+                            serverScreen.print(u.name + " restarting");
                         } else {
                             u.isReady = true;
                             User.readyPlayers++;
                             serverScreen.print(u.name + " is ready");
-
-                            //SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
                             u.start();
                             serverScreen.print("Sending map to " + u.name);
                             u.p = new Player(serverScreen.GameMap, u.name);
@@ -177,6 +178,12 @@ public class Server extends Thread {
                 return u;
         }
         return null;
+    }
+
+    private void sendReplay(User u) {
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+        msg.write(7);
+        sendBytes(u, msg);
     }
 
     private void sendInitPos() {

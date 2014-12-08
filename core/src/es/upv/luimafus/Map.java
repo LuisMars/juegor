@@ -182,7 +182,7 @@ public class Map {
     }
 
     private void removeDead() {
-        players.removeIf(Player::isDead);
+        //players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
     }
 

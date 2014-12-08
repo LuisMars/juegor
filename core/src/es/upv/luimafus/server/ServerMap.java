@@ -20,7 +20,6 @@ public class ServerMap extends Map {
     private Collection<Attack> attacks = new ArrayList<Attack>();
     private ServerScreen gs;
 
-
     public ServerMap(ServerScreen serverScreen, int h, int w, double density) {
 
         Player.n_players = 0;
@@ -236,14 +235,19 @@ public class ServerMap extends Map {
     }
 
     private void removeDead() {
+
         for (User u : Server.users) {
             if (u.isReady && u.hasMap && u.p.isDead()) {
-                u.isReady = false;
+                //u.isReady = false;
                 User.readyPlayers--;
-                Server.deadMsg(u);
+                if (!u.userKnowsIsDead) {
+                    Server.deadMsg(u);
+                    u.userKnowsIsDead = true;
+                }
             }
+
         }
-        players.removeIf(Player::isDead);
+        //players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
     }
     public int getWidth() {

@@ -238,11 +238,13 @@ public class Player implements Comparable<Player>{
 
     public void updateState(int x, int y, int lastDir, int cHP, int att) {
         //System.out.println(x + " " + y + " " + cHP);
-        this.x = x;
-        this.y = y;
-        this.lastDir = lastDir;
-        this.cHP = cHP;
-        attack(att, true);
+        if (!isDead()) {
+            this.x = x;
+            this.y = y;
+            this.lastDir = lastDir;
+            this.cHP = cHP;
+            attack(att, true);
+        }
     }
 
     public boolean moveTo(int x, int y) {
@@ -297,8 +299,8 @@ public class Player implements Comparable<Player>{
     }
 
     public Player setAction(int a) {
-        action = a;
-        //System.out.println(name + " " + ID + " " + action + " " + cHP);
+        if (!isDead())
+            action = a;
         return this;
     }
 
@@ -312,7 +314,7 @@ public class Player implements Comparable<Player>{
     }
 
     public boolean isDead() {
-        return cHP == 0;
+        return cHP <= 0;
     }
 
     public void hit(int damage) {

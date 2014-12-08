@@ -132,7 +132,7 @@ public class Client extends Thread {
                             Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
                         break;
                     }
-                    // recibir mapa 1
+                    /*// recibir mapa 1
                     case 30: {
                         print("Map received.\nWaiting for other players to connect.");
                         byte[] d = receivePacket.getData();
@@ -146,7 +146,7 @@ public class Client extends Thread {
                         }
                         Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
                         break;
-                    }
+                    }*/
                     //recibir posiciones iniciales
                     case 4: {
                         print("Initializing...");
@@ -189,9 +189,17 @@ public class Client extends Thread {
                         }
                         break;
                     }
+
                     case 6: {
                         Gdx.app.postRunnable(waitingScreen::endGame);
                         break;
+                    }
+                    case 7: {
+                        Gdx.app.postRunnable(() -> {
+                            print("Restarting....");
+                            waitingScreen.startGame();
+                            waitingScreen.gameScreen.GameMap.humanPlayer.setcHP(10);
+                        });
                     }
                 }
             } catch (IOException exception) {
