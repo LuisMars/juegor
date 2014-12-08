@@ -17,7 +17,10 @@ public class Client extends Thread {
     private static int ownID = -1;
     private static InetSocketAddress address;
     private static WaitingScreen waitingScreen;
-
+    int[][] arr = null;
+    boolean[] linesReceived = null;
+    boolean mapReceived = false;
+    int speed;
 
     public Client(WaitingScreen ws, String add) {
         waitingScreen = ws;
@@ -99,26 +102,51 @@ public class Client extends Thread {
                         break;
                     }
 
-                    // recibir mapa
+                    // recibir mapa 2
                     case 3: {
+                        if (!mapReceived) {
+                            byte[] d = receivePacket.getData();
+                            if (arr == null) {
+                                arr = new int[d[1]][d[2]];
+                                linesReceived = new boolean[d[1]];
+                                speed = d[3];
+                            }
+                            if (linesReceived[d[4]])
+                                break;
+                            int n = 5;
+                            int i = d[4];
+                            linesReceived[d[4]] = true;
+
+                            for (int j = 0; j < arr[0].length; j++) {
+                                arr[i][j] = d[n++];
+                            }
+                            mapReceived = true;
+                            for (Boolean b : linesReceived) {
+                                if (!b) {
+                                    mapReceived = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (mapReceived)
+                            Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
+                        break;
+                    }
+                    // recibir mapa 1
+                    case 30: {
                         print("Map received.\nWaiting for other players to connect.");
                         byte[] d = receivePacket.getData();
                         int[][] arr = new int[d[1]][d[2]];
                         int speed = d[3];
                         int n = 4;
-                        //String mapa = "";
                         for (int i = 0; i < arr.length; i++) {
                             for (int j = 0; j < arr[0].length; j++) {
                                 arr[i][j] = d[n++];
-                                //mapa += arr[i][j] + "\t";
                             }
-                            //mapa += "\n";
                         }
-                        //print(mapa);
                         Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
                         break;
                     }
-
                     //recibir posiciones iniciales
                     case 4: {
                         print("Initializing...");
@@ -162,7 +190,7 @@ public class Client extends Thread {
                         break;
                     }
                     case 6: {
-                        Gdx.app.postRunnable(() -> waitingScreen.endGame());
+                        Gdx.app.postRunnable(waitingScreen::endGame);
                         break;
                     }
                 }

@@ -68,6 +68,34 @@ public class Server extends Thread {
         sendBytes(u, msg);
     }
 
+    public static void SendMap2(int speed, int[][] a, User u) {
+
+        for (int i = 0; i < a.length; i++) {
+            ByteArrayOutputStream msg = new ByteArrayOutputStream();
+            msg.write(3);
+            msg.write((byte) a.length);
+            msg.write((byte) a[0].length);
+            msg.write(speed);
+            msg.write(i);
+            for (int j = 0; j < a[0].length; j++)
+                msg.write((byte) a[i][j]);
+            sendBytes(u, msg);
+        }
+    }
+
+    public static void SendMap(int speed, int[][] a, User u) {
+
+        ByteArrayOutputStream msg = new ByteArrayOutputStream();
+        msg.write(3);
+        msg.write(speed);
+        msg.write((byte) a.length);
+        msg.write((byte) a[0].length);
+        for (int i = 0; i < a.length; i++)
+            for (int j = 0; j < a[0].length; j++)
+                msg.write((byte) a[i][j]);
+        sendBytes(u, msg);
+    }
+
     public void run() {
         while (true) {
             try {
@@ -101,29 +129,35 @@ public class Server extends Thread {
 
                     //SEND MAP
                     case 3: {
+
                         User u = findPlayer(receivePacket.getData()[1]);
-                        u.isReady = true;
-                        User.readyPlayers++;
-                        serverScreen.print(u.name + " is ready");
-                        SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
-                        u.p = new Player(serverScreen.GameMap, u.name);
-                        serverScreen.GameMap.addPlayer(u.p);
+                        if (u.isReady) {
+                            u.p.restart();
+                        } else {
+                            u.isReady = true;
+                            User.readyPlayers++;
+                            serverScreen.print(u.name + " is ready");
+
+                            //SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
+                            u.start();
+                            serverScreen.print("Sending map to " + u.name);
+                            u.p = new Player(serverScreen.GameMap, u.name);
+                            serverScreen.GameMap.addPlayer(u.p);
+                        }
                         break;
                     }
                     //receive pos
                     case 4: {
                         User u = findPlayer(receivePacket.getData()[1]);
-
                         u.p.setAction(receivePacket.getData()[2]);
-                        System.out.println("server:\t" + u.name + ": " + u.p.getAction() + " " + u.p.getX() + " " + u.p.getY());
-
                         break;
                     }
                     //has map then send initial pos
                     case 5: {
                         User u = findPlayer(receivePacket.getData()[1]);
+                        if (!u.hasMap)
+                            serverScreen.print(u.name + " has received the map.");
                         u.hasMap = true;
-                        serverScreen.print(u.name + " has received the map.");
                         if (User.readyPlayers == User.totalPlayers)
                             sendInitPos();
                         break;
@@ -202,19 +236,6 @@ public class Server extends Thread {
 
 
         sendBytes(us, msg);
-    }
-
-    private void SendMap(int speed, int[][] a, User u) {
-
-        ByteArrayOutputStream msg = new ByteArrayOutputStream();
-        msg.write(3);
-        msg.write(speed);
-        msg.write((byte) a.length);
-        msg.write((byte) a[0].length);
-        for (int i = 0; i < a.length; i++)
-            for (int j = 0; j < a[0].length; j++)
-                msg.write((byte) a[i][j]);
-        sendBytes(u, msg);
     }
 }
 

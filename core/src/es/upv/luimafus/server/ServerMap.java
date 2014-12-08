@@ -15,22 +15,20 @@ public class ServerMap extends Map {
     public int[][] drawMap;
     public long seed;
     public CellList floor = new CellList();
-    ArrayList<String> s = new ArrayList<String>();
+    ArrayList<String> tileNames = new ArrayList<String>();
     private List<Player> players = new ArrayList<Player>();
     private Collection<Attack> attacks = new ArrayList<Attack>();
     private ServerScreen gs;
 
 
-    public ServerMap(ServerScreen s, int h, int w, double density) {
+    public ServerMap(ServerScreen serverScreen, int h, int w, double density) {
 
         Player.n_players = 0;
-        gs = s;
+        gs = serverScreen;
         map = new int[h][w];
         generateMap(density);
         setDrawMap();
         prepareMap();
-        //seed = (long)(Math.random()*Long.MAX_VALUE);
-
     }
 
     public void generateMap(double density) {
@@ -120,6 +118,72 @@ public class ServerMap extends Map {
         }
     }
 
+    private void setDrawMap() {
+        loadFloorNames();
+        for (String value : tileNames)
+            floor.add(new Cell(null, value.substring(0, 4), value.substring(4)));
+    }
+
+    private void loadFloorNames() {
+
+        tileNames.add("11111111");
+        tileNames.add("00000000");
+        tileNames.add("00000010");
+        tileNames.add("00000011");
+        tileNames.add("00000001");
+        tileNames.add("00000110");
+        tileNames.add("00001111");
+        tileNames.add("00001001");
+        tileNames.add("00000100");
+        tileNames.add("00001100");
+        tileNames.add("00001000");
+
+        tileNames.add("00000111");
+        tileNames.add("00001011");
+        tileNames.add("00001101");
+        tileNames.add("00001110");
+
+        tileNames.add("00000101");
+        tileNames.add("00001010");
+
+        tileNames.add("1000xx00");
+        tileNames.add("0001x00x");
+        tileNames.add("01000xx0");
+        tileNames.add("001000xx");
+        tileNames.add("1000xx10");
+        tileNames.add("1000xx11");
+        tileNames.add("1000xx01");
+        tileNames.add("0001x01x");
+        tileNames.add("01000xx1");
+        tileNames.add("0001x11x");
+        tileNames.add("01001xx1");
+        tileNames.add("0001x10x");
+        tileNames.add("01001xx0");
+        tileNames.add("001001xx");
+        tileNames.add("001011xx");
+        tileNames.add("001010xx");
+
+        tileNames.add("1001xx0x");
+        tileNames.add("1100xxx0");
+        tileNames.add("0011x0xx");
+        tileNames.add("01100xxx");
+        tileNames.add("1001xx1x");
+        tileNames.add("1100xxx1");
+        tileNames.add("0011x1xx");
+        tileNames.add("01101xxx");
+
+        tileNames.add("1010xxxx");
+        tileNames.add("0101xxxx");
+        tileNames.add("1101xxxx");
+        tileNames.add("0111xxxx");
+        tileNames.add("1111xxxx");
+        tileNames.add("1011xxxx");
+        tileNames.add("1110xxxx");
+        tileNames.add("topA");
+        tileNames.add("topB");
+
+    }
+
     public void prepareMap() {
         drawMap = new int[getWidth()][getHeight()];
 
@@ -132,7 +196,6 @@ public class ServerMap extends Map {
 
     public void addPlayer(Player p) {
         players.add(p);
-        //humanPlayer = players.iterator().next();
     }
 
     public void addAttack(Attack a) {
@@ -144,7 +207,6 @@ public class ServerMap extends Map {
         for (Player p : players) {
             p.updateArea();
             p.act();
-            System.out.println("Map :\t" + p.name + ": " + p.getAction() + " " + p.getX() + " " + p.getY());
         }
         removeDead();
     }
@@ -254,70 +316,6 @@ public class ServerMap extends Map {
         }
     }
 
-    private void setDrawMap() {
-        loadFloorNames();
-        for (String value : s)
-            floor.add(new Cell(null, value.substring(0, 4), value.substring(4)));
-    }
 
-    private void loadFloorNames() {
-
-        s.add("11111111");
-        s.add("00000000");
-        s.add("00000010");
-        s.add("00000011");
-        s.add("00000001");
-        s.add("00000110");
-        s.add("00001111");
-        s.add("00001001");
-        s.add("00000100");
-        s.add("00001100");
-        s.add("00001000");
-
-        s.add("00000111");
-        s.add("00001011");
-        s.add("00001101");
-        s.add("00001110");
-
-        s.add("00000101");
-        s.add("00001010");
-
-        s.add("1000xx00");
-        s.add("0001x00x");
-        s.add("01000xx0");
-        s.add("001000xx");
-        s.add("1000xx10");
-        s.add("1000xx11");
-        s.add("1000xx01");
-        s.add("0001x01x");
-        s.add("01000xx1");
-        s.add("0001x11x");
-        s.add("01001xx1");
-        s.add("0001x10x");
-        s.add("01001xx0");
-        s.add("001001xx");
-        s.add("001011xx");
-        s.add("001010xx");
-
-        s.add("1001xx0x");
-        s.add("1100xxx0");
-        s.add("0011x0xx");
-        s.add("01100xxx");
-        s.add("1001xx1x");
-        s.add("1100xxx1");
-        s.add("0011x1xx");
-        s.add("01101xxx");
-
-        s.add("1010xxxx");
-        s.add("0101xxxx");
-        s.add("1101xxxx");
-        s.add("0111xxxx");
-        s.add("1111xxxx");
-        s.add("1011xxxx");
-        s.add("1110xxxx");
-        s.add("topA");
-        s.add("topB");
-
-    }
 
 }

@@ -82,6 +82,11 @@ public class Player implements Comparable<Player>{
         n_players = 0;
     }
 
+    public void restart() {
+        setStartPos();
+        cHP = HP;
+    }
+
     private void setStartPos() {
 
         while (true) {
@@ -198,7 +203,7 @@ public class Player implements Comparable<Player>{
                     lastAtt = 3;
                         //if(dist < 15)
                     if (!serverPlayer) {
-                        AssetManager.arrowSound.play(15 / (dist + 15), 1, pan);
+                        AssetManager.arrowSound[MathUtils.random(0, 1)].play(15 / (dist + 15), 1, pan);
                     }
                     }
                 }
@@ -318,20 +323,20 @@ public class Player implements Comparable<Player>{
         switch ((int)(getHP()*10)) {
             case 10:
             case 9:
-                return Color.valueOf("55793a");
+                return Color.valueOf("6abe30");
             case 8:
             case 7:
-                return Color.valueOf("77853e");
+                return Color.valueOf("99e550");
             case 6:
             case 5:
-                return Color.valueOf("e5cb50");
+                return Color.valueOf("fbf236");
             case 4:
             case 3:
-                return Color.valueOf("c06b3c");
+                return Color.valueOf("df7126");
             case 2:
             case 1:
             default:
-                return Color.valueOf("b15032");
+                return Color.valueOf("ac3232");
         }
     }
 

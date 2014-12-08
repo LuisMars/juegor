@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class AssetManager {
 
 
-    public static Sound arrowSound = Gdx.audio.newSound(Gdx.files.internal("sounds/arrow2.wav"));
+    public static Sound[] arrowSound = {Gdx.audio.newSound(Gdx.files.internal("sounds/laser5.mp3")),
+            Gdx.audio.newSound(Gdx.files.internal("sounds/laser6.mp3"))};
     public static Sound areaSound = Gdx.audio.newSound(Gdx.files.internal("sounds/area.wav"));
     public static Sound[] stepSound = { Gdx.audio.newSound(Gdx.files.internal("sounds/steps01.wav")),
                                         Gdx.audio.newSound(Gdx.files.internal("sounds/steps02.wav")),

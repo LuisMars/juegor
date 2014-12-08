@@ -7,7 +7,7 @@ import java.net.SocketAddress;
 /**
  * Created by Luis on 01/12/2014.
  */
-public class User {
+public class User extends Thread {
 
     static int totalPlayers = 0;
     static int readyPlayers = 0;
@@ -24,4 +24,17 @@ public class User {
         playerID = totalPlayers;
         totalPlayers++;
     }
+
+    public void run() {
+        while (isReady && !hasMap) {
+            //Server.SendMap(Server.serverScreen.speed, Server.serverScreen.GameMap.map, this);
+            Server.SendMap2(Server.serverScreen.speed, Server.serverScreen.GameMap.map, this);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

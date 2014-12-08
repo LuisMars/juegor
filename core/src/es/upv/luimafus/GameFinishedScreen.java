@@ -68,11 +68,6 @@ public class GameFinishedScreen implements Screen {
                             preferences.getInteger("speed")));
             }
         });
-
-
-
-
-
     }
 
     @Override

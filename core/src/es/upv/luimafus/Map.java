@@ -9,6 +9,7 @@ import java.util.*;
 public class Map {
     public int[][] drawMap;
     public Player humanPlayer = null;
+    public boolean spGame = true;
     private int[][] map;
     private List<Player> players = new ArrayList<Player>();
     private Collection<Attack> attacks = new ArrayList<Attack>();
@@ -23,8 +24,7 @@ public class Map {
         gs = s;
         this.map = map;
         prepareMap();
-
-
+        spGame = false;
     }
 
     public Map(GameScreen s,int h, int w, double density) {
@@ -34,8 +34,6 @@ public class Map {
 
         generateMap(density);
         prepareMap();
-        //seed = (long)(Math.random()*Long.MAX_VALUE);
-
     }
 
     public void generateMap(double density) {
@@ -137,11 +135,9 @@ public class Map {
 
     public void addPlayer(Player p) {
         players.add(p);
-        //System.out.println("adding net player");
     }
 
     public void addHumanPlayer(Player p) {
-        //System.out.println("adding human player");
         players.add(p);
         humanPlayer = p;
     }
@@ -236,7 +232,7 @@ public class Map {
     }
 
     public boolean haveAWinner() {
-        return players.size() < 1;// == 1
+        return players.size() == 1;
     }
     public String winner() {
         String text;

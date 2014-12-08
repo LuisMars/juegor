@@ -88,13 +88,13 @@ public class GameScreen implements Screen {
 
         //si hay un ganador, vuelve a la pantalla principal
         //TODO: mostrar ganador!!!
-        /*
-        if(GameMap.haveAWinner()) {
-            //j.setScreen(new MenuScreen(j));
+
+        if (GameMap.spGame && GameMap.haveAWinner()) {
+            j.setScreen(new MenuScreen(j));
             AssetManager.ambient.stop();
             j.setScreen(new GameFinishedScreen(j,GameMap.winner()));
         }
-        */
+
 
         batch.end();
         shapeRenderer.setProjectionMatrix(camera.combined);
