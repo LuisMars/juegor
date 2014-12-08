@@ -155,8 +155,12 @@ public class Player implements Comparable<Player>{
                     break;
             }
         boolean canMove = moveTo(pX, pY);
+        if (action != -1)
+            playSteps(canMove);
+    }
 
-        if (!serverPlayer && canMove && action != -1) {
+    private void playSteps(boolean canMove) {
+        if (!serverPlayer && canMove) {
 
                 float dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
                 dist *= dist;
@@ -171,6 +175,7 @@ public class Player implements Comparable<Player>{
                 }
         }
     }
+
 
     public void attack(int direction, boolean fake) {
         //positional sound!!
@@ -239,6 +244,8 @@ public class Player implements Comparable<Player>{
     public void updateState(int x, int y, int lastDir, int cHP, int att) {
         //System.out.println(x + " " + y + " " + cHP);
         if (!isDead()) {
+            if (this.x != x && this.y != y)
+                playSteps(true);
             this.x = x;
             this.y = y;
             this.lastDir = lastDir;
@@ -249,7 +256,8 @@ public class Player implements Comparable<Player>{
 
     public boolean moveTo(int x, int y) {
         if(GameMap.canMove(x, y)) {
-            //System.out.println("position changed!!!!!");
+            if (this.x != x && this.y != y)
+                playSteps(true);
             this.x = x;
             this.y = y;
             return true;
