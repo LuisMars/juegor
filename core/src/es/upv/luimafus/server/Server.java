@@ -180,10 +180,13 @@ public class Server extends Thread {
         return null;
     }
 
-    private void sendReplay(User u) {
+    private void sendReplay(User us) {
         ByteArrayOutputStream msg = new ByteArrayOutputStream();
         msg.write(7);
-        sendBytes(u, msg);
+        msg.write(us.playerID);
+        users.stream().filter(u -> u.isReady).forEach(u ->
+                        sendBytes(u, msg)
+        );
     }
 
     private void sendInitPos() {

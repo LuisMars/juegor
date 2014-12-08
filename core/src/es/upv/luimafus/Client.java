@@ -171,10 +171,6 @@ public class Client extends Thread {
                     //recibir estado
                     case 5: {
                         byte[] d = receivePacket.getData();
-                    /*
-                    for (byte b : d) {
-                        System.out.print(b + " ");
-                    }*/
                         int n = d[1]; //n players
                         for (int i = 0; i < n; i++) {
                             final int finalI = i * 6;
@@ -195,10 +191,12 @@ public class Client extends Thread {
                         break;
                     }
                     case 7: {
+                        byte[] d = receivePacket.getData();
                         Gdx.app.postRunnable(() -> {
-                            print("Restarting....");
+                            if (d[1] == ownID)
+                                print("Restarting....");
+                            waitingScreen.resetPlayer(d[1]);
                             waitingScreen.startGame();
-                            waitingScreen.gameScreen.GameMap.humanPlayer.setcHP(10);
                         });
                     }
                 }

@@ -123,7 +123,7 @@ public class SinglePlayerMenu implements Screen {
                             preferences.getFloat("density"),
                             preferences.getInteger("bots"),
                             preferences.getFloat("difficulty"),
-                            preferences.getInteger("speed")));
+                            preferences.getInteger("speed", 70)));
                 }
                 catch (NumberFormatException e) {
                     width.setText("ERROR");

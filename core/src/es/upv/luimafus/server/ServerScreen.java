@@ -40,7 +40,7 @@ public class ServerScreen implements Screen {
 
         preferences = Gdx.app.getPreferences("server");
 
-        GameMap = new ServerMap(this, 50, 50, 0.5f);
+        GameMap = new ServerMap(this, 50, 50, 0.75f);
         speed = 70;
 
         stage = new Stage();

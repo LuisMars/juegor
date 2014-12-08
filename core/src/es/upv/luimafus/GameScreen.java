@@ -22,11 +22,13 @@ public class GameScreen implements Screen {
     long time = 0;
     boolean turn = true;
     boolean lastTurn = true;
+    boolean sp = true;
     int width, height, speed;
     ShapeRenderer shapeRenderer;
 
     Main j;
 
+    //MP
     public GameScreen(Main j, int[][] map, int speed) {
 
         assets = new AssetManager();
@@ -34,9 +36,9 @@ public class GameScreen implements Screen {
         GameMap = new Map(this, map);
         this.speed = speed;
 
-
     }
 
+    //SP
     public GameScreen(Main j, int w, int h, double d, int bots, float diff, int speed) {
 
         assets = new AssetManager();

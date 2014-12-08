@@ -130,8 +130,11 @@ public class WaitingScreen implements Screen {
     public void setPlayer(byte id, byte x, byte y, byte lastdir, byte chp, byte att) {
         gameScreen.GameMap.getPlayers().stream().filter(
                 p -> p.getID() == id).forEach(p -> p.updateState(x, y, lastdir, chp, att));
+    }
 
-
+    public void resetPlayer(byte id) {
+        gameScreen.GameMap.getPlayers().stream().filter(
+                p -> p.getID() == id).forEach(p -> p.setcHP(p.HP));
     }
 
     public void startGame() {
@@ -181,7 +184,7 @@ public class WaitingScreen implements Screen {
 
     @Override
     public void show() {
-
+        input.setText("");
     }
 
     @Override

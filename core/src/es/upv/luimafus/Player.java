@@ -22,12 +22,12 @@ public class Player implements Comparable<Player>{
     public static float difficulty;
     public int lastDir = 2;
     public String name;
+    public int HP = 10;
     boolean playStep = false;
     private int x, lastX;
     private int y, lastY;
     private int lastAtt = 0; //turns
     private int action = -1;
-    private int HP = 10;
     private int cHP = HP;
     private Area area;
     private AStar aStar;
@@ -62,7 +62,7 @@ public class Player implements Comparable<Player>{
         this(gameMap);
         serverPlayer = true;
         name = n;
-        setStartPos();
+        setStartPos(true);
     }
 
     //single player
@@ -73,9 +73,9 @@ public class Player implements Comparable<Player>{
         if(bot)
             name = "Bot #" + ID;
         else
-            name = preferences.getString("Name", "Player");
+            name = preferences.getString("name", "Player");
 
-        setStartPos();
+        setStartPos(false);
     }
 
     public static void reset() {
@@ -83,11 +83,11 @@ public class Player implements Comparable<Player>{
     }
 
     public void restart() {
-        setStartPos();
+        setStartPos(true);
         cHP = HP;
     }
 
-    private void setStartPos() {
+    private void setStartPos(boolean fast) {
 
         while (true) {
             boolean hasPath = true;
@@ -95,11 +95,14 @@ public class Player implements Comparable<Player>{
             y = (int) (Math.random() * GameMap.getHeight());
 
             if (GameMap.getCell(x, y) == 0) {
+
                 int dist = 99999;
-                for (Player p : GameMap.getPlayers()) {
-                    if (p != this) {
-                        hasPath = hasPath && aStar.hasPath(this, p);
-                        dist = Math.min(dist, Utils.distance(this, p));
+                if (fast) {
+                    for (Player p : GameMap.getPlayers()) {
+                        if (p != this) {
+                            hasPath = hasPath && aStar.hasPath(this, p);
+                            dist = Math.min(dist, Utils.distance(this, p));
+                        }
                     }
                 }
                 if(hasPath && dist > 5)
@@ -109,9 +112,6 @@ public class Player implements Comparable<Player>{
     }
 
     public void act() {
-        //System.out.println("Player:\t" + name + ": " + getAction() + " " + getX() + " " + getY());
-
-        //System.out.println(x + " " + y);
         switch (action) {
             case -1:
                 break;
