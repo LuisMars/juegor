@@ -31,6 +31,7 @@ public class Map {
         Player.n_players = 0;
         gs = s;
         map = new int[h][w];
+
         generateMap(density);
         prepareMap();
         //seed = (long)(Math.random()*Long.MAX_VALUE);

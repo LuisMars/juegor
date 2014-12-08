@@ -34,8 +34,12 @@ public class Client extends Thread {
         start();
     }
 
-    private static void displayMessage(String msg) {
+    private static void print(String msg) {
         waitingScreen.print(msg);
+    }
+
+    public static void iHaveMap() {
+        sendMsg(5, "");
     }
 
     public static void sendAction(int action) {
@@ -60,13 +64,17 @@ public class Client extends Thread {
 
             DatagramPacket sendPacket = new DatagramPacket(os.toByteArray(), os.toByteArray().length, address);
             if (code == 3)
-                displayMessage(code + " " + ownID + " " + new String(os.toByteArray()));
+                print(code + " " + ownID + " " + new String(os.toByteArray()));
             socket.send(sendPacket);
 
         } catch (IOException ioException) {
-            displayMessage(ioException.toString() + "\n");
+            print(ioException.toString() + "\n");
             ioException.printStackTrace();
         }
+    }
+
+    public static void sendMsg(int code, String msg) {
+        sendMsg(code, msg.getBytes());
     }
 
     public void run() {
@@ -78,95 +86,89 @@ public class Client extends Thread {
                 socket.receive(receivePacket);
 
                 //recibir mi ID
-                if (receivePacket.getData()[0] == 0) {
-                    ownID = receivePacket.getData()[1];
-                }
+                switch (receivePacket.getData()[0]) {
+                    case 0: {
+                        ownID = receivePacket.getData()[1];
+                        break;
+                    }
+                    //recibir logins
+                    case 1: {
+                        players[receivePacket.getData()[1]] = new String(receivePacket.getData(), 2, receivePacket.getLength());
+                        break;
+                    }
 
+                    /// recibir mensaje chat
+                    case 2: {
+                        print(players[receivePacket.getData()[1]] + ": \t"
+                                + new String(receivePacket.getData(), 1, receivePacket.getLength()));
+                        break;
+                    }
 
-                //recibir logins
-                if (receivePacket.getData()[0] == 1) {
-                    players[receivePacket.getData()[1]] = new String(receivePacket.getData(), 2, receivePacket.getLength());
-                }
-
-                /// recibir mensaje chat
-                if (receivePacket.getData()[0] == 2) {
-                    displayMessage(players[receivePacket.getData()[1]] + ": \t"
-                            + new String(receivePacket.getData(), 1, receivePacket.getLength()));
-                }
-
-
-                // recibir mapa
-                if (receivePacket.getData()[0] == 3) {
-                    displayMessage("Map received");
-                    byte[] d = receivePacket.getData();
-                    int[][] arr = new int[d[1]][d[2]];
-                    int speed = d[3];
-                    int n = 4;
-                    //String mapa = "";
-                    for (int i = 0; i < arr.length; i++) {
-                        for (int j = 0; j < arr[0].length; j++) {
-                            arr[i][j] = d[n++];
-                            //mapa += arr[i][j] + "\t";
+                    // recibir mapa
+                    case 3: {
+                        print("Map received.\nWaiting for other players to connect.");
+                        byte[] d = receivePacket.getData();
+                        int[][] arr = new int[d[1]][d[2]];
+                        int speed = d[3];
+                        int n = 4;
+                        //String mapa = "";
+                        for (int i = 0; i < arr.length; i++) {
+                            for (int j = 0; j < arr[0].length; j++) {
+                                arr[i][j] = d[n++];
+                                //mapa += arr[i][j] + "\t";
+                            }
+                            //mapa += "\n";
                         }
-                        //mapa += "\n";
-                    }
-                    //displayMessage(mapa);
-                    Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
-
-                }
-
-                //recibir posiciones iniciales
-                if (receivePacket.getData()[0] == 4) {
-                    byte[] d = receivePacket.getData();
-                    for (int i = 0; i < d[1]; i++) {
-                        final int finalI = i;
-                        Gdx.app.postRunnable(() ->
-                                waitingScreen.addPlayer(
-                                        d[2 + (finalI * 3)],
-                                        players[d[2 + (finalI * 3)]],
-                                        d[3 + (finalI * 3)],
-                                        d[4 + (finalI * 3)],
-                                        d[2 + (finalI * 3)] == ownID));
-                        //waitingScreen.print(players[d[i]] + " joined the game");
+                        //print(mapa);
+                        Gdx.app.postRunnable(() -> waitingScreen.initializeMap(arr, speed));
+                        break;
                     }
 
-                    Gdx.app.postRunnable(waitingScreen::startGame);
-                }
-                //recibir estado
-                if (receivePacket.getData()[0] == 5) {
-                    byte[] d = receivePacket.getData();
+                    //recibir posiciones iniciales
+                    case 4: {
+                        print("Initializing...");
+                        byte[] d = receivePacket.getData();
+                        for (int i = 0; i < d[1]; i++) {
+                            final int finalI = i * 4;
+
+                            Gdx.app.postRunnable(() ->
+                                    waitingScreen.addPlayer(
+                                            d[2 + finalI],
+                                            players[d[2 + finalI]],
+                                            d[3 + finalI],
+                                            d[4 + finalI],
+                                            d[5 + finalI],
+                                            d[2 + finalI] == ownID));
+                            print(players[d[i]] + " is ready.");
+                        }
+
+                        Gdx.app.postRunnable(waitingScreen::startGame);
+                        break;
+                    }
+                    //recibir estado
+                    case 5: {
+                        byte[] d = receivePacket.getData();
                     /*
                     for (byte b : d) {
                         System.out.print(b + " ");
                     }*/
-                    int n = d[1]; //n players
-                    for (int i = 0; i < n; i++) {
-                        final int finalI = i;
-                        Gdx.app.postRunnable(() ->
-                                waitingScreen.setPlayer(
-                                        d[2 + (finalI * 5)],
-                                        d[3 + (finalI * 5)],
-                                        d[4 + (finalI * 5)],
-                                        d[5 + (finalI * 5)],
-                                        d[6 + (finalI * 5)]));
+                        int n = d[1]; //n players
+                        for (int i = 0; i < n; i++) {
+                            final int finalI = i * 6;
+                            Gdx.app.postRunnable(() ->
+                                    waitingScreen.setPlayer(
+                                            d[2 + finalI],
+                                            d[3 + finalI],
+                                            d[4 + finalI],
+                                            d[5 + finalI],
+                                            d[6 + finalI],
+                                            d[7 + finalI]));
+                        }
+                        break;
                     }
-                    int a = d[2 + 5 * n]; // n attacks
-                    for (int i = 0; i < a; i++) {
-                        final int finalI = i;
-                        Gdx.app.postRunnable(() ->
-                                waitingScreen.setAttack(
-                                        d[a + 1 + (finalI * 4)],
-                                        d[a + 2 + (finalI * 4)],
-                                        d[a + 3 + (finalI * 4)],
-                                        d[a + 4 + (finalI * 4)]));
-                    }
-
-                    //Gdx.app.postRunnable(waitingScreen::startGame);
                 }
-
-
             } catch (IOException exception) {
-                displayMessage(exception.toString() + "\n");
+                print(exception.toString() + "\n");
                 exception.printStackTrace();
             }
         }
@@ -182,10 +184,6 @@ public class Client extends Thread {
 
     public void requestMap() {
         sendMsg(3, "");
-    }
-
-    public void sendMsg(int code, String msg) {
-        sendMsg(code, msg.getBytes());
     }
 
 

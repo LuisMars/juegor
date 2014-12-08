@@ -115,27 +115,25 @@ public class WaitingScreen implements Screen {
 
     public void initializeMap(int[][] map, int speed) {
         gameScreen = new GameScreen(j, map, speed);
-
-
+        Client.iHaveMap();
     }
 
-    public void addPlayer(byte id, String player, byte x, byte y, boolean controllable) {
+    public void addPlayer(byte id, String player, byte x, byte y, int chp, boolean controllable) {
+
         if (controllable) {
-            gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y));
+            gameScreen.GameMap.addHumanPlayer(new Player(gameScreen.GameMap, id, player, x, y, chp));
         } else {
-            gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y));
+            gameScreen.GameMap.addPlayer(new Player(gameScreen.GameMap, id, player, x, y, chp));
         }
     }
 
-    public void setPlayer(byte id, byte x, byte y, byte lastdir, byte chp) {
+    public void setPlayer(byte id, byte x, byte y, byte lastdir, byte chp, byte att) {
         gameScreen.GameMap.getPlayers().stream().filter(
-                p -> p.getID() == id).forEach(p -> p.updateState(x, y, lastdir, chp));
-        //System.out.println(id + " " + action + " " + chp);
+                p -> p.getID() == id).forEach(p -> p.updateState(x, y, lastdir, chp, att));
+
+
     }
 
-    public void setAttack(byte dir, byte x, byte y, byte frame) {
-        gameScreen.GameMap.addAttack(new Attack(dir, x, y, frame));
-    }
     public void startGame() {
 
         j.setScreen(gameScreen);

@@ -1,6 +1,5 @@
 package es.upv.luimafus.server;
 
-import es.upv.luimafus.Attack;
 import es.upv.luimafus.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -26,6 +25,7 @@ public class Server extends Thread {
 
         try {
             socket = new DatagramSocket(port);
+
         } catch (SocketException socketException) {
             socketException.printStackTrace();
             System.exit(1);
@@ -47,17 +47,9 @@ public class Server extends Thread {
             msg.write(u.p.getY());
             msg.write(u.p.lastDir);
             msg.write(u.p.getcHP());
+            msg.write(u.p.getAttack());
         });
-        if (serverScreen != null) {
-            msg.write(serverScreen.GameMap.getAttacks().size());
-            for (Attack a : serverScreen.GameMap.getAttacks()) {
-                msg.write(a.getDirection());
-                msg.write(a.getX());
-                msg.write(a.getY());
-                msg.write(a.getTime());
-            }
-        }
-        users.stream().filter(u -> u.isReady).forEach(u -> sendBytes(u, msg));
+        users.stream().filter(u -> u.hasMap).forEach(u -> sendBytes(u, msg));
     }
 
     private static void sendBytes(User us, ByteArrayOutputStream msg) {
@@ -72,56 +64,64 @@ public class Server extends Thread {
     public void run() {
         while (true) {
             try {
-                byte data[] = new byte[100];
+                byte data[] = new byte[5000];
                 DatagramPacket receivePacket = new DatagramPacket(data, data.length);
 
                 socket.receive(receivePacket);
+                switch (receivePacket.getData()[0]) {
+                    //LOGIN
+                    case 1: {
+                        receivePacket.getAddress();
+                        users.add(new User(receivePacket.getSocketAddress(), new String(receivePacket.getData(), 1, receivePacket.getLength())));
+                        serverScreen.print("\tTotal players: " + users.size());
+                        TellID(users.get(users.size() - 1));
+                        SendPrevID(users.get(users.size() - 1));
+                        SendIDAll(users.get(users.size() - 1));
+                        break;
+                    }
+                    //CHAT MSG
+                    case 2: {
+                        String msg = new String(receivePacket.getData(), 1, receivePacket.getLength());
+                        serverScreen.print(findPlayer(receivePacket.getData()[1]).name + ": \t" + msg);
 
-                //LOGIN
-                if (receivePacket.getData()[0] == 1) {
-                    users.add(new User(receivePacket.getSocketAddress(), new String(receivePacket.getData(), 1, receivePacket.getLength())));
-                    serverScreen.print("\tTotal players: " + users.size());
-                    TellID(users.get(users.size() - 1));
-                    SendPrevID(users.get(users.size() - 1));
-                    SendIDAll(users.get(users.size() - 1));
 
-                }
-                //CHAT MSG
-                if (receivePacket.getData()[0] == 2) {
-                    String msg = new String(receivePacket.getData(), 1, receivePacket.getLength());
-                    serverScreen.print(findPlayer(receivePacket.getData()[1]).name + ": \t" + msg);
+                        for (User u : users) {
+                            DatagramPacket sendPacket = new DatagramPacket(receivePacket.getData(), receivePacket.getLength(), u.socketAddress);
+                            socket.send(sendPacket);
+                        }
+                        break;
+                    }
 
+                    //SEND MAP
+                    case 3: {
+                        User u = findPlayer(receivePacket.getData()[1]);
+                        u.isReady = true;
+                        User.readyPlayers++;
+                        serverScreen.print(u.name + " is ready");
+                        SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
+                        u.p = new Player(serverScreen.GameMap, u.name);
+                        serverScreen.GameMap.addPlayer(u.p);
+                        break;
+                    }
+                    //receive pos
+                    case 4: {
+                        User u = findPlayer(receivePacket.getData()[1]);
 
-                    for (User u : users) {
-                        DatagramPacket sendPacket = new DatagramPacket(receivePacket.getData(), receivePacket.getLength(), u.socketAddress);
-                        socket.send(sendPacket);
+                        u.p.setAction(receivePacket.getData()[2]);
+                        System.out.println("server:\t" + u.name + ": " + u.p.getAction() + " " + u.p.getX() + " " + u.p.getY());
+
+                        break;
+                    }
+                    //has map then send initial pos
+                    case 5: {
+                        User u = findPlayer(receivePacket.getData()[1]);
+                        u.hasMap = true;
+                        serverScreen.print(u.name + " has received the map.");
+                        if (User.readyPlayers == User.totalPlayers)
+                            sendInitPos();
+                        break;
                     }
                 }
-
-                //SEND MAP
-                if (receivePacket.getData()[0] == 3) {
-                    User u = findPlayer(receivePacket.getData()[1]);
-                    u.isReady = true;
-                    User.readyPlayers++;
-                    serverScreen.print(u.name + " is ready");
-                    SendMap(serverScreen.speed, serverScreen.GameMap.map, u);
-                    u.p = new Player(serverScreen.GameMap, u.name);
-                    serverScreen.GameMap.addPlayer(u.p);
-                    if (User.readyPlayers >= minReadyPlayers)
-                        sendInitPos();
-                }
-                //receive pos
-                if (receivePacket.getData()[0] == 4) {
-                    User u = findPlayer(receivePacket.getData()[1]);
-                    u.p.setAction(receivePacket.getData()[2]);
-                    System.out.println("server:\t" + u.name + ": " + u.p.getAction() + " " + u.p.getX() + " " + u.p.getY());
-                    /*
-                    for (int i = 0; i < 4; i++) {
-                        System.out.print(receivePacket.getData()[i] + " ");
-                    }
-                    System.out.println();*/
-                }
-
                 //sendPacketToClient( receivePacket );
             } catch (IOException ioException) {
                 serverScreen.print(ioException.toString() + "\n");
@@ -146,11 +146,14 @@ public class Server extends Thread {
             if (u.isReady)
                 i++;
         msg.write(i);
-        users.stream().filter(u -> u.isReady).forEach(u -> {
-            msg.write(u.playerID);
-            msg.write(u.p.getX());
-            msg.write(u.p.getY());
-        });
+        for (User u : users) {
+            if (u.hasMap) {
+                msg.write(u.playerID);
+                msg.write(u.p.getX());
+                msg.write(u.p.getY());
+                msg.write(u.p.getcHP());
+            }
+        }
         users.stream().filter(u -> u.isReady).forEach(u ->
                         sendBytes(u, msg)
         );
@@ -201,11 +204,9 @@ public class Server extends Thread {
         msg.write(speed);
         msg.write((byte) a.length);
         msg.write((byte) a[0].length);
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[0].length; j++) {
+        for (int i = 0; i < a.length; i++)
+            for (int j = 0; j < a[0].length; j++)
                 msg.write((byte) a[i][j]);
-            }
-        }
         sendBytes(u, msg);
     }
 }

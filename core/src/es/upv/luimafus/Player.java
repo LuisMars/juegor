@@ -47,10 +47,11 @@ public class Player implements Comparable<Player>{
     }
 
     //multiplayer client
-    public Player(Map gameMap, int id, String n, int x, int y) {
+    public Player(Map gameMap, int id, String n, int x, int y, int chp) {
         this(gameMap);
         ID = id;
         name = n;
+        cHP = chp;
         this.x = x;
         this.y = y;
         netPlayer = true;
@@ -103,7 +104,7 @@ public class Player implements Comparable<Player>{
     }
 
     public void act() {
-        System.out.println("Player:\t" + name + ": " + getAction() + " " + getX() + " " + getY());
+        //System.out.println("Player:\t" + name + ": " + getAction() + " " + getX() + " " + getY());
 
         //System.out.println(x + " " + y);
         switch (action) {
@@ -121,10 +122,10 @@ public class Player implements Comparable<Player>{
             case 6:
             case 7:
                 lastDir = action - 4;
-                attack(action - 4);
+                attack(lastDir, false);
                 break;
             case 8:
-                attack(-1);
+                attack(-1, false);
                 break;
         }
         //action = -1;
@@ -166,10 +167,12 @@ public class Player implements Comparable<Player>{
         }
     }
 
-    public void attack(int direction) {
+    public void attack(int direction, boolean fake) {
         //positional sound!!
         float dist = 0;
         float pan = 0;
+        if (direction == -2)
+            return;
         if (!serverPlayer) {
             dist = Utils.fDistance(GameMap.humanPlayer.getX(), GameMap.humanPlayer.getY(), this.getX(), this.getY());
             dist *= dist;
@@ -181,7 +184,7 @@ public class Player implements Comparable<Player>{
             if (lastAtt <= 0) {
                 if (direction == -1) {
                     if (area.isOver()) {
-                        area = new Area(GameMap, x, y, ID);
+                        area = new Area(GameMap, x, y, ID, fake);
                         cHP--;
                         lastAtt = 4;
                         //if(dist < 15)
@@ -190,7 +193,7 @@ public class Player implements Comparable<Player>{
                         }
                     }
                 } else {
-                    GameMap.addAttack(new Attack(x, y, direction, ID));
+                    GameMap.addAttack(new Attack(x, y, direction, ID, fake));
                     lastAtt = 3;
                         //if(dist < 15)
                     if (!serverPlayer) {
@@ -211,14 +214,14 @@ public class Player implements Comparable<Player>{
             if (Utils.hasDirectPath(GameMap,this,b) && Utils.dirToAttack(this,b) >= 0 && Utils.distance(this, b) <= 10) {
                 if(MathUtils.randomBoolean(difficulty)) {
                     lastDir = Utils.dirToAttack(this, b);
-                    attack(lastDir);
+                    attack(lastDir, false);
                 }
                 else
                     move(dir);
             }
             else if (cHP > 5 && Utils.trueDistance(this, b) <= 3) {
                 if(MathUtils.randomBoolean(difficulty/2))
-                    attack(-1);
+                    attack(-1, false);
                 else
                     move(dir);
             }
@@ -227,12 +230,13 @@ public class Player implements Comparable<Player>{
         }
     }
 
-    public void updateState(int x, int y, int lastDir, int cHP) {
-        System.out.println(x + " " + y + " " + cHP);
+    public void updateState(int x, int y, int lastDir, int cHP, int att) {
+        //System.out.println(x + " " + y + " " + cHP);
         this.x = x;
         this.y = y;
         this.lastDir = lastDir;
         this.cHP = cHP;
+        attack(att, true);
     }
 
     public boolean moveTo(int x, int y) {
@@ -290,6 +294,15 @@ public class Player implements Comparable<Player>{
         action = a;
         //System.out.println(name + " " + ID + " " + action + " " + cHP);
         return this;
+    }
+
+    public int getAttack() {
+        if (action == 8)
+            return -1;
+        else if (action >= 4) {
+            return action - 4;
+        } else
+            return -2;
     }
 
     public boolean isDead() {

@@ -7,7 +7,7 @@ public class Area {
     private int time = -1;
     private int radius = 3;
     private int father;
-
+    private boolean fake;
     private Map GameMap;
 
     public Area (Map GameMap) {
@@ -15,12 +15,13 @@ public class Area {
         time = -1;
     }
 
-    public Area (Map GameMap, int x, int y, int ID) {
+    public Area(Map GameMap, int x, int y, int ID, boolean fake) {
         this.GameMap = GameMap;
         px = x;
         py = y;
         time = radius;
         father = ID;
+        this.fake = fake;
     }
 
     public void updatePos() {
@@ -28,7 +29,7 @@ public class Area {
             for (int i = 0; i < GameMap.getHeight(); i++) {
                 for (int j = 0; j < GameMap.getWidth(); j++) {
                     if (Utils.trueDistance(j, i, px, py) == radius - time)
-                        GameMap.addAttack(new Attack(j, i, father, radius-time, radius));
+                        GameMap.addAttack(new Attack(j, i, father, radius - time, radius, fake));
                 }
             }
         }

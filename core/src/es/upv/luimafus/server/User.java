@@ -15,6 +15,7 @@ public class User {
     String name;
     int playerID;
     boolean isReady = false;
+    boolean hasMap = false;
     Player p;
 
     public User(SocketAddress sa, String n) {

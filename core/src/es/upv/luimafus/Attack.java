@@ -11,29 +11,23 @@ public class Attack {
     protected int frame;
     private int maxTime;
     private boolean netAttack = false;
+    //(dir, x, y, frame);
 
-    public Attack(int dir, int x, int y, byte frame) {
-        direction = dir;
-        this.x = x;
-        this.y = y;
-        time = 1;
-        this.frame = frame;
-        netAttack = true;
-
-    }
-
-    public Attack(int x, int y, int ID, int r, int tr) {
+    public Attack(int x, int y, int ID, int r, int tr, boolean fake) {
         this.x = x;
         this.y = y;
         this.father = ID;
         direction = -1;
         maxTime = tr;
         time = maxTime;
-        damage = 2;
+        if (fake)
+            damage = 0;
+        else
+            damage = 2;
         radius = r;
     }
 
-    public Attack(int x, int y, int dir, int ID) {
+    public Attack(int x, int y, int dir, int ID, boolean fake) {
 
         this.x = x;
         this.y = y;
@@ -41,7 +35,10 @@ public class Attack {
         direction = dir;
         maxTime = 10;
         time = maxTime;
-        damage = 1;
+        if (fake)
+            damage = 0;
+        else
+            damage = 1;
 
     }
 
